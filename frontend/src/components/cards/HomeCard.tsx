@@ -1,6 +1,7 @@
 import React from 'react'
 import { Card, CardContent, Typography } from '@mui/material'
 import { motion } from 'framer-motion'
+import { useMobile } from '../../utils/hooks'
 
 interface HomeCardProps {
     title: string
@@ -12,20 +13,26 @@ interface HomeCardProps {
 const HomeCard: React.FC<HomeCardProps> = ({title, description, icon, key}) => {
 
     const MotionCard = motion(Card);
-
+    const isMobile = useMobile()
 
   return (
     <MotionCard
     key={key}
     sx={{
-        borderRadius: '16px'
+        borderRadius: '16px',
+        ml: isMobile ? 2 : 0,
+        mr: isMobile ? 2 : 0,
     }}
     whileHover={{
         y: -5
     }}
     elevation={3}
     >
-        <CardContent>
+        <CardContent
+        sx={{
+            pointerEvents: 'none'
+        }}
+        >
         <Typography
         fontSize='48px'
         textAlign='start'

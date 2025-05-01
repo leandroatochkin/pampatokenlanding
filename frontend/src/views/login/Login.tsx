@@ -1,10 +1,21 @@
-import { Paper, Typography, TextField, Box, FormLabel, InputAdornment, OutlinedInput, IconButton, Button } from '@mui/material'
+import { 
+    Paper, 
+    Typography, 
+    TextField, 
+    Box, 
+    InputAdornment, 
+    OutlinedInput, 
+    IconButton, 
+    Button, 
+    Link 
+} from '@mui/material'
 import MailIcon from '@mui/icons-material/Mail';
 import { useForm } from 'react-hook-form'
 import { emailRegex, passwordRegex } from '../../utils/regexPatterns';
-import React, { useState} from 'react'
+import  { useState} from 'react'
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import VisibilityIcon from '@mui/icons-material/Visibility';
+import {useScrollNavigation, useMobile} from '../../utils/hooks';
 
 interface LoginData {
     email: string
@@ -13,12 +24,13 @@ interface LoginData {
 
  const Login = () => {
     const [showPassword, setShowPassword] = useState<boolean>(false)
+    const {
+        handleSectionClick
+      } = useScrollNavigation();
 
 const {
     handleSubmit, 
     register, 
-    watch,
-    setError, 
     formState: { errors }, 
 } = useForm<LoginData>()
 
@@ -26,7 +38,7 @@ const onSubmit = async (data: LoginData) => {
     console.log(data)
   };
 
-
+const isMobile = useMobile()
   return (
     <Box
     sx={{
@@ -34,20 +46,22 @@ const onSubmit = async (data: LoginData) => {
         height: '100%',
         display: 'flex',
         justifyContent: 'center',
-        alignItems: 'center'
+        alignItems: 'center',
+        mt: isMobile ? 10 : 0,
     }}
     >
         <Paper
-    id='login'
-    sx={{
-        borderRadius: 4,
-        width: {
-            md: '30%'
-        },
-        height: '40%',
-        p: 2
-    }}
-    >
+            id='login'
+            sx={{
+                borderRadius: 4,
+                width: {
+                    md: '30%',
+                    xs: '86vw'
+                },
+                p: 2,
+
+            }}
+            >
         <Typography
         variant='h4'
         fontWeight='bolder'
@@ -66,7 +80,11 @@ const onSubmit = async (data: LoginData) => {
         onSubmit={handleSubmit(onSubmit)}
         >   
             {/*LOGIN*/}
-            <Box>
+            <Box
+            sx={{
+                mt: 2
+            }}
+            >
                 <Typography
                 fontWeight='bold'
                 textAlign='start'
@@ -101,7 +119,11 @@ const onSubmit = async (data: LoginData) => {
                 </Box>
             </Box>
             {/*PASSWORD*/}
-            <Box>
+            <Box
+            sx={{
+                mt: 2
+            }}
+            >
                 <Box>
                 <Typography
                 fontWeight='bold'
@@ -139,12 +161,30 @@ const onSubmit = async (data: LoginData) => {
             type='submit'
             variant='contained'
             sx={{
-                background: '#2E7D32'
+                background: '#2E7D32',
+                mt: 4
             }}
             fullWidth
             >
                 Iniciar sesión
             </Button>
+            <Link
+          onClick={
+            ()=>handleSectionClick('register')
+          }
+          underline='none'
+          fontWeight='medium'
+          sx={{
+            color: '#43A047', // normal color
+            textDecoration: 'none',
+            '&:hover': {
+              color: '#2E7D32', // hover color
+              cursor: 'pointer'
+            },
+          }}
+          >
+            ¿No tienes una cuenta? Regístrate
+          </Link>
         </form>
     </Paper>
     </Box>

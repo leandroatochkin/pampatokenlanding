@@ -1,20 +1,20 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { 
-  Container, 
   Typography, 
   Button, 
   Box,  
-  Paper, 
-  useMediaQuery 
 } from '@mui/material';
-import Grid from '@mui/material/Grid';
-import { ArrowForwardIos } from '@mui/icons-material';
+import { ArrowForwardIos, ArrowDropDown } from '@mui/icons-material';
 import HomeCard from '../../components/cards/HomeCard';
+import { useMobile } from '../../utils/hooks';
 
 
 
 const Home = () => {
-const [scrollY, setScrollY] = useState<number>(0)   
+const [_, setScrollY] = useState<number>(0)
+const isMobile = useMobile()
+  
+
     
   useEffect(() => {
     const handleScroll = () => {
@@ -45,6 +45,7 @@ const [scrollY, setScrollY] = useState<number>(0)
     },
   ];
 
+
   return (
         <Box
         id='home'
@@ -53,7 +54,7 @@ const [scrollY, setScrollY] = useState<number>(0)
             height: '100%',
             display: 'flex',
             flexDirection: 'column',
-            justifyContent: 'space-evenly'
+            justifyContent: 'space-evenly',
         }}
         >
             <Box>
@@ -62,7 +63,13 @@ const [scrollY, setScrollY] = useState<number>(0)
                 color='#43A047'
                 fontWeight='bolder'
                 sx={{
-                    textShadow: '0px 3px 5px rgba(0,0,0,0.6)'
+                    textShadow: '0px 3px 5px rgba(0,0,0,0.6)',
+                    fontSize: '5.5rem',
+                    textAlign: {
+                      xs: 'left',
+                      md: 'center',
+                    },
+                    mr: 1 
                 }}
                 >
                     El Futuro de la Inversión Agrícola
@@ -71,20 +78,28 @@ const [scrollY, setScrollY] = useState<number>(0)
                 variant='h3'
                 color='#43A047'
                 sx={{
-                    textShadow: '0px 3px 5px rgba(0,0,0,0.6)'
+                    textShadow: '0px 3px 5px rgba(0,0,0,0.6)',
+                    textAlign: {
+                      xs: 'left',
+                      md: 'center',
+                    },
                 }}
                 >
                     Tokenización de producción ágricola de tierras
                 </Typography>
                 <Button
                 variant='contained'
-                endIcon={<ArrowForwardIos/>}
+                endIcon={isMobile ? <ArrowDropDown/> : <ArrowForwardIos/>}
                 sx={{
                     background: '#43A047',
                     mt: 4,
                     p: 2,
                     borderRadius: 4
                 }}
+                onClick={() => {
+                    const el = document.getElementById('login')
+                    el?.scrollIntoView({ behavior: 'smooth' })
+                  }}
                 >
                     comenzar
                 </Button>
@@ -96,6 +111,10 @@ const [scrollY, setScrollY] = useState<number>(0)
                 flexDirection: {
                     xs: 'column',
                     md: 'row'
+                },
+                mt: 4,
+                gap: {
+                    xs: 4
                 },
                 justifyContent: {
                     md: 'space-evenly'
