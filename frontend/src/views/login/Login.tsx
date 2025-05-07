@@ -35,7 +35,21 @@ const {
 } = useForm<LoginData>()
 
 const onSubmit = async (data: LoginData) => {
-    console.log(data)
+    if(!data) return
+    try{
+        const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/login`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
+        })
+        const token = await response.json()
+        console.log(token)
+    } catch (error) {
+        console.error('Error:', error)
+    }
+
   };
 
 const isMobile = useMobile()

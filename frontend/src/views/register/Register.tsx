@@ -149,7 +149,7 @@ const Register = () => {
                 
             })
   
-     const watchEmail = watch("email");
+    const watchEmail = watch("email");
     const watchPassword = watch("password")       
     const watchPoliticallyExposed = watch('politicallyExposed')
     const watchFiscalResidentOutsideArgentina = watch('fiscalResidentOutsideArgentina')
@@ -172,9 +172,30 @@ const Register = () => {
     const resizedFrontImage = await resizeImage(frontIdFile, 500, 500)
     const resizedBackImage = await resizeImage(backIdFile, 500, 500)
     const resizedSelfieImage = await resizeImage(selfieFile, 500, 500)
+    if(!resizedFrontImage || !resizedBackImage || !resizedSelfieImage || !data) {
+      console.error('Error resizing images')
+    }
+    const formData = new FormData()
+    formData.append('frontIdImage', resizedFrontImage)
+    formData.append('backIdImage', resizedBackImage)
+    formData.append('selfieImage', resizedSelfieImage)
+    formData.append('user', JSON.stringify(data))
+    
+    try {
+      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/register`, {
+        method: 'POST',
+        body: formData,
+      })
+      if (response.ok) {
+        console.log('Success:', response)
+      } else {
+        console.error('Error:', response)
+      }
    }
-    console.log(data)
-  }
+    catch (error) {
+      console.error('Error:', error)
+    }
+}}
 
   const handleCheckboxChange = () => {
     setValue('termsAndConditionsRead', !watchTermsAndConditions ? true : false)
