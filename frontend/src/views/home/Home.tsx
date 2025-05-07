@@ -69,7 +69,8 @@ const isMobile = useMobile()
                       xs: 'left',
                       md: 'center',
                     },
-                    mr: 1 
+                    mr: 1,
+                    fontFamily: 'PTSerif-Bold, sans-serif', 
                 }}
                 >
                     El Futuro de la Inversión Agrícola
@@ -83,6 +84,7 @@ const isMobile = useMobile()
                       xs: 'left',
                       md: 'center',
                     },
+                    fontFamily: 'PTSerif-Regular, sans-serif',
                 }}
                 >
                     Tokenización de producción ágricola de tierras

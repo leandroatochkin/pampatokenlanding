@@ -64,7 +64,7 @@ const isMobile = useMobile()
             >
         <Typography
         variant='h4'
-        fontWeight='bolder'
+        fontFamily={'PTSerif-Bold, sans-serif'}
         color='#2E7D32'
         textAlign='start'
         >
@@ -74,7 +74,7 @@ const isMobile = useMobile()
         textAlign='start'
         color='#333'
         >
-        Accede a tu cuenta para gestionar tus inversiones
+        Accedé a tu cuenta para gestionar tus inversiones
         </Typography>
         <form
         onSubmit={handleSubmit(onSubmit)}
@@ -183,7 +183,7 @@ const isMobile = useMobile()
             },
           }}
           >
-            ¿No tienes una cuenta? Regístrate
+            ¿No tenés una cuenta? Registrate
           </Link>
         </form>
     </Paper>

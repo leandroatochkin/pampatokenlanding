@@ -1,5 +1,35 @@
+@font-face {
+  font-family: 'PTSerif-Regular';
+  src: url('./assets/fonts/PTSerif-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'PTSerif-Bold';
+  src: url('./assets/fonts/PTSerif-Bold.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'PTSerif-Italic';
+  src: url('./assets/fonts/PTSerif-Italic.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'PTSerif-BoldItalic';
+  src: url('./assets/fonts/PTSerif-BoldItalic.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+
+
 :root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-family: 'PTSerif-Regular',  sans-serif;
   line-height: 1.5;
   font-weight: 400;
 

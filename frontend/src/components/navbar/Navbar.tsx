@@ -153,7 +153,7 @@ const Navbar = () => {
           <Typography
           sx={{
             color: '#2E7D32',
-            fontWeight: 'bolder'
+            fontFamily: 'PTSerif-Bold, sans-serif',
           }}
           >
             PAMPA TOKENS

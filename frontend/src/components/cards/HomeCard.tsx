@@ -41,7 +41,7 @@ const HomeCard: React.FC<HomeCardProps> = ({title, description, icon, key}) => {
         </Typography>
         <Typography
         variant='h5'
-        fontWeight='bolder'
+        fontFamily={'PTSerif-Bold, sans-serif'}
         textAlign='start'
         color=' #2E7D32'
         >

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import VisibilityIcon from '@mui/icons-material/Visibility';
@@ -44,9 +44,12 @@ import {
 import { 
     countryListAlpha2,
     provinces,
+    maritalStatusMapper
 } from "../../utils/dataList";
 import IdUpload from "../../components/idUpload/IdUpload";
+import PhotoCapture from "../../components/idUpload/PhotoCapture";
 import TermsAndConditionsDialog from "../../components/dialogs/TermsAndConditionsDialog";
+import { resizeImage } from "../../utils/functions";
 
 
 
@@ -114,6 +117,18 @@ const Register = () => {
   const [repeatPassword, setRepeatPassword] = useState<string>("")
   const [showPassword, setShowPassword] = useState<boolean>(false)
   const [openDialog, setOpenDialog] = useState<boolean>(false)
+  const [frontImage, setFrontImage] = useState<string | null>(null)
+  const [backIdFile, setBackIdFile] = useState<File | null>(null)
+  const [frontIdFile, setFrontIdFile] = useState<File | null>(null)
+  const [selfieFile, setSelfieFile] = useState<File | null>(null)
+  const [backImage, setBackImage] = useState<string | null>(null)
+  const [selfieImage, setSelfieImage] = useState<string | null>(null)
+  const [loading, setLoading] = useState<boolean>(false)
+
+  useEffect(() => {
+    console.log('Front Image:', frontImage)
+    console.log('Back Image:', backImage)
+  },[backImage, frontImage])
 
 
 
@@ -152,6 +167,12 @@ const Register = () => {
   }
 
   const onSubmit = async (data: UserDTO) => {
+    setLoading(true)
+   if (frontIdFile && backIdFile && selfieFile) {
+    const resizedFrontImage = await resizeImage(frontIdFile, 500, 500)
+    const resizedBackImage = await resizeImage(backIdFile, 500, 500)
+    const resizedSelfieImage = await resizeImage(selfieFile, 500, 500)
+   }
     console.log(data)
   }
 
@@ -264,7 +285,11 @@ const Register = () => {
                         width: '100%',
                         display: 'flex',
                         justifyContent:'space-between',
-                        gap: 2
+                        gap: 2,
+                        flexDirection: {
+                          xs: 'column',
+                          md: 'row'
+                      },
                         }}
                         >
                     {/*EMAIL*/}
@@ -272,7 +297,8 @@ const Register = () => {
                                sx={{
                                 display: 'flex',
                                 flexDirection: 'column',
-                                width: '100%'
+                                width: '100%',
+                                
                                }}
                                 >
                             <FormLabel htmlFor="email">Email</FormLabel>
@@ -338,7 +364,11 @@ const Register = () => {
                     width: '100%',
                     display: 'flex',
                     justifyContent:'space-between',
-                    gap: 2
+                    gap: 2,
+                    flexDirection: {
+                      xs: 'column',
+                      md: 'row'
+                  },
                   }}
                   >
                     {/*PASSWORD*/}
@@ -405,7 +435,11 @@ const Register = () => {
                     width: '100%',
                     display: 'flex',
                     justifyContent:'space-between',
-                    gap: 2
+                    gap: 2,
+                    flexDirection: {
+                      xs: 'column',
+                      md: 'row'
+                  },
                   }}
                   >
                          {/*FIRST NAME*/}
@@ -413,7 +447,8 @@ const Register = () => {
                         sx={{
                             display: 'flex',
                             flexDirection: 'column',
-                            width: '100%'
+                            width: '100%',
+                            
                         }}
                         >
                         <FormLabel htmlFor="firstName">Nombre</FormLabel>
@@ -467,9 +502,19 @@ const Register = () => {
                     width: '100%',
                     display: 'flex',
                     justifyContent:'space-between',
+                    flexDirection: {
+                        xs: 'column',
+                        md: 'row'
+                    },
+
                     gap: 2
                   }}
                   >
+
+
+
+
+
                      {/*MIDDLE NAME*/}
                     <Box
                         sx={{
@@ -496,6 +541,32 @@ const Register = () => {
                             />    
                         </Box>
                     </Box>
+
+
+                          <Box
+                  sx={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      width: '100%'
+                  }}
+                  >
+                      <FormLabel htmlFor="maritalStatus">Est. Civil</FormLabel>
+                    
+                      <Select
+                      {...register("maritalStatus", {
+                          required: 'Este campo es obligatorio',
+                      })}
+                      defaultValue={'S'}
+                      fullWidth
+                      >
+                      {Object.entries(maritalStatusMapper).map(([code, name]) => (
+                          <MenuItem key={code} value={code}>
+                          {`${name}`}
+                          </MenuItem>
+                      ))}
+                      </Select>
+                    
+                  </Box>
        
             {/*PHONE NUMBER*/}
                 <Box
@@ -892,7 +963,21 @@ const Register = () => {
                 </Stack>
         
             </Box>  
-            <IdUpload />         
+            <IdUpload 
+            setBackIdImage={setBackImage}
+            setFrontIdImage={setFrontImage}
+            frontIdImage={frontImage}
+            backIdImage={backImage}
+            setBackIdFile={setBackIdFile}
+            setFrontIdFile={setFrontIdFile}
+            label={String(watch(`CUIT`))}
+            />
+            <PhotoCapture
+            selfieImage={selfieImage}
+            setSelfieImage={setSelfieImage}
+            setSelfieFile={setSelfieFile}
+            label={String(watch(`CUIT`))}
+            />         
             </Box>
 
             <Box

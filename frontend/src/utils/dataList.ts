@@ -297,6 +297,13 @@ export const paymentStatusMapper = {
     '4': 'Otro',
 }
 
+export const maritalStatusMapper = {
+    'S': 'Soltero/a',
+    'C': 'Casado/a',
+    'D': 'Divorciado/a',
+    'V': 'Viudo/a'
+}
+
 export const provinces = [
     "Buenos Aires",
     "Catamarca",

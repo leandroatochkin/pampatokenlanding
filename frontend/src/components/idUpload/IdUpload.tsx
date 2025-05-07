@@ -1,13 +1,41 @@
+import React, { useState } from 'react'
 import { Box, Typography, Paper } from '@mui/material'
 import UploadIcon from '@mui/icons-material/Upload'
 import { motion } from 'framer-motion'
 
 
-const IdUpload = () => {
+interface idUploadProps {
+  setFrontIdImage: (image: string | null) => void
+  setBackIdImage: (image: string | null) => void
+  frontIdImage: string | null
+  backIdImage: string | null
+  setBackIdFile: (file: File | null) => void
+  setFrontIdFile: (file: File | null) => void
+  label: string
+}
+
+const IdUpload: React.FC <idUploadProps> = ({
+  setBackIdImage, 
+  setFrontIdImage, 
+  frontIdImage, 
+  backIdImage, 
+  setFrontIdFile, 
+  setBackIdFile, 
+  label
+}) => {
+
 
 const MotionPaper = motion.create(Paper)
 
-    const renderUploadCard = (label: string, inputId: string) => (
+  interface UploadCardProps {
+    label: string
+    inputId: string
+    image: string | null
+    setImage: (image: string | null) => void
+    setFile: (file: File | null) => void
+  }
+
+    const RenderPhotoInput: React.FC<UploadCardProps> = ({ label, inputId, setImage, setFile }) => (
         <label htmlFor={inputId}>
           <input
             id={inputId}
@@ -16,6 +44,8 @@ const MotionPaper = motion.create(Paper)
             onChange={(e) => {
               if (e.target.files?.[0]) {
                 console.log(`${label} seleccionado:`, e.target.files[0])
+                setFile(e.target.files[0])
+                setImage(URL.createObjectURL(e.target.files[0]))
               }
             }}
           />
@@ -50,6 +80,9 @@ const MotionPaper = motion.create(Paper)
               </Typography>
             </Box>
           </MotionPaper>
+    
+          
+    
         </label>
       )
       
@@ -62,9 +95,11 @@ const MotionPaper = motion.create(Paper)
     marginTop={2}
     width={'100%'}
     >
-      <Typography variant="body1" fontWeight="bold" color='primary' textAlign='left'>
+      <Typography variant="body1" fontFamily={'PTSerif-Bold, sans-serif'} color='primary' textAlign='left'>
         Documento de Identidad
       </Typography>
+
+
       <Box
       sx={{
         display: 'flex',
@@ -85,7 +120,13 @@ const MotionPaper = motion.create(Paper)
             alignItems: 'center'
         }}
         >
-          {renderUploadCard('Frente DNI', 'dni-front')}
+          <RenderPhotoInput
+            label="Anverso DNI"
+            inputId="dni-front"
+            image={frontIdImage}
+            setImage={setFrontIdImage}
+            setFile={setFrontIdFile}
+          />
         </Box>
         <Box
        sx={{
@@ -95,7 +136,67 @@ const MotionPaper = motion.create(Paper)
         alignItems: 'center'
     }}
         >
-          {renderUploadCard('Dorso DNI', 'dni-back')}
+          <RenderPhotoInput
+            label="Reverso DNI"
+            inputId="dni-back"
+            image={backIdImage}
+            setImage={setBackIdImage}
+            setFile={setBackIdFile}
+          />
+        </Box>
+        <Box
+        sx={{
+          width: '100%',
+          display: 'flex',
+          justifyContent: 'flex-start',
+          ml: 2,
+          gap: 2,
+        }}
+        >
+              {frontIdImage && (
+               <Box
+               sx={{
+                display: 'flex',
+                flexDirection: 'column',
+               }}
+               >
+              <img
+                src={frontIdImage}
+                alt="Uploaded"
+                style={{
+                  width: '150px',
+                  height: 'auto',
+                  borderRadius: '8px',
+                  marginTop: '8px',
+                }}
+              />
+              <Typography variant="caption" color="primary" mt={1}>
+                {`${label}-frente`}
+              </Typography>
+              </Box>
+            )}
+            {backIdImage && (
+             <Box
+             sx={{
+              display: 'flex',
+              flexDirection: 'column',
+             }}
+             >
+              <img
+                src={backIdImage}
+                alt="Uploaded"
+                style={{
+                  width: '150px',
+                  height: 'auto',
+                  borderRadius: '8px',
+                  marginTop: '8px',
+                }}
+              />
+              <Typography variant="caption" color="primary" mt={1}>
+                {`${label}-reverso`}
+              </Typography>
+             </Box>
+            )}
         </Box>
       </Box>
     </Box>

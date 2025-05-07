@@ -53,7 +53,8 @@ const MotionPaper = motion.create(Paper)
         fontWeight= 'bolder'
         sx={{
             textShadow: '0px 3px 5px rgba(0,0,0,0.6)',
-            pointerEvents: 'none'
+            pointerEvents: 'none',
+            fontFamily: 'PTSerif-Bold, sans-serif',
         }}
         >
           ¿Qué es Pampa Tokens?
