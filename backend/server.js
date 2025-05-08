@@ -6,6 +6,9 @@ import cors from 'cors';
 //import centralizedErrorHandler from './middleware/error_handling/error_handler.cjs'; // Keeping this .cjs since it's CommonJS
 import registerUser from './api/routes/register/register.js'
 import loginUser from './api/routes/login/login.js'
+import getPortfolio from './api/routes/operations/getPortfolio.js'
+import upload from './api/routes/token/upload.js'
+import getToken from './api/routes/token/getToken.js'
 
 
 const app = express();
@@ -45,6 +48,9 @@ app.use((req, res, next) => {
 // Load routes
 app.use('/register', registerUser)
 app.use('/login', loginUser)
+app.use('/get-portfolio', getPortfolio)
+app.use('/token', upload)
+app.use('/get-value', getToken)
 
 
 //app.use(centralizedErrorHandler);

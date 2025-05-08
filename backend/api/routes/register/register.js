@@ -5,6 +5,8 @@ import os from 'os';
 import fs from 'fs';
 import {db} from '../../db/db.js'; // Adjust the path as necessary
 import { v4 as uuidv4 } from 'uuid';
+import { sendVerificationEmail } from '../../../mailing/mailingService.js';
+import jwt from 'jsonwebtoken'
 
 
 const router = express.Router();
@@ -38,7 +40,8 @@ router.post(
     ]),
     (req, res) => {
       try {
-        const user = JSON.parse(req.body.user); 
+        const user = JSON.parse(req.body.user)
+        const email = user.email
         const insertUser = async (user) => {
             const query = `
               INSERT INTO users (
@@ -79,12 +82,20 @@ router.post(
                 return;
               }
               console.log('User inserted with ID:', user.id);
+
             });
           };
           
           insertUser(user);
 
-  
+          const token = jwt.sign({ email }, process.env.JWT_SECRET, {
+            expiresIn: '1d',
+          })
+          
+          const sendEmail = async () => await sendVerificationEmail(email, token)
+          sendEmail()
+
+         
         res.json({ message: 'Files and user data received successfully' });
       } catch (err) {
         console.error('Error parsing user JSON:', err);

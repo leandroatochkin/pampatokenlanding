@@ -27,7 +27,8 @@ import {
   Stack,
   Switch,
   Checkbox,
-  FormControlLabel
+  FormControlLabel,
+  CircularProgress,
 } from "@mui/material";
 import { 
   Person as PersonIcon, 
@@ -228,6 +229,9 @@ const Register = () => {
         borderRadius: '16px',
       }}
       >
+        {
+          !loading ? (
+            <>
         <CardHeader 
           title={
             <Typography
@@ -1063,6 +1067,13 @@ const Register = () => {
             </form>
           </Box>
         </CardContent>
+        </>
+          )
+          :
+          (
+            <CircularProgress size={50} color="primary" />
+          )
+        }
         
       </Paper>
     </Container>

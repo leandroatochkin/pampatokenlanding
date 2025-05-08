@@ -7,7 +7,8 @@ import {
     OutlinedInput, 
     IconButton, 
     Button, 
-    Link 
+    Link,
+    CircularProgress, 
 } from '@mui/material'
 import MailIcon from '@mui/icons-material/Mail';
 import { useForm } from 'react-hook-form'
@@ -16,6 +17,9 @@ import  { useState} from 'react'
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import {useScrollNavigation, useMobile} from '../../utils/hooks';
+import { userStore } from '../../utils/store';
+import { useNavigate } from 'react-router-dom';
+
 
 interface LoginData {
     email: string
@@ -24,18 +28,22 @@ interface LoginData {
 
  const Login = () => {
     const [showPassword, setShowPassword] = useState<boolean>(false)
+    const [loading, setLoading] = useState<boolean>(false)
     const {
         handleSectionClick
       } = useScrollNavigation();
-
+      const setData = userStore((state)=>state.setTokenData)
 const {
     handleSubmit, 
     register, 
     formState: { errors }, 
 } = useForm<LoginData>()
 
+const navigate = useNavigate()
+
 const onSubmit = async (data: LoginData) => {
     if(!data) return
+    setLoading(true)
     try{
         const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/login`, {
             method: 'POST',
@@ -44,10 +52,13 @@ const onSubmit = async (data: LoginData) => {
             },
             body: JSON.stringify(data),
         })
-        const token = await response.json()
-        console.log(token)
+        const resData = await response.json();
+        setData({ token: resData.token })
+        navigate('/operations')
     } catch (error) {
         console.error('Error:', error)
+    } finally{
+        setLoading(false)
     }
 
   };
@@ -76,6 +87,9 @@ const isMobile = useMobile()
 
             }}
             >
+        {
+            !loading ? (
+                <>
         <Typography
         variant='h4'
         fontFamily={'PTSerif-Bold, sans-serif'}
@@ -200,7 +214,14 @@ const isMobile = useMobile()
             ¿No tenés una cuenta? Registrate
           </Link>
         </form>
-    </Paper>
+        </>
+            )
+            :
+            (
+                <CircularProgress size={50} color='primary' />
+            )
+        }
+        </Paper>
     </Box>
   )
 }
