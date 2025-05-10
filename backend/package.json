@@ -12,7 +12,7 @@
     "uuid": "^11.1.0"
   },
   "scripts": {
-  "start": "node backend/index.js"
+  "start": "node backend/server.js"
 },
   "type": "module"
 }
