@@ -11,6 +11,10 @@ import { ThemeProvider } from '@emotion/react'
 import './App.css'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import NotFound from './views/notFound/NotFound'
+import { ProtectedRoute } from './views/login/PostLogin'
+import { userStore } from './utils/store'
+
+const isLoggedIn = userStore((state)=>state.isLoggedIn)
 
 const router = createBrowserRouter([
   {
@@ -30,7 +34,9 @@ const router = createBrowserRouter([
   {
     path: "/operations",
     element: (
-      <Operations />
+      <ProtectedRoute isAuthenticated={isLoggedIn}>
+          <Operations />
+      </ProtectedRoute>
     ),
     errorElement: <NotFound />,
   },
