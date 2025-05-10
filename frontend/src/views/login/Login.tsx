@@ -53,8 +53,14 @@ const onSubmit = async (data: LoginData) => {
             body: JSON.stringify(data),
         })
         const resData = await response.json();
-        setData({ token: resData.token })
-        navigate('/operations')
+     
+        if(response.status === 400 || response.status === 401){
+            alert('Credenciales inválidas')
+        }
+        if(response.ok){
+            setData({ token: resData.token })
+            navigate('/operations')
+        }
     } catch (error) {
         console.error('Error:', error)
     } finally{

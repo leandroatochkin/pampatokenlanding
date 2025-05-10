@@ -1,9 +1,10 @@
-import React from "react"
-import {Button, Box, Typography, Paper} from '@mui/material'
+import {Button, Box, Typography} from '@mui/material'
+import {useNavigate} from 'react-router-dom'
 
 
 export default function NotFound() {
 
+  const navigate = useNavigate()
 
   return (
     <Box sx={{
@@ -52,8 +53,7 @@ export default function NotFound() {
         >404</Typography>
         <Typography variant="h2">Page Not Found</Typography>
         <Typography variant="body1">
-          The page you're looking for doesn't exist or has been moved. Please check the URL or navigate back to the
-          dashboard.
+          La página que estás buscando no existe o ha sido eliminada. Puedes volver a la página de inicio o buscar algo nuevo.
         </Typography>
         <Box
         sx={{
@@ -64,9 +64,9 @@ export default function NotFound() {
         >
         <Button
         variant="outlined"
-        // onClick={() => navigateHome()}
+        onClick={() => navigate('/')}
         >
-            Return to Dashboard
+           volver
         </Button>
         </Box>
       </Box>

@@ -1,4 +1,4 @@
-import React,{useState} from 'react'
+import React,{useState, useEffect} from 'react'
 import { 
     Box, 
     Typography,
@@ -10,15 +10,27 @@ import {
     Button
 } from '@mui/material'
 import { userStore } from '../../utils/store'
+import { TokenInfo } from '../../utils/interfaces'
 
 interface SellTokenDialogProps {
     open: boolean
     onClose: () => void
     sellValue: number
     ownedTokens: number
+    tokens: TokenInfo
+    refetch: () => void
 }
 
-const SellTokenDialog: React.FC<SellTokenDialogProps> = ({open, onClose, sellValue, ownedTokens}) => {
+interface SellTransactionDTO{
+    userId: string
+    amount: Number 
+    symbol: string
+    soldAtValue: number 
+}
+
+
+const SellTokenDialog: React.FC<SellTokenDialogProps> = ({open, onClose, ownedTokens, tokens, refetch}) => {
+    const [payload, setPayload] = useState<SellTransactionDTO | null>(null)
     const tokenData = userStore((state)=>state.tokenData)
     const isLoggedIn = userStore((state)=>state.isLoggedIn)
     const userId = userStore((state)=>state.userId)
@@ -27,24 +39,30 @@ const SellTokenDialog: React.FC<SellTokenDialogProps> = ({open, onClose, sellVal
     const [amount, setAmount] = useState<number>(ownedTokens)
     const [isLoading, setIsLoading] = useState<boolean>(false)
 
-    const total = Number((amount * sellValue) / 100).toFixed(2).replace('.', ',')
+    const total = Number((amount * tokens.VALOR_VENTA) / 100).toFixed(2).replace('.', ',')
+
+     useEffect(()=>{
+            setPayload({
+                userId: userId || '',
+                amount: amount,
+                symbol: tokens.SIMBOLO,
+                soldAtValue: tokens.VALOR_VENTA,
+            })
+    
+        },[amount, userId, tokens])
 
     const handleSell = async () => {
         if(!tokenData || !amount || !userId || !isLoggedIn) return
         setIsLoading(true)
-        if(confirm(`Esta seguro que quiere comprar ${amount} tokens por AR$${total}`)){
+        if(confirm(`Esta seguro que quiere vender ${amount} tokens por AR$${total}`)){
             try{
                 const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/sell`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${tokenData}`
+                        'Authorization': `Bearer ${tokenData.token}`
                     },
-                    body: JSON.stringify({
-                        userId: userId,
-                        amount: amount,
-                        operationType: 1, // 0 for buy, 1 for sell
-                    }),
+                    body: JSON.stringify(payload),
                 })
                 if(!response.ok){            
                     alert('Error al vender tokens')
@@ -54,6 +72,7 @@ const SellTokenDialog: React.FC<SellTokenDialogProps> = ({open, onClose, sellVal
                 } else {
                     alert(`Orden de venta generada exitosamente`)
                     setIsLoading(false)
+                    refetch()
                     onClose()
                 }
     
@@ -92,7 +111,7 @@ const SellTokenDialog: React.FC<SellTokenDialogProps> = ({open, onClose, sellVal
             }}
             >
                 <Typography variant='h6' sx={{mb: 2}}>
-                    Precio por token: AR${Number(sellValue / 100).toFixed(2)}
+                    Precio por token: AR${Number(tokens.VALOR_VENTA / 100).toFixed(2)}
                 </Typography>
                 <TextField
                 label='Cantidad de tokens'
@@ -106,10 +125,10 @@ const SellTokenDialog: React.FC<SellTokenDialogProps> = ({open, onClose, sellVal
                 <TextField
                     label='Monto en AR$'
                     type='number'
-                    value={Number(amount * (sellValue / 100)).toFixed(2)} // shows AR$
+                    value={Number(amount * (tokens.VALOR_VENTA / 100)).toFixed(2)} // shows AR$
                     onChange={(e) => {
                         const inputValue = Number(e.target.value);
-                        setAmount(inputValue / (sellValue / 100)); // AR$ → tokens
+                        setAmount(inputValue / (tokens.VALOR_VENTA / 100)); // AR$ → tokens
                     }}
                     fullWidth
                     sx={{ mb: 2 }}

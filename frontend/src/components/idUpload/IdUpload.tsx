@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { Box, Typography, Paper } from '@mui/material'
 import UploadIcon from '@mui/icons-material/Upload'
 import { motion } from 'framer-motion'

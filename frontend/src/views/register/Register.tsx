@@ -51,6 +51,7 @@ import IdUpload from "../../components/idUpload/IdUpload";
 import PhotoCapture from "../../components/idUpload/PhotoCapture";
 import TermsAndConditionsDialog from "../../components/dialogs/TermsAndConditionsDialog";
 import { resizeImage } from "../../utils/functions";
+import { useScrollNavigation } from "../../utils/hooks";
 
 
 
@@ -125,6 +126,11 @@ const Register = () => {
   const [backImage, setBackImage] = useState<string | null>(null)
   const [selfieImage, setSelfieImage] = useState<string | null>(null)
   const [loading, setLoading] = useState<boolean>(false)
+  const [successElement, setSuccessElement] = useState<boolean>(false)
+
+  const {
+    handleSectionClick
+  } = useScrollNavigation();
 
   useEffect(() => {
     console.log('Front Image:', frontImage)
@@ -189,6 +195,10 @@ const Register = () => {
       })
       if (response.ok) {
         console.log('Success:', response)
+        setSuccessElement(true)
+        setTimeout(() =>{
+          handleSectionClick('login')
+        },3000)
       } else {
         console.error('Error:', response)
       }
@@ -221,6 +231,7 @@ const Register = () => {
       <Paper
       sx={{
         height: 'auto',
+        minHeight: '150px',
         width: {
             xs: '94vw',
             md: '80%'
@@ -229,851 +240,884 @@ const Register = () => {
         borderRadius: '16px',
       }}
       >
-        {
-          !loading ? (
-            <>
-        <CardHeader 
-          title={
-            <Typography
-                    variant='h4'
-                    fontWeight='bolder'
-                    color='#2E7D32'
-                    textAlign='start'
-                    >
-                        Registrate
-            </Typography>
-          }
-          subheader={
-            <Typography variant="body2" color="text.secondary" align="left" sx={{ mb: 2 }}>
-              Complete los siguientes campos para continuar su registro.
-            </Typography>
-          }
-        />
-        
-        <LinearProgress variant="determinate" value={progress} sx={{ mb: 2}} color="primary"/>
-        
-        <CardContent>
-          <Box sx={{ width: '100%' }}>
-            <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-              <Tabs 
-                value={activeStep} 
-                onChange={handleStepChange} 
-                variant="fullWidth"
-                aria-label="profile steps"
-              >
-
-                {/*PERSONAL INFO*/}
-                <Tab 
-                  label={
-                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                      <PersonIcon sx={{ mr: 1 }} fontSize="small" />
-                      Personal
-                    </Box>
-                  } 
-                  {...a11yProps(0)} 
-                  disabled={activeStep !== 0}
-                />
-
-
-                <Tab 
-                  label={
-                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                    <LocationIcon sx={{ mr: 1 }} fontSize="small" />
-                      Ubicación
-                    </Box>
-                  } 
-                  {...a11yProps(1)} 
-                  disabled={activeStep !== 0 && activeStep !== 1}
-                />
-
-                <Tab 
-                  label={
-                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                    <AccountBalanceIcon sx={{ mr: 1 }} fontSize="small" />
-                      Info bancaria
-                    </Box>
-                  } 
-                  {...a11yProps(1)} 
-                  disabled={activeStep !== 0 && activeStep !== 1 && activeStep !== 2}
-                />
-                
-              </Tabs>
-            </Box>
-
-            {/* Personal Tab */}
-            <form onSubmit={handleSubmit(onSubmit)}>
-            <TabPanel value={activeStep} index={0}>
-         
-                <Box>
-                    <Box
-                     sx={{
-                        width: '100%',
-                        display: 'flex',
-                        justifyContent:'space-between',
-                        gap: 2,
-                        flexDirection: {
-                          xs: 'column',
-                          md: 'row'
-                      },
-                        }}
-                        >
-                    {/*EMAIL*/}
-                            <Box
-                               sx={{
-                                display: 'flex',
-                                flexDirection: 'column',
-                                width: '100%',
-                                
-                               }}
-                                >
-                            <FormLabel htmlFor="email">Email</FormLabel>
-                            <TextField
-                            fullWidth
-                            id="email"
-                            type="email"
-                            variant="outlined"
-                            placeholder="name@example.com"
-                            {...register(`email`, { required: 'Required field', pattern: { value: emailRegex, message: 'Invalid email address' } })}
-                            error={!!errors.email}
-                            helperText={errors.email?.message}
-                            slotProps={{
-                                input: {
-                                startAdornment: (
-                                    <InputAdornment position='start'>
-                                    <MailIcon 
-                                        sx={{
-                                            color: '#333'
-                                        }}
-                                        />
-                                    </InputAdornment>
-                                ),
-                                },
-                            }}
-                            />    
-                            </Box>
-                    {/*REPEAT EMAIL*/}       
-                            <Box
-                               sx={{
-                                display: 'flex',
-                                flexDirection: 'column',
-                                width: '100%'
-                                }}
-                                >
-                            <FormLabel htmlFor="repeatEmail">Repetir Email</FormLabel>
-                            <TextField
-                            fullWidth
-                            id="repeatEmail"
-                            type="email"
-                            variant="outlined"
-                            placeholder="repeat@example.com"
-                            onChange={(e) => setRepeatEmail(e.target.value)}
-                            error={repeatEmail !== watchEmail}
-                            helperText={
-                                repeatEmail && repeatEmail !== watchEmail ? "Emails do not match" : ""
-                            }
-                            slotProps={{
-                                input: {
-                                startAdornment: (
-                                    <InputAdornment position="start">
-                                    <MailIcon sx={{ color: "#333" }} />
-                                    </InputAdornment>
-                                ),
-                                },
-                            }}
-                            />  
-                            </Box>
-                    </Box>
-
-                <Box
-                  sx={{
-                    width: '100%',
-                    display: 'flex',
-                    justifyContent:'space-between',
-                    gap: 2,
-                    flexDirection: {
-                      xs: 'column',
-                      md: 'row'
-                  },
-                  }}
-                  >
-                    {/*PASSWORD*/}
-                            <Box
-                               sx={{
-                                display: 'flex',
-                                flexDirection: 'column',
-                                width: '100%'
-                            }}
-                            >
-             
-                    <FormLabel htmlFor="password">Contraseña</FormLabel>
-                
-                <Box className="relative">
-                    <OutlinedInput
-                        fullWidth
-                    id="password"
-                    color="secondary"
-                    type={showPassword ? "text" : "password"}
-                    {...register(`password`, { required: 'Campo requerido', pattern: { value: passwordRegex, message: 'La contraseña debe tener al menos 8 caracteres, una mayúscula, una minúscula, un número y un símbolo' } })}
-                    endAdornment={
-                        <InputAdornment position="end">
-                        <IconButton
-                            aria-label={
-                            showPassword ? 'hide the password' : 'display the password'
-                            }
-                            onClick={() => setShowPassword(!showPassword)}
-                        >
-                            {showPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
-                        </IconButton>
-                        </InputAdornment>
-                    }
-                    />
-
-                    
-                </Box>
-                            </Box>
-                    {/*REPEAT PASSWORD*/}
-                            <Box
-                               sx={{
-                                display: 'flex',
-                                flexDirection: 'column',
-                                width: '100%'
-                                }}
-                                >
-                            <FormLabel htmlFor="repeatPassword">Repetir contraseña</FormLabel>
-             
-                    <TextField
-                    fullWidth
-                    id="repeatPassword"
-                    type={showPassword ? "text" : "password"}
-                    variant="outlined"
-                    onChange={(e) => setRepeatPassword(e.target.value)}
-                    error={repeatPassword !== watchPassword}
-                    helperText={
-                        repeatPassword && repeatPassword !== watchPassword ? "las contraseñas no coinciden" : ""
-                    }
-                    />
-               
-                            </Box>                           
-                </Box>        
-                <Box
-                  sx={{
-                    width: '100%',
-                    display: 'flex',
-                    justifyContent:'space-between',
-                    gap: 2,
-                    flexDirection: {
-                      xs: 'column',
-                      md: 'row'
-                  },
-                  }}
-                  >
-                         {/*FIRST NAME*/}
-                        <Box
-                        sx={{
-                            display: 'flex',
-                            flexDirection: 'column',
-                            width: '100%',
-                            
-                        }}
-                        >
-                        <FormLabel htmlFor="firstName">Nombre</FormLabel>
-                            <TextField
-                            fullWidth
-                            id="firstName"
-                            variant="outlined"
-                            placeholder="Nombre"
-                            {...register(`firstName`, 
-                                { required: 'Campo obligatorio', 
-                                    pattern: { 
-                                        value: nameRegex, 
-                                        message: 'Solo letras, espacios, tildes, guiones y apóstrofes. Mínimo 2 caracteres' 
-                                    } })}
-                            error={!!errors.firstName}
-                            helperText={errors.firstName?.message}
-                            sx={{
-                                width: '100%'
-                            }}
-                            />  
-                        </Box>  
-                        {/*LAST NAME*/}
-                        <Box
-                                    sx={{
-                                        display: 'flex',
-                                        flexDirection: 'column',
-                                        width: '100%'
-                                    }}
-                                    >
-                                    <FormLabel htmlFor="lastName">Apellido</FormLabel>
-                                    <Box className="relative">
-                                        <TextField
-                                        fullWidth
-                                        id="lastName"
-                                        variant="outlined"
-                                        placeholder="Apellido"
-                                        {...register(`lastName`, 
-                                            { required: 'Campo obligatorio', 
-                                                pattern: { 
-                                                    value: nameRegex, 
-                                                    message: 'Solo letras, espacios, tildes, guiones y apóstrofes. Mínimo 2 caracteres' 
-                                                } })}
-                                        error={!!errors.lastName}
-                                        helperText={errors.lastName?.message}
-                                        />    
-                                    </Box>
-                        </Box>
-                  </Box>
-                <Box
-                  sx={{
-                    width: '100%',
-                    display: 'flex',
-                    justifyContent:'space-between',
-                    flexDirection: {
+       {
+        !successElement ?
+        (
+          <>
+          {
+            !loading ? (
+              <>
+          <CardHeader 
+            title={
+              <Typography
+                      variant='h4'
+                      fontWeight='bolder'
+                      color='#2E7D32'
+                      textAlign='start'
+                      >
+                          Registrate
+              </Typography>
+            }
+            subheader={
+              <Typography variant="body2" color="text.secondary" align="left" sx={{ mb: 2 }}>
+                Complete los siguientes campos para continuar su registro.
+              </Typography>
+            }
+          />
+          
+          <LinearProgress variant="determinate" value={progress} sx={{ mb: 2}} color="primary"/>
+          
+          <CardContent>
+            <Box sx={{ width: '100%' }}>
+              <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+                <Tabs 
+                  value={activeStep} 
+                  onChange={handleStepChange} 
+                  variant="fullWidth"
+                  aria-label="profile steps"
+                >
+  
+                  {/*PERSONAL INFO*/}
+                  <Tab 
+                    label={
+                      <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                        <PersonIcon sx={{ mr: 1 }} fontSize="small" />
+                        Personal
+                      </Box>
+                    } 
+                    {...a11yProps(0)} 
+                    disabled={activeStep !== 0}
+                  />
+  
+  
+                  <Tab 
+                    label={
+                      <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                      <LocationIcon sx={{ mr: 1 }} fontSize="small" />
+                        Ubicación
+                      </Box>
+                    } 
+                    {...a11yProps(1)} 
+                    disabled={activeStep !== 0 && activeStep !== 1}
+                  />
+  
+                  <Tab 
+                    label={
+                      <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                      <AccountBalanceIcon sx={{ mr: 1 }} fontSize="small" />
+                        Info bancaria
+                      </Box>
+                    } 
+                    {...a11yProps(1)} 
+                    disabled={activeStep !== 0 && activeStep !== 1 && activeStep !== 2}
+                  />
+                  
+                </Tabs>
+              </Box>
+  
+              {/* Personal Tab */}
+              <form onSubmit={handleSubmit(onSubmit)}>
+              <TabPanel value={activeStep} index={0}>
+           
+                  <Box>
+                      <Box
+                       sx={{
+                          width: '100%',
+                          display: 'flex',
+                          justifyContent:'space-between',
+                          gap: 2,
+                          flexDirection: {
+                            xs: 'column',
+                            md: 'row'
+                        },
+                          }}
+                          >
+                      {/*EMAIL*/}
+                              <Box
+                                 sx={{
+                                  display: 'flex',
+                                  flexDirection: 'column',
+                                  width: '100%',
+                                  
+                                 }}
+                                  >
+                              <FormLabel htmlFor="email">Email</FormLabel>
+                              <TextField
+                              fullWidth
+                              id="email"
+                              type="email"
+                              variant="outlined"
+                              placeholder="name@example.com"
+                              {...register(`email`, { required: 'Required field', pattern: { value: emailRegex, message: 'Invalid email address' } })}
+                              error={!!errors.email}
+                              helperText={errors.email?.message}
+                              slotProps={{
+                                  input: {
+                                  startAdornment: (
+                                      <InputAdornment position='start'>
+                                      <MailIcon 
+                                          sx={{
+                                              color: '#333'
+                                          }}
+                                          />
+                                      </InputAdornment>
+                                  ),
+                                  },
+                              }}
+                              />    
+                              </Box>
+                      {/*REPEAT EMAIL*/}       
+                              <Box
+                                 sx={{
+                                  display: 'flex',
+                                  flexDirection: 'column',
+                                  width: '100%'
+                                  }}
+                                  >
+                              <FormLabel htmlFor="repeatEmail">Repetir Email</FormLabel>
+                              <TextField
+                              fullWidth
+                              id="repeatEmail"
+                              type="email"
+                              variant="outlined"
+                              placeholder="repeat@example.com"
+                              onChange={(e) => setRepeatEmail(e.target.value)}
+                              error={repeatEmail !== watchEmail}
+                              helperText={
+                                  repeatEmail && repeatEmail !== watchEmail ? "Emails do not match" : ""
+                              }
+                              slotProps={{
+                                  input: {
+                                  startAdornment: (
+                                      <InputAdornment position="start">
+                                      <MailIcon sx={{ color: "#333" }} />
+                                      </InputAdornment>
+                                  ),
+                                  },
+                              }}
+                              />  
+                              </Box>
+                      </Box>
+  
+                  <Box
+                    sx={{
+                      width: '100%',
+                      display: 'flex',
+                      justifyContent:'space-between',
+                      gap: 2,
+                      flexDirection: {
                         xs: 'column',
                         md: 'row'
                     },
-
-                    gap: 2
-                  }}
-                  >
-
-
-
-
-
-                     {/*MIDDLE NAME*/}
-                    <Box
-                        sx={{
-                            display: 'flex',
-                            flexDirection: 'column',
-                            width: '100%'
-                        }}
-                        >
-                        <FormLabel htmlFor="middleName">Segundo nombre</FormLabel>
-                        <Box>
-                            <TextField
-                            fullWidth
-                            id="middleName"
-                            variant="outlined"
-                            placeholder="Segundo nombre"
-                            {...register(`middleName`, 
-                                { 
-                                    pattern: { 
-                                        value: nameRegex, 
-                                        message: 'Solo letras, espacios, tildes, guiones y apóstrofes. Mínimo 2 caracteres' 
-                                    } })}
-                            error={!!errors.middleName}
-                            helperText={errors.middleName?.message}
-                            />    
-                        </Box>
-                    </Box>
-
-
-                          <Box
-                  sx={{
-                      display: 'flex',
-                      flexDirection: 'column',
-                      width: '100%'
-                  }}
-                  >
-                      <FormLabel htmlFor="maritalStatus">Est. Civil</FormLabel>
-                    
-                      <Select
-                      {...register("maritalStatus", {
-                          required: 'Este campo es obligatorio',
-                      })}
-                      defaultValue={'S'}
-                      fullWidth
-                      >
-                      {Object.entries(maritalStatusMapper).map(([code, name]) => (
-                          <MenuItem key={code} value={code}>
-                          {`${name}`}
-                          </MenuItem>
-                      ))}
-                      </Select>
-                    
+                    }}
+                    >
+                      {/*PASSWORD*/}
+                              <Box
+                                 sx={{
+                                  display: 'flex',
+                                  flexDirection: 'column',
+                                  width: '100%'
+                              }}
+                              >
+               
+                      <FormLabel htmlFor="password">Contraseña</FormLabel>
+                  
+                  <Box className="relative">
+                      <OutlinedInput
+                          fullWidth
+                      id="password"
+                      color="secondary"
+                      type={showPassword ? "text" : "password"}
+                      {...register(`password`, { required: 'Campo requerido', pattern: { value: passwordRegex, message: 'La contraseña debe tener al menos 8 caracteres, una mayúscula, una minúscula, un número y un símbolo' } })}
+                      endAdornment={
+                          <InputAdornment position="end">
+                          <IconButton
+                              aria-label={
+                              showPassword ? 'hide the password' : 'display the password'
+                              }
+                              onClick={() => setShowPassword(!showPassword)}
+                          >
+                              {showPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
+                          </IconButton>
+                          </InputAdornment>
+                      }
+                      />
+  
+                      
                   </Box>
-       
-            {/*PHONE NUMBER*/}
-                <Box
+                              </Box>
+                      {/*REPEAT PASSWORD*/}
+                              <Box
+                                 sx={{
+                                  display: 'flex',
+                                  flexDirection: 'column',
+                                  width: '100%'
+                                  }}
+                                  >
+                              <FormLabel htmlFor="repeatPassword">Repetir contraseña</FormLabel>
+               
+                      <TextField
+                      fullWidth
+                      id="repeatPassword"
+                      type={showPassword ? "text" : "password"}
+                      variant="outlined"
+                      onChange={(e) => setRepeatPassword(e.target.value)}
+                      error={repeatPassword !== watchPassword}
+                      helperText={
+                          repeatPassword && repeatPassword !== watchPassword ? "las contraseñas no coinciden" : ""
+                      }
+                      />
+                 
+                              </Box>                           
+                  </Box>        
+                  <Box
+                    sx={{
+                      width: '100%',
+                      display: 'flex',
+                      justifyContent:'space-between',
+                      gap: 2,
+                      flexDirection: {
+                        xs: 'column',
+                        md: 'row'
+                    },
+                    }}
+                    >
+                           {/*FIRST NAME*/}
+                          <Box
+                          sx={{
+                              display: 'flex',
+                              flexDirection: 'column',
+                              width: '100%',
+                              
+                          }}
+                          >
+                          <FormLabel htmlFor="firstName">Nombre</FormLabel>
+                              <TextField
+                              fullWidth
+                              id="firstName"
+                              variant="outlined"
+                              placeholder="Nombre"
+                              {...register(`firstName`, 
+                                  { required: 'Campo obligatorio', 
+                                      pattern: { 
+                                          value: nameRegex, 
+                                          message: 'Solo letras, espacios, tildes, guiones y apóstrofes. Mínimo 2 caracteres' 
+                                      } })}
+                              error={!!errors.firstName}
+                              helperText={errors.firstName?.message}
+                              sx={{
+                                  width: '100%'
+                              }}
+                              />  
+                          </Box>  
+                          {/*LAST NAME*/}
+                          <Box
+                                      sx={{
+                                          display: 'flex',
+                                          flexDirection: 'column',
+                                          width: '100%'
+                                      }}
+                                      >
+                                      <FormLabel htmlFor="lastName">Apellido</FormLabel>
+                                      <Box className="relative">
+                                          <TextField
+                                          fullWidth
+                                          id="lastName"
+                                          variant="outlined"
+                                          placeholder="Apellido"
+                                          {...register(`lastName`, 
+                                              { required: 'Campo obligatorio', 
+                                                  pattern: { 
+                                                      value: nameRegex, 
+                                                      message: 'Solo letras, espacios, tildes, guiones y apóstrofes. Mínimo 2 caracteres' 
+                                                  } })}
+                                          error={!!errors.lastName}
+                                          helperText={errors.lastName?.message}
+                                          />    
+                                      </Box>
+                          </Box>
+                    </Box>
+                  <Box
+                    sx={{
+                      width: '100%',
+                      display: 'flex',
+                      justifyContent:'space-between',
+                      flexDirection: {
+                          xs: 'column',
+                          md: 'row'
+                      },
+  
+                      gap: 2
+                    }}
+                    >
+  
+  
+  
+  
+  
+                       {/*MIDDLE NAME*/}
+                      <Box
+                          sx={{
+                              display: 'flex',
+                              flexDirection: 'column',
+                              width: '100%'
+                          }}
+                          >
+                          <FormLabel htmlFor="middleName">Segundo nombre</FormLabel>
+                          <Box>
+                              <TextField
+                              fullWidth
+                              id="middleName"
+                              variant="outlined"
+                              placeholder="Segundo nombre"
+                              {...register(`middleName`, 
+                                  { 
+                                      pattern: { 
+                                          value: nameRegex, 
+                                          message: 'Solo letras, espacios, tildes, guiones y apóstrofes. Mínimo 2 caracteres' 
+                                      } })}
+                              error={!!errors.middleName}
+                              helperText={errors.middleName?.message}
+                              />    
+                          </Box>
+                      </Box>
+  
+  
+                            <Box
                     sx={{
                         display: 'flex',
                         flexDirection: 'column',
                         width: '100%'
                     }}
                     >
-                    <FormLabel htmlFor="phoneNumber">Telefóno</FormLabel>
-                
-                    <TextField
-                    fullWidth
-                        id="phoneNumber"
-                        variant="outlined"
-                        placeholder="541122333666"
-                        {...register("phoneNumber", {
+                        <FormLabel htmlFor="maritalStatus">Est. Civil</FormLabel>
+                      
+                        <Select
+                        {...register("maritalStatus", {
                             required: 'Este campo es obligatorio',
-                            pattern: {
-                            value: phoneRegex,
-                            message: 'Debe ingresar un número válido en formato 541122333666, sin 15 ni espacios ni caracteres especiales',
-                            },
                         })}
-                        error={!!errors.phoneNumber}
-                        helperText={errors.phoneNumber?.message}
-                        />
-
-                </Box>
-                </Box>
-                </Box>
-                <Box sx={{ mt: 3 }}>
-                  <Button 
-                    variant="contained" 
-                    fullWidth
-                    size="large"
-                    onClick={
-                        () => {
-                            setActiveStep(1);
-                            setProgress(60);
-                          }
-                      }
-                  >
-                    continuar
-                  </Button>
-                </Box>
-              
-            </TabPanel>
-
+                        defaultValue={'S'}
+                        fullWidth
+                        >
+                        {Object.entries(maritalStatusMapper).map(([code, name]) => (
+                            <MenuItem key={code} value={code}>
+                            {`${name}`}
+                            </MenuItem>
+                        ))}
+                        </Select>
+                      
+                    </Box>
          
-            <TabPanel value={activeStep} index={1}>
-             
-                {/* Add your professional form fields here */}
-                <Box
-                // sx={{
-                //     pointerEvents: isLoading ? 'none' : 'all'
-                // }}
-                >
-           <Box
-           sx={{
-            width: '100%',
-            display: 'flex',
-            justifyContent: 'space-between',
-            gap: 2
-           }}
-           >
-                                               {/*COUNTRY*/}
-            <Box
-            sx={{
-                display: 'flex',
-                flexDirection: 'column',
-                width: '50%'
-            }}
-            >
-                <FormLabel htmlFor="country">País</FormLabel>
-               
-                <Select
-                {...register("country", {
-                    required: 'Este campo es obligatorio',
-                })}
-                defaultValue={'AR'}
-                >
-                {Object.entries(countryListAlpha2).map(([code, name]) => (
-                    <MenuItem key={code} value={code}>
-                    {`${code} - ${name}`}
-                    </MenuItem>
-                ))}
-                </Select>
-              
-            </Box>
-            {/*STATE*/}
-            <Box
-            sx={{
-                display: 'flex',
-                flexDirection: 'column',
-                width: '50%'
-            }}
-            >
-                <FormLabel htmlFor="state">Provincia</FormLabel>
-         
-                <Select
-                {...register("province", {
-                    required: 'Este campo es obligatorio',
-                })}
-                defaultValue={'Buenos Aires'}
-                >
-                {provinces.map((province, index) => (
-                    <MenuItem key={index} value={province}>
-                    {`${province}`}
-                    </MenuItem>
-                ))}
-                </Select>
-             
-            </Box>
-           </Box>
-           <Box
-           sx={{
-            width: '100%',
-            display: 'flex',
-            justifyContent: 'space-between',
-            gap: 2
-           }}
-           >
-            {/*CITY*/}
-            <Box
-            sx={{
-                display: 'flex',
-                flexDirection: 'column',
-                width: '50%'
-            }}
-            >
-                <FormLabel htmlFor="city">Ciudad</FormLabel>
-                <Box className="relative">
-                    <TextField
-                    fullWidth
-                    id="city"
-                    variant="outlined"
-                    placeholder="Ciudad"
-                    {...register(`city`, 
-                        { required: 'Campo obligatorio', 
-                            pattern: { 
-                                value: nameRegex, 
-                                message: 'Solo letras, espacios, tildes, guiones y apóstrofes. Mínimo 2 caracteres' 
-                            } })}
-                    error={!!errors.city}
-                    helperText={errors.city?.message}
-                    />    
-                </Box>
-            </Box>
-             {/*POSTAL CODE*/}
-             <Box
-            sx={{
-                display: 'flex',
-                flexDirection: 'column',
-                width: '50%'
-            }}
-            >
-                <FormLabel htmlFor="postalCode">Código postal</FormLabel>
-                <Box className="relative">
-                    <TextField
-                    fullWidth
-                    id="postalCode"
-                    variant="outlined"
-                    placeholder="Código postal"
-                    {...register(`postalCode`, 
-                        { required: 'Campo obligatorio', 
-                            pattern: { 
-                                value: onlyNumbersRegex, 
-                                message: 'Solo números. Mínimo 2 números.' 
-                            } })}
-                    error={!!errors.postalCode}
-                    helperText={errors.postalCode?.message}
-                    />    
-                </Box>
-            </Box>
-            </Box>
-            <Box
-            sx={{
-                width: '100%',
-                display: 'flex',
-                justifyContent: 'space-between',
-                gap: 2
-               }}
-               >
-                            {/*ADDRESS*/}
-            <Box
-            sx={{
-                display: 'flex',
-                flexDirection: 'column',
-                width: '100%'
-            }}
-            >
-                <FormLabel htmlFor="addressLine1">Dirección</FormLabel>
-                <Box className="relative">
-                    <TextField
-                    fullWidth
-                    id="addressLine1"
-                    variant="outlined"
-                    placeholder="Dirección"
-                    {...register(`address`, 
-                        { required: 'Campo obligatorio', 
-                            pattern: { 
-                                value: addressRegex, 
-                                message: 'Solo letras, espacios, tildes, guiones y apóstrofes. Mínimo 2 caracteres' 
-                            } })}
-                    error={!!errors.address}
-                    helperText={errors.address?.message}
-                    />    
-                </Box>
-            </Box>
-            </Box>
+              {/*PHONE NUMBER*/}
+                  <Box
+                      sx={{
+                          display: 'flex',
+                          flexDirection: 'column',
+                          width: '100%'
+                      }}
+                      >
+                      <FormLabel htmlFor="phoneNumber">Telefóno</FormLabel>
+                  
+                      <TextField
+                      fullWidth
+                          id="phoneNumber"
+                          variant="outlined"
+                          placeholder="541122333666"
+                          {...register("phoneNumber", {
+                              required: 'Este campo es obligatorio',
+                              pattern: {
+                              value: phoneRegex,
+                              message: 'Debe ingresar un número válido en formato 541122333666, sin 15 ni espacios ni caracteres especiales',
+                              },
+                          })}
+                          error={!!errors.phoneNumber}
+                          helperText={errors.phoneNumber?.message}
+                          />
+  
+                  </Box>
+                  </Box>
+                  </Box>
+                  <Box sx={{ mt: 3 }}>
+                    <Button 
+                      variant="contained" 
+                      fullWidth
+                      size="large"
+                      onClick={
+                          () => {
+                              setActiveStep(1);
+                              setProgress(60);
+                            }
+                        }
+                    >
+                      continuar
+                    </Button>
+                  </Box>
+                
+              </TabPanel>
+  
            
-                </Box>
-                <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 3, flexDirection: 'column' }}>
+              <TabPanel value={activeStep} index={1}>
                
-                  <Button 
-                  variant="contained"
-                  onClick={() => {
-                    setActiveStep(2);
-                    setProgress(90);
-                  }}
+                  {/* Add your professional form fields here */}
+                  <Box
+                  // sx={{
+                  //     pointerEvents: isLoading ? 'none' : 'all'
+                  // }}
                   >
-                    {/* {
-                        isLoading
-                        ?
-                        <CircularProgress size={20}/>
-                        :
-                        `enviar datos`
-                    } */}
-                        continuar
-                  </Button>
-                  <Button 
-                    onClick={() => {
-                      setActiveStep(0);
-                      setProgress(33);
-                    }}
-                   // disabled={isLoading}
-                  >
-                    volver
-                  </Button>
-                </Box>
-        
-            </TabPanel>
-
-            <TabPanel value={activeStep} index={2}>
-             
-    
-                <Box
-                // sx={{
-                //     pointerEvents: isLoading ? 'none' : 'all'
-                // }}
-                >
-           <Box
-           sx={{
-            width: '100%',
-            display: 'flex',
-            justifyContent: 'space-between',
-            gap: 2
-           }}
-           >
-            {/*CITY*/}
-            <Box
-            sx={{
-                display: 'flex',
-                flexDirection: 'column',
-                width: '50%'
-            }}
-            >
-                <FormLabel htmlFor="city">CUIT</FormLabel>
-                <Box className="relative">
-                    <TextField
-                    type="number"
-                    fullWidth
-                    id="CUIT"
-                    variant="outlined"
-                    placeholder="CUIT"
-                    {...register(`CUIT`, 
-                        { required: 'Campo obligatorio', 
-                            pattern: { 
-                                value: onlyNumbersRegex, 
-                                message: 'Solo números, sin guiones. Máximo 11 caracteres.' 
-                            } })}
-                    error={!!errors.CUIT}
-                    helperText={errors.CUIT?.message}
-                    />    
-                </Box>
-            </Box>
-             {/*POSTAL CODE*/}
              <Box
-            sx={{
-                display: 'flex',
-                flexDirection: 'column',
-                width: '50%'
-            }}
-            >
-                <FormLabel htmlFor="bank">Entidad bancaria</FormLabel>
-                <Box className="relative">
-                    <TextField
-                    fullWidth
-                    id="bank"
-                    variant="outlined"
-                    placeholder="Banco"
-                    {...register(`bank`, 
-                        { required: 'Campo obligatorio', 
-                            pattern: { 
-                                value: nameRegex, 
-                                message: 'Solo letras, espacios, tildes, guiones y apóstrofes. Mínimo 2 caracteres' 
-                            } })}
-                    error={!!errors.bank}
-                    helperText={errors.bank?.message}
-                    />    
-                </Box>
-            </Box>
-            </Box>
-            <Box
-            sx={{
-                width: '100%',
-                display: 'flex',
-                justifyContent: 'space-between',
-                gap: 2
-               }}
-               >
-                            {/*ADDRESS*/}
-            <Box
-            sx={{
-                display: 'flex',
-                flexDirection: 'column',
-                width: '100%'
-            }}
-            >
-                <FormLabel htmlFor="CBU">CBU/CVU</FormLabel>
-                <Box className="relative">
-                    <TextField
-                    fullWidth
-                    id="CBU"
-                    variant="outlined"
-                    placeholder="CBU/CVU"
-                    {...register(`CBU`, 
-                        { required: 'Campo obligatorio', 
-                            pattern: { 
-                                value: onlyNumbersRegex, 
-                                message: 'Solo 22 dígitos.' 
-                            } })}
-                    error={!!errors.CBU}
-                    helperText={errors.CBU?.message}
-                    />    
-                </Box>
-            </Box>
-            </Box>
-            <Box
-            sx={{
-                width: '100%',
-                display: 'flex',
-                flexDirection: {
-                    xs: 'column',
-                    md: 'row'
-                },
-                justifyContent: 'space-between',
-                gap: 2,
-                mt: 2
-               }}
-               >
-                 <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
-                    <Typography>
-                        Sujeto expuesto públicamente
-                    </Typography>
-                        <Typography>No</Typography>
-                        <Switch 
-                        checked={watchPoliticallyExposed}
-                        onChange={()=>setValue('politicallyExposed', !watchPoliticallyExposed)}
-                        />
-                        <Typography>Si</Typography>
-                </Stack>
-                <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
-                    <Typography>
-                        Sujeto obligado a informar a la UIF
-                    </Typography>
-                        <Typography>No</Typography>
-                        <Switch 
-                        checked={watchUIFrequired}
-                        onChange={()=>setValue('UIFrequired', !watchUIFrequired)}
-                        />
-                        <Typography>Si</Typography>
-                </Stack>
-                <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
-                    <Typography>
-                        Sujeto fiscal residente fuera de Argentina
-                    </Typography>
-                        <Typography>No</Typography>
-                        <Switch 
-                        checked={watchFiscalResidentOutsideArgentina}
-                        onChange={()=>setValue('fiscalResidentOutsideArgentina', !watchFiscalResidentOutsideArgentina)}
-                        />
-                        <Typography>Si</Typography>
-                </Stack>
-        
-            </Box>  
-            <IdUpload 
-            setBackIdImage={setBackImage}
-            setFrontIdImage={setFrontImage}
-            frontIdImage={frontImage}
-            backIdImage={backImage}
-            setBackIdFile={setBackIdFile}
-            setFrontIdFile={setFrontIdFile}
-            label={String(watch(`CUIT`))}
-            />
-            <PhotoCapture
-            selfieImage={selfieImage}
-            setSelfieImage={setSelfieImage}
-            setSelfieFile={setSelfieFile}
-            label={String(watch(`CUIT`))}
-            />         
-            </Box>
-
-            <Box
-            sx={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '5px'
-            }}
-            >
-            <Typography>
-                He leído y acepto los <Typography 
-                component="span" 
-                sx={{
-                    fontWeight: 'bolder',
-                    color: '#2E7D32',
-                    cursor: 'pointer'
-                }}
-                onClick={
-                    ()=>setOpenDialog(true)
-                }
-                >términos y condiciones.</Typography>
-            </Typography>
-            <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={watchTermsAndConditions}
-                    onChange={handleCheckboxChange}
-                    value={watchTermsAndConditions}
-            
-                  />
-                }
-                label='acepto'
-                />
-            </Box>
-                <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 3, flexDirection: 'column' }}>
+             sx={{
+              width: '100%',
+              display: 'flex',
+              justifyContent: 'space-between',
+              gap: 2
+             }}
+             >
+                                                 {/*COUNTRY*/}
+              <Box
+              sx={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  width: '50%'
+              }}
+              >
+                  <FormLabel htmlFor="country">País</FormLabel>
+                 
+                  <Select
+                  {...register("country", {
+                      required: 'Este campo es obligatorio',
+                  })}
+                  defaultValue={'AR'}
+                  >
+                  {Object.entries(countryListAlpha2).map(([code, name]) => (
+                      <MenuItem key={code} value={code}>
+                      {`${code} - ${name}`}
+                      </MenuItem>
+                  ))}
+                  </Select>
+                
+              </Box>
+              {/*STATE*/}
+              <Box
+              sx={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  width: '50%'
+              }}
+              >
+                  <FormLabel htmlFor="state">Provincia</FormLabel>
+           
+                  <Select
+                  {...register("province", {
+                      required: 'Este campo es obligatorio',
+                  })}
+                  defaultValue={'Buenos Aires'}
+                  >
+                  {provinces.map((province, index) => (
+                      <MenuItem key={index} value={province}>
+                      {`${province}`}
+                      </MenuItem>
+                  ))}
+                  </Select>
                
-                  <Button 
-                  variant="contained"
-                  type="submit"
-                  >
-                    {/* {
-                        isLoading
-                        ?
-                        <CircularProgress size={20}/>
-                        :
-                        `enviar datos`
-                    } */}
-                        registro
-                  </Button>
-                  <Button 
+              </Box>
+             </Box>
+             <Box
+             sx={{
+              width: '100%',
+              display: 'flex',
+              justifyContent: 'space-between',
+              gap: 2
+             }}
+             >
+              {/*CITY*/}
+              <Box
+              sx={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  width: '50%'
+              }}
+              >
+                  <FormLabel htmlFor="city">Ciudad</FormLabel>
+                  <Box className="relative">
+                      <TextField
+                      fullWidth
+                      id="city"
+                      variant="outlined"
+                      placeholder="Ciudad"
+                      {...register(`city`, 
+                          { required: 'Campo obligatorio', 
+                              pattern: { 
+                                  value: nameRegex, 
+                                  message: 'Solo letras, espacios, tildes, guiones y apóstrofes. Mínimo 2 caracteres' 
+                              } })}
+                      error={!!errors.city}
+                      helperText={errors.city?.message}
+                      />    
+                  </Box>
+              </Box>
+               {/*POSTAL CODE*/}
+               <Box
+              sx={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  width: '50%'
+              }}
+              >
+                  <FormLabel htmlFor="postalCode">Código postal</FormLabel>
+                  <Box className="relative">
+                      <TextField
+                      fullWidth
+                      id="postalCode"
+                      variant="outlined"
+                      placeholder="Código postal"
+                      {...register(`postalCode`, 
+                          { required: 'Campo obligatorio', 
+                              pattern: { 
+                                  value: onlyNumbersRegex, 
+                                  message: 'Solo números. Mínimo 2 números.' 
+                              } })}
+                      error={!!errors.postalCode}
+                      helperText={errors.postalCode?.message}
+                      />    
+                  </Box>
+              </Box>
+              </Box>
+              <Box
+              sx={{
+                  width: '100%',
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  gap: 2
+                 }}
+                 >
+                              {/*ADDRESS*/}
+              <Box
+              sx={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  width: '100%'
+              }}
+              >
+                  <FormLabel htmlFor="addressLine1">Dirección</FormLabel>
+                  <Box className="relative">
+                      <TextField
+                      fullWidth
+                      id="addressLine1"
+                      variant="outlined"
+                      placeholder="Dirección"
+                      {...register(`address`, 
+                          { required: 'Campo obligatorio', 
+                              pattern: { 
+                                  value: addressRegex, 
+                                  message: 'Solo letras, espacios, tildes, guiones y apóstrofes. Mínimo 2 caracteres' 
+                              } })}
+                      error={!!errors.address}
+                      helperText={errors.address?.message}
+                      />    
+                  </Box>
+              </Box>
+              </Box>
+             
+                  </Box>
+                  <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 3, flexDirection: 'column' }}>
+                 
+                    <Button 
+                    variant="contained"
                     onClick={() => {
-                      setActiveStep(1);
-                      setProgress(66);
+                      setActiveStep(2);
+                      setProgress(90);
                     }}
-                   // disabled={isLoading}
+                    >
+                      {/* {
+                          isLoading
+                          ?
+                          <CircularProgress size={20}/>
+                          :
+                          `enviar datos`
+                      } */}
+                          continuar
+                    </Button>
+                    <Button 
+                      onClick={() => {
+                        setActiveStep(0);
+                        setProgress(33);
+                      }}
+                     // disabled={isLoading}
+                    >
+                      volver
+                    </Button>
+                  </Box>
+          
+              </TabPanel>
+  
+              <TabPanel value={activeStep} index={2}>
+               
+      
+                  <Box
+                  // sx={{
+                  //     pointerEvents: isLoading ? 'none' : 'all'
+                  // }}
                   >
-                    volver
-                  </Button>
-                </Box>
-        
-            </TabPanel>
-            </form>
+             <Box
+             sx={{
+              width: '100%',
+              display: 'flex',
+              justifyContent: 'space-between',
+              gap: 2
+             }}
+             >
+              {/*CITY*/}
+              <Box
+              sx={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  width: '50%'
+              }}
+              >
+                  <FormLabel htmlFor="city">CUIT</FormLabel>
+                  <Box className="relative">
+                      <TextField
+                      type="number"
+                      fullWidth
+                      id="CUIT"
+                      variant="outlined"
+                      placeholder="CUIT"
+                      {...register(`CUIT`, 
+                          { required: 'Campo obligatorio', 
+                              pattern: { 
+                                  value: onlyNumbersRegex, 
+                                  message: 'Solo números, sin guiones. Máximo 11 caracteres.' 
+                              } })}
+                      error={!!errors.CUIT}
+                      helperText={errors.CUIT?.message}
+                      />    
+                  </Box>
+              </Box>
+               {/*POSTAL CODE*/}
+               <Box
+              sx={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  width: '50%'
+              }}
+              >
+                  <FormLabel htmlFor="bank">Entidad bancaria</FormLabel>
+                  <Box className="relative">
+                      <TextField
+                      fullWidth
+                      id="bank"
+                      variant="outlined"
+                      placeholder="Banco"
+                      {...register(`bank`, 
+                          { required: 'Campo obligatorio', 
+                              pattern: { 
+                                  value: nameRegex, 
+                                  message: 'Solo letras, espacios, tildes, guiones y apóstrofes. Mínimo 2 caracteres' 
+                              } })}
+                      error={!!errors.bank}
+                      helperText={errors.bank?.message}
+                      />    
+                  </Box>
+              </Box>
+              </Box>
+              <Box
+              sx={{
+                  width: '100%',
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  gap: 2
+                 }}
+                 >
+                              {/*ADDRESS*/}
+              <Box
+              sx={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  width: '100%'
+              }}
+              >
+                  <FormLabel htmlFor="CBU">CBU/CVU</FormLabel>
+                  <Box className="relative">
+                      <TextField
+                      fullWidth
+                      id="CBU"
+                      variant="outlined"
+                      placeholder="CBU/CVU"
+                      {...register(`CBU`, 
+                          { required: 'Campo obligatorio', 
+                              pattern: { 
+                                  value: onlyNumbersRegex, 
+                                  message: 'Solo 22 dígitos.' 
+                              } })}
+                      error={!!errors.CBU}
+                      helperText={errors.CBU?.message}
+                      />    
+                  </Box>
+              </Box>
+              </Box>
+              <Box
+              sx={{
+                  width: '100%',
+                  display: 'flex',
+                  flexDirection: {
+                      xs: 'column',
+                      md: 'row'
+                  },
+                  justifyContent: 'space-between',
+                  gap: 2,
+                  mt: 2
+                 }}
+                 >
+                   <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
+                      <Typography>
+                          Sujeto expuesto públicamente
+                      </Typography>
+                          <Typography>No</Typography>
+                          <Switch 
+                          checked={watchPoliticallyExposed}
+                          onChange={()=>setValue('politicallyExposed', !watchPoliticallyExposed)}
+                          />
+                          <Typography>Si</Typography>
+                  </Stack>
+                  <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
+                      <Typography>
+                          Sujeto obligado a informar a la UIF
+                      </Typography>
+                          <Typography>No</Typography>
+                          <Switch 
+                          checked={watchUIFrequired}
+                          onChange={()=>setValue('UIFrequired', !watchUIFrequired)}
+                          />
+                          <Typography>Si</Typography>
+                  </Stack>
+                  <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
+                      <Typography>
+                          Sujeto fiscal residente fuera de Argentina
+                      </Typography>
+                          <Typography>No</Typography>
+                          <Switch 
+                          checked={watchFiscalResidentOutsideArgentina}
+                          onChange={()=>setValue('fiscalResidentOutsideArgentina', !watchFiscalResidentOutsideArgentina)}
+                          />
+                          <Typography>Si</Typography>
+                  </Stack>
+          
+              </Box>  
+              <IdUpload 
+              setBackIdImage={setBackImage}
+              setFrontIdImage={setFrontImage}
+              frontIdImage={frontImage}
+              backIdImage={backImage}
+              setBackIdFile={setBackIdFile}
+              setFrontIdFile={setFrontIdFile}
+              label={String(watch(`CUIT`))}
+              />
+              <PhotoCapture
+              selfieImage={selfieImage}
+              setSelfieImage={setSelfieImage}
+              setSelfieFile={setSelfieFile}
+              label={String(watch(`CUIT`))}
+              />         
+              </Box>
+  
+              <Box
+              sx={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '5px'
+              }}
+              >
+              <Typography>
+                  He leído y acepto los <Typography 
+                  component="span" 
+                  sx={{
+                      fontWeight: 'bolder',
+                      color: '#2E7D32',
+                      cursor: 'pointer'
+                  }}
+                  onClick={
+                      ()=>setOpenDialog(true)
+                  }
+                  >términos y condiciones.</Typography>
+              </Typography>
+              <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={watchTermsAndConditions}
+                      onChange={handleCheckboxChange}
+                      value={watchTermsAndConditions}
+              
+                    />
+                  }
+                  label='acepto'
+                  />
+              </Box>
+                  <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 3, flexDirection: 'column' }}>
+                 
+                    <Button 
+                    variant="contained"
+                    type="submit"
+                    >
+                      {/* {
+                          isLoading
+                          ?
+                          <CircularProgress size={20}/>
+                          :
+                          `enviar datos`
+                      } */}
+                          registro
+                    </Button>
+                    <Button 
+                      onClick={() => {
+                        setActiveStep(1);
+                        setProgress(66);
+                      }}
+                     // disabled={isLoading}
+                    >
+                      volver
+                    </Button>
+                  </Box>
+          
+              </TabPanel>
+              </form>
+            </Box>
+          </CardContent>
+              </>
+            )
+            :
+            (
+              <CircularProgress size={50} color="primary" />
+            )
+          }
+          </>
+        )
+        :
+        (
+          <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            p: 10,
+            flexDirection: {
+              xs: 'column',
+              sm: 'row',
+            }
+          }}
+          >
+            <img src='/checked.gif' alt="logo" />
+            <Typography
+            variant="h2"
+            color="primary"
+            sx={{
+              fontFamily: 'PTSerif-Bold'
+            }}
+            >
+                registro exitoso! Por favor, logueate!
+            </Typography>
           </Box>
-        </CardContent>
-        </>
-          )
-          :
-          (
-            <CircularProgress size={50} color="primary" />
-          )
-        }
+        )
+       }
         
       </Paper>
     </Container>

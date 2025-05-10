@@ -20,7 +20,7 @@ interface UserState {
 
 export const userStore = create<UserState>()(
   persist(
-    (set, get) => ({
+    (set) => ({
       tokenData: { token: null },
       isLoggedIn: false,
       userId: null,
@@ -54,7 +54,7 @@ export const userStore = create<UserState>()(
         const token = state?.tokenData?.token
         if (token) {
           try {
-            const decoded = jwtDecode<JwtPayload>(token)
+            jwtDecode<JwtPayload>(token)
             state?.setTokenData({ token })
           } catch (e) {
             console.error("Failed to decode token on rehydrate:", e)

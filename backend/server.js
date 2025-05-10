@@ -9,6 +9,9 @@ import loginUser from './api/routes/login/login.js'
 import getPortfolio from './api/routes/operations/getPortfolio.js'
 import upload from './api/routes/token/upload.js'
 import getToken from './api/routes/token/getToken.js'
+import buyToken from './api/routes/token/buyToken.js'
+import sellToken from './api/routes/token/sellToken.js'
+import getMovements from './api/routes/movements/getMovements.js'
 
 
 const app = express();
@@ -18,27 +21,38 @@ const frontendURL = process.env.FRONTEND_URL;
 const allowedOrigins = [
     frontendURL,
 ];
+ 
 
-app.use(cors({
-  origin: (origin, callback) => {
-    if (!origin) return callback(null, true); // Allow requests with no origin (e.g., mobile apps)
-    if (allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'), false);
-    }
-  },
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-}));
+app.options('/', cors()); // Handle preflight requests for all routes
+
+app.use((req, res, next) => {
+  console.log(`[${req.method}] ${req.path}`);
+  next();
+});
+
+
+
+console.log('Allowed origins:', allowedOrigins);
+
+
+// app.use(cors({
+//   origin: (origin, callback) => {
+//     if (!origin) return callback(null, true); // Allow requests with no origin (e.g., mobile apps)
+//     if (allowedOrigins.includes(origin)) {
+//       callback(null, true);
+//     } else {
+//       callback(new Error('Not allowed by CORS'), false);
+//     }
+//   },
+//   credentials: true,
+//   methods: ['GET', 'POST', 'PUT', 'DELETE'],
+//   allowedHeaders: ['Content-Type', 'Authorization'],
+// }));
+
+app.use(cors())
 
 app.use(express.json());
 
-// Explicitly handle preflight (OPTIONS) requests
-//app.options(frontendURL, cors());
-
-// Resource headers middleware
 app.use((req, res, next) => {
   res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin');
   res.setHeader('Access-Control-Allow-Credentials', 'true');
@@ -51,7 +65,9 @@ app.use('/login', loginUser)
 app.use('/get-portfolio', getPortfolio)
 app.use('/token', upload)
 app.use('/get-value', getToken)
-
+app.use('/buy', buyToken)
+app.use('/sell', sellToken)
+app.use('/movements', getMovements)
 
 //app.use(centralizedErrorHandler);
 

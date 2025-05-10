@@ -10,7 +10,8 @@ export const parseFileData = (fileData) => {
                 NOMBRE: columns[1],
                 VALOR_COMPRA: columns[2],
                 VALOR_VENTA: columns[3],
-                STOCK: columns[4]
+                STOCK: columns[4],
+                VENCIMIENTO: columns[5],
             };
         
     });

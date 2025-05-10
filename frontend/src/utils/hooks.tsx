@@ -21,7 +21,7 @@ import { useState, useEffect } from 'react';
     if (element) {
       element.scrollIntoView({ behavior: 'smooth' });
     }
-  };
+  }
 
   return {
     activeSection,

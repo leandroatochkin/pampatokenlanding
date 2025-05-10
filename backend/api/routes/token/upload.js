@@ -11,15 +11,15 @@ router.post('/', async (req, res, next) => {
         const item = parseFileData(req.body.data);
 
 
-            const { SIMBOLO, NOMBRE, VALOR_COMPRA, VALOR_VENTA, STOCK } = item[0];
+            const { SIMBOLO, NOMBRE, VALOR_COMPRA, VALOR_VENTA, STOCK, VENCIMIENTO } = item[0];
 
             await db.query(`
                 INSERT INTO pampaTokenVariations 
-                (SIMBOLO, NOMBRE, VALOR_COMPRA, VALOR_VENTA, STOCK) 
-                VALUES (?, ?, ?, ?, ?)
-            `,[SIMBOLO, NOMBRE, VALOR_COMPRA, VALOR_VENTA, STOCK])
+                (SIMBOLO, NOMBRE, VALOR_COMPRA, VALOR_VENTA, STOCK, VENCIMIENTO) 
+                VALUES (?, ?, ?, ?, ?, ?)
+            `,[SIMBOLO, NOMBRE, VALOR_COMPRA, VALOR_VENTA, STOCK, VENCIMIENTO])
 
-            res.status(201).json({ message: 'organization successfully' });
+            res.status(201).json({ message: 'token updated successfully' });
             return;
     } catch (err) {
         console.error(`error cargando datos`)

@@ -1,53 +1,65 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useCallback } from 'react'
 import { 
-    Container,
     Paper,
     Typography,
     Box,
-    Divider,
     Button,
-    CircularProgress       
+    CircularProgress,
+    IconButton       
  } from '@mui/material'
  import { motion } from 'framer-motion'
- import { useMobile } from '../../utils/hooks'
  import { LiveChart } from '../../components/charts/RTValueChart'
  import MonetizationOnIcon from '@mui/icons-material/MonetizationOn';
  import CurrencyExchangeIcon from '@mui/icons-material/CurrencyExchange';
  import BuyTokenDialog from '../../components/dialogs/BuyTokenDialog'
  import SellTokenDialog from '../../components/dialogs/SellTokenDialog'
  import PortfolioDialog from '../../components/dialogs/PortfolioDialog'
+ import MovementsDialog from '../../components/dialogs/MovementsDialog'
  import { userStore } from '../../utils/store'
+ import { TokenDTO, TokenInfo } from '../../utils/interfaces'
+import NotFound from '../notFound/NotFound';
+import LogoutIcon from '@mui/icons-material/Logout';
+import { useNavigate } from 'react-router-dom';
 
 interface LoadingStates {
     buyValue: boolean
     sellValue: boolean
+    fetchingToken: boolean
 }
 
 interface DialogStates {
     buyTokenDialog: boolean
     sellTokenDialog: boolean
     portfolioDialog: boolean
-    operationsDialog: boolean
+    movementsDialog: boolean
     settingsDialog: boolean
 }
+
+
 
 
 
 const Operations = () => {
 const [sellValue, setSellValue] = React.useState<number>(0)
 const [buyValue, setBuyValue] = React.useState<number>(0)
-const [ownedTokens, setOwnedTokens] = React.useState<number>(3)
+const [tokens, setTokens] = React.useState<TokenDTO[] | null>(null)
+const [currentToken, setCurrentToken] = React.useState<TokenInfo | null>(null)
+const [refetchTrigger, setRefetchTrigger] = React.useState<number>(0);
 const [isLoading, setIsLoading] = React.useState<LoadingStates>({
     buyValue: false,
-    sellValue: false
+    sellValue: false,
+    fetchingToken: false
 })
 const [dialogStates, setDialogStates] = React.useState<DialogStates>({
     buyTokenDialog: false,
     sellTokenDialog: false,
     portfolioDialog: false,
-    operationsDialog: false,
+    movementsDialog: false,
     settingsDialog: false
 })
+
+const navigate = useNavigate()
+
 const handleDialogOpen = (dialog: keyof DialogStates) => {
     setDialogStates((prev) =>
         ({ ...prev, [dialog]: true }))
@@ -62,6 +74,10 @@ const handleDialogClose = (dialog: keyof DialogStates) =>{
     const isLoggedIn = userStore((state)=>state.isLoggedIn)
     const userId = userStore((state)=>state.userId)
 
+
+
+
+
     useEffect(()=>{
         if(isLoggedIn && userId){
             try{
@@ -73,6 +89,7 @@ const handleDialogClose = (dialog: keyof DialogStates) =>{
                             'Authorization': `Bearer ${tokenData.token}`
                     }})
                     const data = await response.json()
+                    setCurrentToken(data.valuation)
                     setSellValue(data.valuation.VALOR_VENTA)
                     setBuyValue(data.valuation.VALOR_COMPRA)
                 }
@@ -83,8 +100,50 @@ const handleDialogClose = (dialog: keyof DialogStates) =>{
         }
     },[])
 
-
-const isMobile = useMobile()
+    const fetchTokens = useCallback(async () => {
+        if (!userId) return;
+    
+        setIsLoading(prev => ({
+            ...prev,
+            fetchTokens: true
+        }));
+    
+        try {
+            const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/get-portfolio?userId=${userId}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${tokenData.token}`
+                }
+            });
+    
+            const data = await response.json();
+            if (!response.ok) {
+                alert('Error recuperando sus tokens');
+                throw new Error(data.message);
+            }
+    
+            setTokens(data);
+        } catch (err) {
+            console.error('Fetch failed:', err);
+        } finally {
+            setIsLoading(prev => ({
+                ...prev,
+                fetchTokens: false
+            }));
+        }
+    }, [userId, tokenData.token]);
+    
+    useEffect(() => {
+        fetchTokens();
+    }, [fetchTokens, refetchTrigger]);
+     
+    const handleLogout = () => {
+        if(confirm(`¿Estás seguro de salir?`)){
+            navigate('/')
+            userStore.getState().logout()   
+        } return
+    }
 
 const MotionButton = motion(Button);
 
@@ -95,13 +154,41 @@ const formattedBuyValue = Number(buyValue / 100).toFixed(2).replace('.', ',')
   return (
     <>
     {
-        dialogStates.buyTokenDialog && <BuyTokenDialog open={dialogStates.buyTokenDialog} onClose={() => handleDialogClose('buyTokenDialog')} buyValue={buyValue}/>
+        (tokenData && isLoggedIn && userId) ? (
+            <>
+    {
+        dialogStates.buyTokenDialog && currentToken && 
+        <BuyTokenDialog 
+        open={dialogStates.buyTokenDialog} 
+        onClose={() => handleDialogClose('buyTokenDialog')} 
+        tokens={currentToken}
+        refetch={()=>setRefetchTrigger(prev => prev + 1)}
+        />
     }
     {
-        dialogStates.sellTokenDialog && <SellTokenDialog open={dialogStates.sellTokenDialog} onClose={() => handleDialogClose('sellTokenDialog')} sellValue={sellValue} ownedTokens={ownedTokens}/>
+        dialogStates.sellTokenDialog && currentToken && 
+        <SellTokenDialog open={dialogStates.sellTokenDialog} 
+        onClose={() => handleDialogClose('sellTokenDialog')} 
+        sellValue={sellValue} 
+        ownedTokens={(tokens ? tokens.reduce((total, token) => total + token.tokenAmount, 0) : 0)} 
+        tokens={currentToken}
+        refetch={()=>setRefetchTrigger(prev => prev + 1)}
+        />
     }
     {
-        dialogStates.portfolioDialog && <PortfolioDialog open={dialogStates.portfolioDialog} onClose={() => handleDialogClose('portfolioDialog')}/>
+        dialogStates.portfolioDialog && 
+        <PortfolioDialog 
+        open={dialogStates.portfolioDialog} 
+        onClose={() => handleDialogClose('portfolioDialog')} 
+        tokenLastPrice={buyValue} 
+        tokens={tokens || []}/>
+    }
+    {
+        dialogStates.movementsDialog &&
+        <MovementsDialog 
+        open={dialogStates.movementsDialog}
+        onClose={() => handleDialogClose('movementsDialog')} 
+        />
     }
     <Box
     sx={{
@@ -123,9 +210,16 @@ const formattedBuyValue = Number(buyValue / 100).toFixed(2).replace('.', ',')
             alignItems: 'center',
             flexDirection: 'column',
             backgroundColor: '#f5f5f5',
-            borderRadius: 8,
-            padding: 4,
+            borderRadius: {
+                xs: 2,
+                md: 8
+            },
+            padding: {
+                xs: 0,
+                md: 2
+            },
             justifyContent: 'space-evenly',
+            overflow: 'auto'
         }}
         >   
            <Box
@@ -145,7 +239,7 @@ const formattedBuyValue = Number(buyValue / 100).toFixed(2).replace('.', ',')
             color='secondary'
             sx={{
                 fontSize: {
-                    xs: '2rem',
+                    xs: '1.5rem',
                     md: '3.5rem'
                 },
                 textAlign: {
@@ -162,9 +256,18 @@ const formattedBuyValue = Number(buyValue / 100).toFixed(2).replace('.', ',')
                 border: '1px solid #ccc',
                 p: 1,
                 display: 'flex',
-                justifyContent: 'space-between',
-                width: '20%',
-                borderRadius: 4
+                justifyContent: {
+                    xs: 'space-evenly',
+                    sm: 'space-between'
+                },
+                width: {
+                    xs: '100%',
+                    sm: '20%'
+                },
+                borderRadius: {
+                    xs: 0,
+                    sm: 4
+                }
             }}
             >
                 <Typography
@@ -175,9 +278,18 @@ const formattedBuyValue = Number(buyValue / 100).toFixed(2).replace('.', ',')
                     Tokens disponibles
                 </Typography>
                 <Typography>
-                    {ownedTokens}
+                    {tokens?.reduce((total, token) => total + token.tokenAmount, 0)}
                 </Typography>
             </Box>
+            <IconButton
+            sx={{
+                ml: 2,
+                border: '1px solid #ccc',
+            }}
+            onClick={handleLogout}
+            >
+                <LogoutIcon />
+            </IconButton>
            </Box>
             <Box
             sx={{
@@ -186,6 +298,7 @@ const formattedBuyValue = Number(buyValue / 100).toFixed(2).replace('.', ',')
                     xs: 'column',
                     md: 'row'
                 },
+                gap: 2,
                 width: '100%',
                 height: '30%',
                 justifyContent: 'space-evenly',
@@ -204,7 +317,10 @@ const formattedBuyValue = Number(buyValue / 100).toFixed(2).replace('.', ',')
                     flexDirection: 'column',
                     boxShadow: `20px 20px 60px #bebebe,
              -20px -20px 60px #ffffff;`,
-                    borderRadius: 4,
+                    borderRadius: {
+                        xs: 0,
+                        sm: 4,
+                    },
                 }}
                 >
                     <Typography
@@ -251,7 +367,10 @@ const formattedBuyValue = Number(buyValue / 100).toFixed(2).replace('.', ',')
                     flexDirection: 'column',
                     boxShadow: `inset 20px 20px 60px #bebebe,
             inset -20px -20px 60px #ffffff;`,
-                    borderRadius: 4,
+            borderRadius: {
+                xs: 0,
+                sm: 4,
+            },
                 }}
                 >
                     <Typography
@@ -286,10 +405,13 @@ const formattedBuyValue = Number(buyValue / 100).toFixed(2).replace('.', ',')
                 </Box>
             </Box>
 
+           
             <LiveChart 
-            value={buyValue}
-            time='1d'
+            buyValue={buyValue}
+            sellValue={sellValue}
+            time={new Date().toLocaleTimeString()}
             />
+      
 
                 <Box
                 sx={{
@@ -299,7 +421,7 @@ const formattedBuyValue = Number(buyValue / 100).toFixed(2).replace('.', ',')
                     alignItems: 'center',
                     flexDirection: {xs: 'column', md: 'row'},
                     gap: 2,
-                    mt: 4
+                    mt: 4,
                 }}
                 >
                 <MotionButton
@@ -364,20 +486,33 @@ const formattedBuyValue = Number(buyValue / 100).toFixed(2).replace('.', ',')
                   sx={{
                     width: {xs: '100%', md: '50%'},
                 }}
+                onClick={
+                    () =>{
+                        handleDialogOpen('movementsDialog')
+                    }
+                }
                 >
                     mis operaciones
                 </Button>
-                <Button
+                {/* <Button
                   variant='contained'
                   sx={{
                     width: {xs: '100%', md: '50%'},
                 }}
                 >
                     Ajustes
-                </Button>
+                </Button> */}
                 </Box>
         </Paper>
     </Box>
+    </>
+        )
+        :
+        (
+    <NotFound />
+        )
+    }
+    
     </>
   )
 }
