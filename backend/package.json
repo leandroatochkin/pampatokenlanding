@@ -12,7 +12,8 @@
     "uuid": "^11.1.0"
   },
   "scripts": {
-  "start": "node backend/server.js"
+  "start": "node backend/server.js",
+  "build": "cd backend && npm install"
 },
   "type": "module"
 }
