@@ -183,17 +183,14 @@ const Register = () => {
       console.error('Error resizing images')
     }
     const formData = new FormData()
-    // formData.append('frontIdImage', resizedFrontImage)
-    // formData.append('backIdImage', resizedBackImage)
-    // formData.append('selfieImage', resizedSelfieImage)
+    formData.append('frontIdImage', resizedFrontImage)
+    formData.append('backIdImage', resizedBackImage)
+    formData.append('selfieImage', resizedSelfieImage)
     formData.append('user', JSON.stringify(data))
     
     try {
       const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/register`, {
         method: 'POST',
-         headers: {
-                'Content-Type': 'application/json', //borrar
-            },
         body: formData,
       })
       if (response.ok) {

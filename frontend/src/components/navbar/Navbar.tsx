@@ -11,6 +11,7 @@ import Logo from '../logo/Logo'
 import { motion } from 'framer-motion'
 import {useScrollNavigation, useMobile} from '../../utils/hooks'
 import MenuOpenIcon from '@mui/icons-material/MenuOpen';
+import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
 
 const Navbar = () => {
   const [openDrawer, setOpenDrawer] = useState<boolean>(false)
@@ -120,9 +121,15 @@ useEffect(() => {
           variant='contained'
           sx={{
             background: '#43A047',
-
+            width: {
+              xs: '95%',
+              sm: '20%',
+            },
+            display: 'flex',
           }}
+
           >
+             <AccountBalanceWalletIcon />
              conectar wallet
           </Button>
       </Box>
