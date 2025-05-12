@@ -204,14 +204,14 @@ const formattedBuyValue = Number(buyValue / 100).toFixed(2).replace('.', ',')
         <Paper
         elevation={3}
         sx={{
-            height: '90%',
-            width: '90%',
+            height: {sm: '90%', xs: '100dvh'},
+            width: {sm: '90%', xs: '100vw'},
             display: 'flex',
             alignItems: 'center',
             flexDirection: 'column',
             backgroundColor: '#f5f5f5',
             borderRadius: {
-                xs: 2,
+                xs: 0,
                 md: 8
             },
             padding: {
@@ -253,17 +253,25 @@ const formattedBuyValue = Number(buyValue / 100).toFixed(2).replace('.', ',')
             </Typography>
             <Box
             sx={{
-                border: '1px solid #ccc',
+                display: 'flex',
+                width: {xs: '100%', sm: '50%'},
+                justifyContent: {
+                    xs: 'space-between',
+                    sm: 'space-around'
+                }
+            }}
+            >
+                    <Box
+            sx={{
+                border: {sm: '1px solid #ccc', xs: 'none'},
                 p: 1,
                 display: 'flex',
+                flexDirection: 'row',
                 justifyContent: {
                     xs: 'space-evenly',
                     sm: 'space-between'
                 },
-                width: {
-                    xs: '100%',
-                    sm: '20%'
-                },
+                
                 borderRadius: {
                     xs: 0,
                     sm: 4
@@ -273,12 +281,13 @@ const formattedBuyValue = Number(buyValue / 100).toFixed(2).replace('.', ',')
                 <Typography
                 sx={{
                     fontWeight: 'bold',
+                    mr: 2
                 }}
                 >
                     Tokens disponibles
                 </Typography>
                 <Typography>
-                    {tokens?.reduce((total, token) => total + token.tokenAmount, 0)}
+                    {tokens?.reduce((total, token) => total + token.tokenAmount, 0) || 0 }
                 </Typography>
             </Box>
             <IconButton
@@ -290,6 +299,7 @@ const formattedBuyValue = Number(buyValue / 100).toFixed(2).replace('.', ',')
             >
                 <LogoutIcon />
             </IconButton>
+            </Box>
            </Box>
             <Box
             sx={{
@@ -422,12 +432,16 @@ const formattedBuyValue = Number(buyValue / 100).toFixed(2).replace('.', ',')
                     flexDirection: {xs: 'column', md: 'row'},
                     gap: 2,
                     mt: 4,
+                    mb: {
+                        xs: 2,
+                        sm: 0
+                    }
                 }}
                 >
                 <MotionButton
                 variant='contained'
                 sx={{
-                    width: {xs: '100%', md: '50%'},
+                    width: {xs: '95%', md: '50%'},
                     background: 'radial-gradient(circle at 10% 25%, rgba(34, 197, 94, 0.9) 0%, rgba(22, 163, 74, 0.9) 50%, rgba(21, 128, 61, 0.9) 100%)',
                     display: 'flex',
                     p: 1,
@@ -449,7 +463,7 @@ const formattedBuyValue = Number(buyValue / 100).toFixed(2).replace('.', ',')
                 <MotionButton
                   variant='contained'
                   sx={{
-                    width: {xs: '100%', md: '50%'},
+                    width: {xs: '95%', md: '50%'},
                     background: 'radial-gradient(circle at 90% 25%, rgba(217, 119, 6, 0.9) 0%, rgba(180, 83, 9, 0.9) 50%, rgba(146, 64, 14, 0.9) 100%)',
                     display: 'flex',
                     p: 1,
@@ -471,7 +485,7 @@ const formattedBuyValue = Number(buyValue / 100).toFixed(2).replace('.', ',')
                 <Button
                   variant='contained'
                   sx={{
-                    width: {xs: '100%', md: '50%'},
+                    width: {xs: '95%', md: '50%'},
                 }}
                 onClick={
                     () =>{
@@ -484,7 +498,7 @@ const formattedBuyValue = Number(buyValue / 100).toFixed(2).replace('.', ',')
                 <Button
                   variant='contained'
                   sx={{
-                    width: {xs: '100%', md: '50%'},
+                    width: {xs: '95%', md: '50%'},
                 }}
                 onClick={
                     () =>{

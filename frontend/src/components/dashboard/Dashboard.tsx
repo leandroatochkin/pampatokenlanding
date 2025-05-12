@@ -34,6 +34,7 @@ export default function Dashboard({ children }: { children: React.ReactNode }){
 
         <Box
       ref={containerRef}
+      data-dashboard-scroll
       sx={{
         height:{md: '100dvh', xs: '110vh'},
         width: '100vw',

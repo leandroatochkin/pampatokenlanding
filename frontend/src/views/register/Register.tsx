@@ -254,9 +254,11 @@ const Register = () => {
             title={
               <Typography
                       variant='h4'
-                      fontWeight='bolder'
                       color='#2E7D32'
                       textAlign='start'
+                      sx={{
+                        fontFamily: 'PTSerif-Bold'
+                      }}
                       >
                           Registrate
               </Typography>
@@ -350,7 +352,7 @@ const Register = () => {
                               id="email"
                               type="email"
                               variant="outlined"
-                              placeholder="name@example.com"
+                              placeholder="mail@ejemplo.com"
                               {...register(`email`, { required: 'Required field', pattern: { value: emailRegex, message: 'Invalid email address' } })}
                               error={!!errors.email}
                               helperText={errors.email?.message}
@@ -383,7 +385,7 @@ const Register = () => {
                               id="repeatEmail"
                               type="email"
                               variant="outlined"
-                              placeholder="repeat@example.com"
+                              placeholder="repetir@mail.com"
                               onChange={(e) => setRepeatEmail(e.target.value)}
                               error={repeatEmail !== watchEmail}
                               helperText={

@@ -29,10 +29,8 @@ export const LiveChart: React.FC<ChartDataProps> = ({ time, buyValue, sellValue 
   useEffect(() => {
     const interval = setInterval(() => {
       const now = new Date().toLocaleTimeString()
-      const fakeBuy = Math.random() * 1000
-      const fakeSell = Math.random() * 1000
 
-      setData(prev => [...prev.slice(-29), { time: now, buyValue: fakeBuy, sellValue: fakeSell }])
+      setData(prev => [...prev.slice(-29), { time: now, buyValue: buyValue, sellValue: sellValue }])
     }, 3600000)
 
     return () => clearInterval(interval)

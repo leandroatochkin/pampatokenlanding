@@ -10,6 +10,7 @@ const MotionPaper = motion.create(Paper)
   return (
     <Box
       component="section"
+      id='intro'
       sx={{
 
         mt: {
@@ -49,7 +50,7 @@ const MotionPaper = motion.create(Paper)
         <Typography 
         variant="h4" 
         gutterBottom
-        color = 'primary'
+        color = '#f5f5f5'
         fontWeight= 'bolder'
         sx={{
             textShadow: '0px 3px 5px rgba(0,0,0,0.6)',

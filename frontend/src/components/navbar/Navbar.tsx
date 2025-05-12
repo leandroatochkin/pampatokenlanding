@@ -1,4 +1,4 @@
-import  {useState} from 'react'
+import  {useState, useEffect} from 'react'
 import { 
   Box,
   Link,
@@ -14,14 +14,38 @@ import MenuOpenIcon from '@mui/icons-material/MenuOpen';
 
 const Navbar = () => {
   const [openDrawer, setOpenDrawer] = useState<boolean>(false)
+  const [showNavbar, setShowNavbar] = useState(true);
+
+useEffect(() => {
+  const container = document.querySelector('[data-dashboard-scroll]') as HTMLElement | null;
+  const introEl = document.getElementById('intro');
+
+  const handleScroll = () => {
+    if (!introEl || !container) return
+
+    const introRect = introEl.getBoundingClientRect()
+    const containerRect = container.getBoundingClientRect()
+
+    const relativeBottom = introRect.bottom - containerRect.top
+
+    setShowNavbar(relativeBottom > 0)
+  };
+
+  container?.addEventListener('scroll', handleScroll);
+  return () => container?.removeEventListener('scroll', handleScroll);
+}, []);
+
+
+
   const {
     handleSectionClick
   } = useScrollNavigation();
 
   const isMobile = useMobile()
   
-  const MotionLink = motion(Link);
-
+  const MotionLink = motion.create(Link);
+  
+  const MotionBox = motion.create(Box);
 
   const MenuLinks = () => {
     return (
@@ -120,24 +144,27 @@ const Navbar = () => {
   return (
     <>
     {openDrawer && <CustomDrawer/>}
-    <Box
-    sx={{
-      width: '100vw',
-      height: {
-        md: '8vh'
-      },
-      position: 'sticky',
-      top: 0,
-      left: 0,
-      display: 'flex',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-      backdropFilter: 'blur(25px) saturate(100%)',
-      background: 'rgba(255, 255, 255, 0.75)',
-      borderBottom: '1px solid rgba(255, 255, 255, 0.125)',
-      zIndex: 999
-    }}
-    >
+    <MotionBox
+  initial={{ y: 0, opacity: 1 }}
+  animate={{ y: showNavbar ? 0 : -100, opacity: showNavbar ? 1 : 0 }}
+  transition={{ duration: 0.3 }}
+  sx={{
+    width: '100vw',
+    height: {
+      md: '8vh'
+    },
+    position: 'sticky',
+    top: 0,
+    left: 0,
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    backdropFilter: 'blur(25px) saturate(100%)',
+    background: 'rgba(255, 255, 255, 0.75)',
+    borderBottom: '1px solid rgba(255, 255, 255, 0.125)',
+    zIndex: 999
+  }}
+>
         <Box
         id='logo-container'
         sx={{
@@ -174,7 +201,7 @@ const Navbar = () => {
         </IconButton>
         </>
         }
-    </Box>
+    </MotionBox>
     </>
   )
 }

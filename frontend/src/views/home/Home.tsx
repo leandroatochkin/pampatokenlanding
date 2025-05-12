@@ -64,12 +64,12 @@ const isMobile = useMobile()
                 fontWeight='bolder'
                 sx={{
                     textShadow: '0px 3px 5px rgba(0,0,0,0.6)',
-                    fontSize: '5.5rem',
+                    fontSize: '5rem',
                     textAlign: {
                       xs: 'left',
                       md: 'center',
                     },
-                    mr: 1,
+                    mr: 2,
                     fontFamily: 'PTSerif-Bold, sans-serif', 
                 }}
                 >
@@ -77,7 +77,7 @@ const isMobile = useMobile()
                 </Typography>
                 <Typography
                 variant='h3'
-                color='#43A047'
+                color='#f5f5f5'
                 sx={{
                     textShadow: '0px 3px 5px rgba(0,0,0,0.6)',
                     textAlign: {
