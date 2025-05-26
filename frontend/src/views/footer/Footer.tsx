@@ -7,7 +7,7 @@ const Footer = () => {
     sx={{
         width: '100vw',
         background: '#2E7D32',
-        height: {md: '15%', xs: '40%'},
+        height: {md: '20%', xs: '40%'},
         pb: {md: 0, xs: 2},
         color: 'white',
         p: 1

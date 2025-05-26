@@ -6,7 +6,7 @@ import fs from 'fs';
 import path from 'path';
 import mime from 'mime-types';
 
-const keyFilePath = path.resolve('secrets/pampatokesstorage-4f4fa07545c1.json');
+const keyFilePath = path.resolve('secrets/pampatokensstorage-d1e00b34af25.json');
 
 const auth = new google.auth.GoogleAuth({
   keyFile: keyFilePath,

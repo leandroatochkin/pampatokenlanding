@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import VisibilityIcon from '@mui/icons-material/Visibility';
@@ -132,10 +132,7 @@ const Register = () => {
     handleSectionClick
   } = useScrollNavigation();
 
-  useEffect(() => {
-    console.log('Front Image:', frontImage)
-    console.log('Back Image:', backImage)
-  },[backImage, frontImage])
+
 
 
 

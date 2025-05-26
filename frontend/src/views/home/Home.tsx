@@ -64,12 +64,19 @@ const isMobile = useMobile()
                 fontWeight='bolder'
                 sx={{
                     textShadow: '0px 3px 5px rgba(0,0,0,0.6)',
-                    fontSize: '5rem',
+                    fontSize: {
+                      sm: '5rem',
+                      xs: '4rem'
+                    },
                     textAlign: {
                       xs: 'left',
                       md: 'center',
                     },
-                    mr: 2,
+                    mr: {
+                      sm: 2,
+                      xs: 0
+                    },
+                    pl: 1,
                     fontFamily: 'PTSerif-Bold, sans-serif', 
                 }}
                 >
@@ -85,6 +92,7 @@ const isMobile = useMobile()
                       md: 'center',
                     },
                     fontFamily: 'PTSerif-Regular, sans-serif',
+                    pl: 1,
                 }}
                 >
                     Tokenización de producción ágricola de tierras
@@ -112,15 +120,18 @@ const isMobile = useMobile()
                 display: 'flex',
                 flexDirection: {
                     xs: 'column',
+                    sm: 'row',
                     md: 'row'
                 },
                 mt: 4,
                 gap: {
-                    xs: 4
+                    xs: 4,
+                    sm: 2,
                 },
                 justifyContent: {
-                    md: 'space-evenly'
-                }
+                    md: 'space-around',
+                },
+              
             }}
             >
                 {

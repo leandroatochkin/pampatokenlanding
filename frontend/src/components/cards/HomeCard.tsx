@@ -12,7 +12,7 @@ interface HomeCardProps {
 
 const HomeCard: React.FC<HomeCardProps> = ({title, description, icon, key}) => {
 
-    const MotionCard = motion(Card);
+    const MotionCard = motion.create(Card);
     const isMobile = useMobile()
 
   return (
@@ -22,6 +22,7 @@ const HomeCard: React.FC<HomeCardProps> = ({title, description, icon, key}) => {
         borderRadius: '16px',
         ml: isMobile ? 2 : 0,
         mr: isMobile ? 2 : 0,
+           
     }}
     whileHover={{
         y: -5
@@ -30,7 +31,10 @@ const HomeCard: React.FC<HomeCardProps> = ({title, description, icon, key}) => {
     >
         <CardContent
         sx={{
-            pointerEvents: 'none'
+            pointerEvents: 'none',
+             display: 'flex',
+            flexDirection: 'column',
+            
         }}
         >
         <Typography

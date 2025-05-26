@@ -1,14 +1,12 @@
-import React, { useEffect, useCallback } from 'react'
+import React, { useEffect, useCallback, useMemo } from 'react'
 import { 
     Paper,
     Typography,
     Box,
     Button,
-    CircularProgress,
     IconButton       
  } from '@mui/material'
  import { motion } from 'framer-motion'
- import { LiveChart } from '../../components/charts/RTValueChart'
  import MonetizationOnIcon from '@mui/icons-material/MonetizationOn';
  import CurrencyExchangeIcon from '@mui/icons-material/CurrencyExchange';
  import BuyTokenDialog from '../../components/dialogs/BuyTokenDialog'
@@ -20,6 +18,19 @@ import {
 import NotFound from '../notFound/NotFound';
 import LogoutIcon from '@mui/icons-material/Logout';
 import { useNavigate } from 'react-router-dom';
+import {
+    DataGrid,
+    GridColDef,
+    GridCellParams,
+  } from "@mui/x-data-grid"
+import { TableSkeleton } from '../../components/skeletons/MUIGridSkeleton';
+import { CustomLoadingOverlay } from '../../components/skeletons/MUIGridOverlay';
+import { customLocaleText } from '../../utils/locale'
+import TrendingUpIcon from '@mui/icons-material/TrendingUp';
+import TrendingFlatIcon from '@mui/icons-material/TrendingFlat';
+import TrendingDownIcon from '@mui/icons-material/TrendingDown';
+import { Refresh } from '@mui/icons-material';
+import dayjs from 'dayjs';
 
 interface LoadingStates {
     buyValue: boolean
@@ -40,10 +51,8 @@ interface DialogStates {
 
 
 const Operations = () => {
-const [sellValue, setSellValue] = React.useState<number>(0)
-const [buyValue, setBuyValue] = React.useState<number>(0)
-const [tokens, setTokens] = React.useState<TokenDTO[] | null>(null)
-const [currentToken, setCurrentToken] = React.useState<TokenInfo | null>(null)
+const [tokens, setTokens] = React.useState<TokenInfo[] | null>(null)
+const [portfolio, setPortfolio] = React.useState<TokenDTO[] | null>(null)
 const [refetchTrigger, setRefetchTrigger] = React.useState<number>(0);
 const [isLoading, setIsLoading] = React.useState<LoadingStates>({
     buyValue: false,
@@ -76,11 +85,13 @@ const handleDialogClose = (dialog: keyof DialogStates) =>{
 
 
 
-
-
-    useEffect(()=>{
-        if(isLoggedIn && userId){
+    const fetchData = useCallback(async () => {
+         if(isLoggedIn && userId){
             try{
+                setIsLoading(prev => ({
+                    ...prev,
+                    fetchingToken: true
+                    }))
                 const fetchLatestVal = async () =>{
                     const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/get-value`,{
                         method: 'GET',
@@ -89,16 +100,24 @@ const handleDialogClose = (dialog: keyof DialogStates) =>{
                             'Authorization': `Bearer ${tokenData.token}`
                     }})
                     const data = await response.json()
-                    setCurrentToken(data.valuation)
-                    setSellValue(data.valuation.VALOR_VENTA)
-                    setBuyValue(data.valuation.VALOR_COMPRA)
+                    setTokens(data.valuation)
+                    console.log(data.valuation)
                 }
                 fetchLatestVal()
             } catch(e){
                 console.error(e)
+            } finally{
+                setIsLoading(prev => ({
+                    ...prev,
+                    fetchingToken: false
+                    }))
             }
         }
-    },[])
+    }, [userId, tokenData.token]);
+
+    useEffect(()=>{
+       fetchData();
+    },[refetchTrigger, fetchData]);
 
     const fetchTokens = useCallback(async () => {
         if (!userId) return;
@@ -123,7 +142,7 @@ const handleDialogClose = (dialog: keyof DialogStates) =>{
                 throw new Error(data.message);
             }
     
-            setTokens(data);
+            setPortfolio(data);
         } catch (err) {
             console.error('Fetch failed:', err);
         } finally {
@@ -148,15 +167,139 @@ const handleDialogClose = (dialog: keyof DialogStates) =>{
 const MotionButton = motion(Button);
 
 
-const formattedSellValue = Number(sellValue / 100).toFixed(2).replace('.', ',')
-const formattedBuyValue = Number(buyValue / 100).toFixed(2).replace('.', ',')
+        const trendingMapper = (currentValue: number, previousValue: number) => {
+            if (currentValue === previousValue) {
+                return <TrendingFlatIcon color='info' />
+            } else if (currentValue > previousValue) {
+                return <TrendingUpIcon color='primary'/>
+            } else if (currentValue < previousValue) {
+                return <TrendingDownIcon color='error'/>
+            }
+        }
+
+    
+
+    const columns =  [
+          {
+            field: "symbol",
+            headerName: "símbolo",
+            width: 130,
+            editable: false,
+          },
+          {
+            field: "tokenName",
+            headerName: "nombre",
+            width: 120,
+            editable: false,
+          },
+          {
+            field: "tokenBuy",
+            headerName: "último precio",
+            width: 150,
+            editable: false,
+          },
+          {
+            field: "tokenSell",
+            headerName: "precio anterior",
+            width: 130,
+            editable: false,
+          },
+          {
+            field: "tokenStock",
+            headerName: "stock",
+            width: 100,
+            editable: false,
+          },
+          {
+            field: "expiringDate",
+            headerName: "fecha de caducidad",
+            width: 100,
+            editable: false,
+          },
+          {
+            field: "tokenAppreciation",
+            headerName: "variación",
+            width: 130,
+            editable: false,
+            renderCell: (params: GridCellParams) => {
+                const appreciation = Number(Math.abs(params.row.tokenBuy.replace('$', ''))) - Number(Math.abs(params.row.tokenSell.replace('$', '')));
+                console.log(appreciation)
+                return (
+                  <Box
+                  sx={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    mt: 1.5
+                  }}
+                  >
+                    {trendingMapper(Number(Math.abs(params.row.tokenBuy.replace('$', ''))), Number(Math.abs(params.row.tokenSell.replace('$', ''))))}
+                    <Typography>
+                        {`$${Number(appreciation).toFixed(2)}`}
+                    </Typography>
+                  </Box>
+                  
+                )
+              },
+          },
+          {
+            field: "expiringDate",
+            headerName: "fecha de caducidad",
+            width: 150,
+            editable: false,
+          },
+          
+        ]
+    
+     
+
+
+const rows =
+  (tokens?.filter(variation => variation.rn === 1) ?? []).map((token: TokenInfo, index: number) => {
+    const previousVariation = tokens?.find(
+      v => v.SIMBOLO === token.SIMBOLO && v.rn === 2
+    );
+
+    return {
+      id: index,
+      symbol: token.SIMBOLO,
+      tokenName: token.NOMBRE,
+      tokenBuy: `$${Number(token.VALOR_COMPRA / 100).toFixed(2)}`,
+      tokenSell: previousVariation
+        ? `$${Number(previousVariation.VALOR_COMPRA / 100).toFixed(2)}`
+        : 'N/A',
+      tokenStock: token.STOCK,
+      expiringDate: dayjs(token.VENCIMIENTO).format('DD/MM/YYYY'),
+      rn: token.rn,
+    };
+  });
+
 
   return (
     <>
     {
         (tokenData && isLoggedIn && userId) ? (
             <>
-    {
+        {
+        dialogStates.buyTokenDialog && portfolio && 
+        <BuyTokenDialog 
+        open={dialogStates.buyTokenDialog} 
+        onClose={() => handleDialogClose('buyTokenDialog')} 
+        tokens={tokens?.filter(variation => variation.rn === 1) ?? []}
+        refetch={()=>setRefetchTrigger(prev => prev + 1)}
+        />
+        }
+        {
+        dialogStates.sellTokenDialog && portfolio && 
+        <SellTokenDialog open={dialogStates.sellTokenDialog} 
+        onClose={() => handleDialogClose('sellTokenDialog')} 
+        tokens={tokens ?? []}
+        owned={portfolio}
+        refetch={()=>setRefetchTrigger(prev => prev + 1)}
+        />
+        }
+        
+    {/* {
         dialogStates.buyTokenDialog && currentToken && 
         <BuyTokenDialog 
         open={dialogStates.buyTokenDialog} 
@@ -182,7 +325,7 @@ const formattedBuyValue = Number(buyValue / 100).toFixed(2).replace('.', ',')
         onClose={() => handleDialogClose('portfolioDialog')} 
         tokenLastPrice={buyValue} 
         tokens={tokens || []}/>
-    }
+    } */}
     {
         dialogStates.movementsDialog &&
         <MovementsDialog 
@@ -194,7 +337,7 @@ const formattedBuyValue = Number(buyValue / 100).toFixed(2).replace('.', ',')
     sx={{
         height: '100dvh',
         width: '100vw',
-        backgroundColor: '#2E7D32',
+        background: `linear-gradient(40deg,rgba(46, 155, 42, 1) 0%, rgba(87, 199, 133, 1) 50%, rgba(237, 221, 83, 1) 100%)`,
         textShadow: '0px 3px 5px rgba(0,0,0,0.6)',
         display: 'flex',
         justifyContent: 'center',
@@ -209,16 +352,13 @@ const formattedBuyValue = Number(buyValue / 100).toFixed(2).replace('.', ',')
             display: 'flex',
             alignItems: 'center',
             flexDirection: 'column',
+            justifyContent: 'space-between',
             backgroundColor: '#f5f5f5',
             borderRadius: {
                 xs: 0,
                 md: 8
             },
-            padding: {
-                xs: 0,
-                md: 2
-            },
-            justifyContent: 'space-evenly',
+            padding: 2,
             overflow: 'auto'
         }}
         >   
@@ -278,18 +418,17 @@ const formattedBuyValue = Number(buyValue / 100).toFixed(2).replace('.', ',')
                 }
             }}
             >
-                <Typography
-                sx={{
-                    fontWeight: 'bold',
-                    mr: 2
-                }}
-                >
-                    Tokens disponibles
-                </Typography>
-                <Typography>
-                    {tokens?.reduce((total, token) => total + token.tokenAmount, 0) || 0 }
-                </Typography>
+                
             </Box>
+            <IconButton
+            sx={{
+                ml: 2,
+                border: '1px solid #ccc',
+            }}
+            onClick={()=>setRefetchTrigger(prev => prev + 1)}
+            >
+                <Refresh />
+            </IconButton>
             <IconButton
             sx={{
                 ml: 2,
@@ -304,123 +443,49 @@ const formattedBuyValue = Number(buyValue / 100).toFixed(2).replace('.', ',')
             <Box
             sx={{
                 display: 'flex',
-                flexDirection:{
-                    xs: 'column',
-                    md: 'row'
-                },
-                gap: 2,
                 width: '100%',
-                height: '30%',
                 justifyContent: 'space-evenly',
+                background: 'BLUE'
             }}
             >
-                <Box
-                sx={{
-                    width: {
-                        xs: '100%',
-                        md: '40%'
-                    },
-                    height: '100%',
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    flexDirection: 'column',
-                    boxShadow: `20px 20px 60px #bebebe,
-             -20px -20px 60px #ffffff;`,
-                    borderRadius: {
-                        xs: 0,
-                        sm: 4,
-                    },
-                }}
-                >
-                    <Typography
-                    variant='h4'
-                    fontFamily={'PTSerif-Bold, sans-serif'}
-                    color='#16a34a'
-                    textAlign='center'
-                    >
-                        compra
-                    </Typography>
-                    <Box>
-                        {
-                            isLoading.buyValue
-                            ?
-                            (
-                                <CircularProgress size={24} sx={{ color: '#2E7D32' }} />
-                            )
-                            :
-                            (
-                                <Typography
-                                    variant='h3'
-                                    fontFamily={'PTSerif-Bold, sans-serif'}
-                                    color='#166534'
-                                    textAlign='center'
-                                    >
-                                        ${formattedBuyValue}
-                                    </Typography>
-                            )
+                {
+                        !isLoading.fetchingToken
+                        ?
+                        (
+                          <DataGrid
+                          localeText={customLocaleText}  
+                          rows={rows}
+                          columns={columns}
+                          pagination
+                          pageSizeOptions={[10, 25, 50, 100]}
+                          paginationMode="client"
+                          rowCount={rows.length}
+                          disableColumnFilter
+                          disableColumnSelector
+                          sx={{
+                            //opacity: isUnpaidNotesLoading || refreshLoading ? 0.7 : 1,
+                            opacity: 1,
+                            transition: "opacity 0.3s ease",
+                            minHeight: "400px",
+                            height: "calc(100vh - 300px)",
+                            maxHeight: "600px",
+                          }}
+                          slots={{
+                            loadingOverlay: CustomLoadingOverlay,
+                          }}
+                        />
+                        )
+                        :
+                        (
+                          <TableSkeleton />
+                        )
+                       }
 
-                        }
-                    </Box>
-                </Box>
-                
-                <Box
-                sx={{
-                    width: {
-                        xs: '100%',
-                        md: '40%'
-                    },
-                    height: '100%',
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    flexDirection: 'column',
-                    boxShadow: `inset 20px 20px 60px #bebebe,
-            inset -20px -20px 60px #ffffff;`,
-            borderRadius: {
-                xs: 0,
-                sm: 4,
-            },
-                }}
-                >
-                    <Typography
-                    variant='h4'
-                    fontFamily={'PTSerif-Bold, sans-serif'}
-                    color='#d97706'
-                    textAlign='center'
-                    >
-                        venta
-                    </Typography>
-                    <Box>
-                        {
-                            isLoading.sellValue
-                            ?
-                            (
-                                <CircularProgress size={24} sx={{ color: '#2E7D32' }} />
-                            )
-                            :
-                            (
-                                <Typography
-                                    variant='h3'
-                                    fontFamily={'PTSerif-Bold, sans-serif'}
-                                    color='#92400e'
-                                    textAlign='center'
-                                    >
-                                        ${formattedSellValue}
-                                    </Typography>
-                            )
 
-                        }
-                    </Box>
-                </Box>
+
             </Box>
 
-           
-            <LiveChart 
-            buyValue={buyValue}
-            sellValue={sellValue}
-            time={new Date().toLocaleTimeString()}
-            />
+
       
 
                 <Box
@@ -431,7 +496,6 @@ const formattedBuyValue = Number(buyValue / 100).toFixed(2).replace('.', ',')
                     alignItems: 'center',
                     flexDirection: {xs: 'column', md: 'row'},
                     gap: 2,
-                    mt: 4,
                     mb: {
                         xs: 2,
                         sm: 0

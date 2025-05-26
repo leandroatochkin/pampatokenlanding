@@ -15,4 +15,5 @@ export interface TokenInfo {
     VALOR_VENTA: number
     STOCK: number
     VENCIMIENTO: string
+    rn: number
 }

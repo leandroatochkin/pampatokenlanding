@@ -60,7 +60,7 @@ useEffect(() => {
         display: 'flex',
         flexDirection: {
           xs: 'column',
-          md: 'row'
+          sm: 'row'
         },
         justifyContent: 'space-evenly',
         alignItems: 'center'
@@ -123,7 +123,8 @@ useEffect(() => {
             background: '#43A047',
             width: {
               xs: '95%',
-              sm: '20%',
+              sm: '35%',
+              md: '20%'
             },
             display: 'flex',
           }}
@@ -158,7 +159,7 @@ useEffect(() => {
   sx={{
     width: '100vw',
     height: {
-      md: '8vh'
+      md: '10vh'
     },
     position: 'sticky',
     top: 0,
@@ -169,7 +170,12 @@ useEffect(() => {
     backdropFilter: 'blur(25px) saturate(100%)',
     background: 'rgba(255, 255, 255, 0.75)',
     borderBottom: '1px solid rgba(255, 255, 255, 0.125)',
-    zIndex: 999
+    zIndex: 999,
+    p: {
+      xs: 0,
+      md: 0,
+      sm: 1
+    }
   }}
 >
         <Box
