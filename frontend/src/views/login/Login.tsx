@@ -32,7 +32,6 @@ interface LoginData {
     const {
         handleSectionClick
       } = useScrollNavigation();
-      const setData = userStore((state)=>state.setTokenData)
 const {
     handleSubmit, 
     register, 
@@ -47,22 +46,30 @@ const onSubmit = async (data: LoginData) => {
     try{
         const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/login`, {
             method: 'POST',
+            credentials: 'include',
             headers: {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify(data),
         })
-        const resData = await response.json();
+     
      
         if(response.status === 400 || response.status === 401){
             alert('Credenciales inválidas')
         }
-        if(response.ok){
-            setData({ token: resData.token })
-            navigate('/operations')
+        if (response.ok) {
+        const authRes = await fetch(`${import.meta.env.VITE_BACKEND_URL}/auth`, {
+            credentials: 'include',
+        });
+        const authData = await authRes.json();
+        if (authRes.ok) {
+            userStore.getState().setAuthStatus(true, authData.userId)
+            navigate('/operations');
+        }
         }
     } catch (error) {
         console.error('Error:', error)
+        alert('Hubo un error al iniciar sesión. Por favor, intente nuevamente más tarde.')
     } finally{
         setLoading(false)
     }

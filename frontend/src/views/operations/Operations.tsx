@@ -1,10 +1,11 @@
-import React, { useEffect, useCallback, useMemo } from 'react'
+import React, { useEffect, useCallback } from 'react'
 import { 
     Paper,
     Typography,
     Box,
     Button,
-    IconButton       
+    IconButton,
+    Tooltip,       
  } from '@mui/material'
  import { motion } from 'framer-motion'
  import MonetizationOnIcon from '@mui/icons-material/MonetizationOn';
@@ -20,7 +21,6 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import { useNavigate } from 'react-router-dom';
 import {
     DataGrid,
-    GridColDef,
     GridCellParams,
   } from "@mui/x-data-grid"
 import { TableSkeleton } from '../../components/skeletons/MUIGridSkeleton';
@@ -79,10 +79,9 @@ const handleDialogClose = (dialog: keyof DialogStates) =>{
             ({ ...prev, [dialog]: false }))
 }
 
-    const tokenData = userStore((state)=>state.tokenData)
     const isLoggedIn = userStore((state)=>state.isLoggedIn)
     const userId = userStore((state)=>state.userId)
-
+    console.log(userId, 'userId in operations')
 
 
     const fetchData = useCallback(async () => {
@@ -95,25 +94,25 @@ const handleDialogClose = (dialog: keyof DialogStates) =>{
                 const fetchLatestVal = async () =>{
                     const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/get-value`,{
                         method: 'GET',
+                        credentials: 'include',
                         headers: {
                             'Content-Type': 'application/json',
-                            'Authorization': `Bearer ${tokenData.token}`
                     }})
                     const data = await response.json()
                     setTokens(data.valuation)
-                    console.log(data.valuation)
                 }
                 fetchLatestVal()
             } catch(e){
                 console.error(e)
+                alert('Error recuperando los tokens')
             } finally{
                 setIsLoading(prev => ({
                     ...prev,
                     fetchingToken: false
-                    }))
+                    })) 
             }
         }
-    }, [userId, tokenData.token]);
+    }, [userId]);
 
     useEffect(()=>{
        fetchData();
@@ -130,9 +129,9 @@ const handleDialogClose = (dialog: keyof DialogStates) =>{
         try {
             const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/get-portfolio?userId=${userId}`, {
                 method: 'GET',
+                credentials: 'include',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${tokenData.token}`
                 }
             });
     
@@ -151,7 +150,7 @@ const handleDialogClose = (dialog: keyof DialogStates) =>{
                 fetchTokens: false
             }));
         }
-    }, [userId, tokenData.token]);
+    }, [userId]);
     
     useEffect(() => {
         fetchTokens();
@@ -212,8 +211,8 @@ const MotionButton = motion(Button);
           },
           {
             field: "expiringDate",
-            headerName: "fecha de caducidad",
-            width: 100,
+            headerName: "fecha de vencimiento",
+            width: 150,
             editable: false,
           },
           {
@@ -223,7 +222,6 @@ const MotionButton = motion(Button);
             editable: false,
             renderCell: (params: GridCellParams) => {
                 const appreciation = Number(Math.abs(params.row.tokenBuy.replace('$', ''))) - Number(Math.abs(params.row.tokenSell.replace('$', '')));
-                console.log(appreciation)
                 return (
                   <Box
                   sx={{
@@ -241,12 +239,6 @@ const MotionButton = motion(Button);
                   
                 )
               },
-          },
-          {
-            field: "expiringDate",
-            headerName: "fecha de caducidad",
-            width: 150,
-            editable: false,
           },
           
         ]
@@ -278,7 +270,7 @@ const rows =
   return (
     <>
     {
-        (tokenData && isLoggedIn && userId) ? (
+        (isLoggedIn && userId) ? (
             <>
         {
         dialogStates.buyTokenDialog && portfolio && 
@@ -298,34 +290,13 @@ const rows =
         refetch={()=>setRefetchTrigger(prev => prev + 1)}
         />
         }
-        
-    {/* {
-        dialogStates.buyTokenDialog && currentToken && 
-        <BuyTokenDialog 
-        open={dialogStates.buyTokenDialog} 
-        onClose={() => handleDialogClose('buyTokenDialog')} 
-        tokens={currentToken}
-        refetch={()=>setRefetchTrigger(prev => prev + 1)}
-        />
-    }
-    {
-        dialogStates.sellTokenDialog && currentToken && 
-        <SellTokenDialog open={dialogStates.sellTokenDialog} 
-        onClose={() => handleDialogClose('sellTokenDialog')} 
-        sellValue={sellValue} 
-        ownedTokens={(tokens ? tokens.reduce((total, token) => total + token.tokenAmount, 0) : 0)} 
-        tokens={currentToken}
-        refetch={()=>setRefetchTrigger(prev => prev + 1)}
-        />
-    }
-    {
+        {
         dialogStates.portfolioDialog && 
         <PortfolioDialog 
         open={dialogStates.portfolioDialog} 
         onClose={() => handleDialogClose('portfolioDialog')} 
-        tokenLastPrice={buyValue} 
-        tokens={tokens || []}/>
-    } */}
+        tokens={portfolio || []}/>
+    }
     {
         dialogStates.movementsDialog &&
         <MovementsDialog 
@@ -356,7 +327,7 @@ const rows =
             backgroundColor: '#f5f5f5',
             borderRadius: {
                 xs: 0,
-                md: 8
+                md: 2
             },
             padding: 2,
             overflow: 'auto'
@@ -397,30 +368,13 @@ const rows =
                 width: {xs: '100%', sm: '50%'},
                 justifyContent: {
                     xs: 'space-between',
-                    sm: 'space-around'
+                    sm: 'flex-end'
                 }
             }}
             >
-                    <Box
-            sx={{
-                border: {sm: '1px solid #ccc', xs: 'none'},
-                p: 1,
-                display: 'flex',
-                flexDirection: 'row',
-                justifyContent: {
-                    xs: 'space-evenly',
-                    sm: 'space-between'
-                },
-                
-                borderRadius: {
-                    xs: 0,
-                    sm: 4
-                }
-            }}
-            >
-                
-            </Box>
-            <IconButton
+      
+            <Tooltip title="Refrescar datos" arrow>
+                <IconButton
             sx={{
                 ml: 2,
                 border: '1px solid #ccc',
@@ -429,7 +383,9 @@ const rows =
             >
                 <Refresh />
             </IconButton>
-            <IconButton
+            </Tooltip>
+            <Tooltip title="Cerrar sesión" arrow>
+                <IconButton
             sx={{
                 ml: 2,
                 border: '1px solid #ccc',
@@ -438,6 +394,7 @@ const rows =
             >
                 <LogoutIcon />
             </IconButton>
+            </Tooltip>
             </Box>
            </Box>
             <Box
@@ -462,6 +419,7 @@ const rows =
                           rowCount={rows.length}
                           disableColumnFilter
                           disableColumnSelector
+                          disableRowSelectionOnClick
                           sx={{
                             //opacity: isUnpaidNotesLoading || refreshLoading ? 0.7 : 1,
                             opacity: 1,

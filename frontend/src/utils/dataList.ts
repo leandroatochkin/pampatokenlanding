@@ -304,6 +304,23 @@ export const maritalStatusMapper = {
     'V': 'Viudo/a'
 }
 
+export const accountTypeMapper = {
+    '0': 'Persona física',
+    '1': 'Persona jurídica',
+}
+
+export const workingCodeMapper = {
+    '0': 'Empleado',
+    '1': 'Autónomo',
+}
+
+export const bankAccountTypeMapper = {
+    '0': 'Caja de ahorro',
+    '1': 'Cuenta corriente'
+}
+
+
+
 export const provinces = [
     "Buenos Aires",
     "Catamarca",
@@ -330,6 +347,7 @@ export const provinces = [
     "Tierra del Fuego",
     "Tucumán",
     "Ciudad Autónoma de Buenos Aires",
+    'No aplica'
 ]
 
 export const workingStatus = [

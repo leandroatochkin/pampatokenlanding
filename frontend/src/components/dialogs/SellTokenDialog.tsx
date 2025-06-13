@@ -33,40 +33,51 @@ interface SellTransactionDTO{
 const SellTokenDialog: React.FC<SellTokenDialogProps> = ({open, onClose, owned, tokens, refetch}) => {
     const [payload, setPayload] = useState<SellTransactionDTO | null>(null)
     const [selectedToken, setSelectedToken] = useState<TokenDTO | null>(null)
-    const tokenData = userStore((state)=>state.tokenData)
     const isLoggedIn = userStore((state)=>state.isLoggedIn)
     const userId = userStore((state)=>state.userId)
 
-    const [amount, setAmount] = useState<number>(selectedToken ? selectedToken.tokenAmount : 0)
+    const [amount, setAmount] = useState<number>(owned?.find(token => token.tokenSymbol === selectedToken?.tokenSymbol)?.tokenAmount || 0)
     const [isLoading, setIsLoading] = useState<boolean>(false)
 
-    const sellValues = tokens?.find(
-      v => selectedToken && v.SIMBOLO === selectedToken.tokenSymbol && v.rn === 2
-    )?.VALOR_COMPRA || 0;
+    const sellValues = React.useMemo(() => {
+            return (
+                tokens.find(
+                (v) => selectedToken && v.SIMBOLO === selectedToken.tokenSymbol && v.rn === 2
+                )?.VALOR_COMPRA || 0
+            );
+            }, [selectedToken, tokens]);
  
 
-   const total = Number((amount * sellValues) / 100).toFixed(2).replace('.', ',')
+            const total = React.useMemo(() => {
+            return Number((amount * sellValues) / 100).toFixed(2).replace('.', ',');
+            }, [amount, sellValues]);
 
      useEffect(()=>{
             setPayload({
                 userId: userId || '',
                 amount: amount,
-                symbol: '',
-                soldAtValue: 0,
+                symbol: selectedToken?.tokenSymbol || '',
+                soldAtValue: sellValues || 0,
             })
     
         },[amount, userId, tokens])
+    
+        useEffect(() => {
+        if (selectedToken) {
+            setAmount(selectedToken.tokenAmount);
+        }
+        }, [selectedToken]);
 
     const handleSell = async () => {
-        if(!tokenData || !amount || !userId || !isLoggedIn) return
+        if(!amount || !userId || !isLoggedIn) return
         setIsLoading(true)
         if(confirm(`Esta seguro que quiere vender ${amount} tokens por AR$}`)){
             try{
                 const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/sell`, {
                     method: 'POST',
+                    credentials: 'include',
                     headers: {
                         'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${tokenData.token}`
                     },
                     body: JSON.stringify(payload),
                 })
@@ -139,30 +150,34 @@ const SellTokenDialog: React.FC<SellTokenDialogProps> = ({open, onClose, owned, 
                     Precio por token: AR${Number(sellValues / 100).toFixed(2)}
                 </Typography>
                 <TextField
-                label='Cantidad de tokens'
-                type='number'
+                label="Cantidad de tokens"
+                type="number"
                 value={amount}
-                onChange={(e) => setAmount(Number(e.target.value))}
+                onChange={(e) => {
+                    const input = Number(e.target.value);
+                    const max = selectedToken?.tokenAmount || 0;
+                    setAmount(input > max ? max : input);
+                }}
                 fullWidth
-                sx={{mb: 2}}
-                inputProps={{ min: 0 }}
+                sx={{ mb: 2 }}
+                inputProps={{ min: 0, max: selectedToken?.tokenAmount || 0 }}
                 />
                 <TextField
-                    label='Monto en AR$'
-                    type='number'
-                    //value={Number(amount * (tokens.VALOR_VENTA / 100)).toFixed(2)} // shows AR$
-                    onChange={(e) => {
-                        const inputValue = Number(e.target.value);
-                        //setAmount(inputValue / (tokens.VALOR_VENTA / 100)); // AR$ → tokens
-                    }}
-                    fullWidth
-                    sx={{ mb: 2 }}
-                    inputProps={{ min: 0 }}
-                    />
+                label="Monto en AR$"
+                type="number"
+                value={((amount * sellValues) / 100).toFixed(2)}
+                onChange={(e) => {
+                    const inputValue = Number(e.target.value);
+                    setAmount(inputValue / (sellValues / 100));
+                }}
+                fullWidth
+                sx={{ mb: 2 }}
+                inputProps={{ min: 0 }}
+                />
 
-                {/* <Typography variant='h6'>
+                <Typography variant='h6'>
                     Recibís: AR${total}
-                </Typography> */}
+                </Typography>
             </Box>
             {isLoading ? (
                 <CircularProgress size={24} sx={{mt: 2}}/>
@@ -187,7 +202,7 @@ const SellTokenDialog: React.FC<SellTokenDialogProps> = ({open, onClose, owned, 
                     <Button 
                     onClick={handleSell}
                     variant='contained'
-                    //disabled={!amount || isLoading || amount > ownedTokens}
+                    disabled={!amount || isLoading }
                     >Vender</Button>
                 </Box>
             )}

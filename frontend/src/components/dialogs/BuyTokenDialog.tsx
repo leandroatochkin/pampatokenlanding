@@ -31,7 +31,7 @@ interface BuyTransactionDTO{
 }
 
 const BuyTokenDialog: React.FC<BuyTokenDialogProps> = ({open, onClose, tokens, refetch}) => {
-    const tokenData = userStore((state)=>state.tokenData)
+
     const isLoggedIn = userStore((state)=>state.isLoggedIn)
     const userId = userStore((state)=>state.userId)
 
@@ -56,7 +56,7 @@ const BuyTokenDialog: React.FC<BuyTokenDialogProps> = ({open, onClose, tokens, r
     },[amount, userId, tokens])
 
     const handleBuy = async () => {
-        if(!tokenData || !amount || !userId || !isLoggedIn) return
+        if(!amount || !userId || !isLoggedIn) return
         
         console.log(payload)
         setIsLoading(true)
@@ -64,9 +64,9 @@ const BuyTokenDialog: React.FC<BuyTokenDialogProps> = ({open, onClose, tokens, r
             try{
                 const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/buy`, {
                     method: 'POST',
+                    credentials: 'include',
                     headers: {
                         'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${tokenData.token}`
                     },
                     body: JSON.stringify(payload),
                 })

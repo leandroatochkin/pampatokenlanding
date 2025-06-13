@@ -7,6 +7,8 @@ import {
 import { ArrowForwardIos, ArrowDropDown } from '@mui/icons-material';
 import HomeCard from '../../components/cards/HomeCard';
 import { useMobile } from '../../utils/hooks';
+import { useNavigate } from 'react-router-dom';
+import { userStore } from '../../utils/store';
 
 
 
@@ -14,6 +16,8 @@ const Home = () => {
 const [_, setScrollY] = useState<number>(0)
 const isMobile = useMobile()
   
+const navigate = useNavigate()
+
 
     
   useEffect(() => {
@@ -45,6 +49,27 @@ const isMobile = useMobile()
     },
   ];
 
+  const handleStartOperating = async () => {
+      const el = document.getElementById('login')
+     try {
+      const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/auth`, {
+        method: 'GET',
+        credentials: 'include'
+      })
+      const data = await res.json()
+
+      if (res.ok && data.isAuthenticated) {
+        userStore.getState().setAuthStatus(true, data.userId)
+        navigate('/operations')
+      } else {
+
+       el?.scrollIntoView({ behavior: 'smooth' })
+      }
+    } catch (err) {
+      el?.scrollIntoView({ behavior: 'smooth' })
+    }
+    
+  }
 
   return (
         <Box
@@ -59,15 +84,11 @@ const isMobile = useMobile()
         >
             <Box>
                 <Typography
-                variant='h1'
+                variant={isMobile ? 'h3' : 'h1'}
                 color='#43A047'
                 fontWeight='bolder'
                 sx={{
                     textShadow: '0px 3px 5px rgba(0,0,0,0.6)',
-                    fontSize: {
-                      sm: '5rem',
-                      xs: '4rem'
-                    },
                     textAlign: {
                       xs: 'left',
                       md: 'center',
@@ -83,8 +104,8 @@ const isMobile = useMobile()
                     El Futuro de la Inversión Agrícola
                 </Typography>
                 <Typography
-                variant='h3'
                 color='#f5f5f5'
+                variant={isMobile ? 'h5' : 'h3'}
                 sx={{
                     textShadow: '0px 3px 5px rgba(0,0,0,0.6)',
                     textAlign: {
@@ -93,6 +114,7 @@ const isMobile = useMobile()
                     },
                     fontFamily: 'PTSerif-Regular, sans-serif',
                     pl: 1,
+
                 }}
                 >
                     Tokenización de producción ágricola de tierras
@@ -106,10 +128,7 @@ const isMobile = useMobile()
                     p: 2,
                     borderRadius: 4
                 }}
-                onClick={() => {
-                    const el = document.getElementById('login')
-                    el?.scrollIntoView({ behavior: 'smooth' })
-                  }}
+                onClick={handleStartOperating}
                 >
                     comenzar
                 </Button>

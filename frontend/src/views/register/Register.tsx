@@ -45,7 +45,10 @@ import {
 import { 
     countryListAlpha2,
     provinces,
-    maritalStatusMapper
+    maritalStatusMapper,
+    accountTypeMapper,
+    workingCodeMapper,
+    bankAccountTypeMapper
 } from "../../utils/dataList";
 import IdUpload from "../../components/idUpload/IdUpload";
 import PhotoCapture from "../../components/idUpload/PhotoCapture";
@@ -80,11 +83,12 @@ interface UserDTO{
     bank: string
     CBU: number
     accountType: string
-    workingStatus: string
+    workingCode: string
     politicallyExposed: boolean
     UIFrequired: boolean
     fiscalResidentOutsideArgentina: boolean
     termsAndConditionsRead: boolean
+    bankAccountType: string
 }
 
 function TabPanel(props: TabPanelProps) {
@@ -122,7 +126,7 @@ const Register = () => {
   const [frontImage, setFrontImage] = useState<string | null>(null)
   const [backIdFile, setBackIdFile] = useState<File | null>(null)
   const [frontIdFile, setFrontIdFile] = useState<File | null>(null)
-  const [selfieFile, setSelfieFile] = useState<File | null>(null)
+  const [_selfieFile, setSelfieFile] = useState<File | null>(null)
   const [backImage, setBackImage] = useState<string | null>(null)
   const [selfieImage, setSelfieImage] = useState<string | null>(null)
   const [loading, setLoading] = useState<boolean>(false)
@@ -172,17 +176,23 @@ const Register = () => {
 
   const onSubmit = async (data: UserDTO) => {
     setLoading(true)
-   if (frontIdFile && backIdFile && selfieFile) {
+   if (frontIdFile && 
+    backIdFile  
+    //selfieFile
+  ) {
     const resizedFrontImage = await resizeImage(frontIdFile, 500, 500)
     const resizedBackImage = await resizeImage(backIdFile, 500, 500)
-    const resizedSelfieImage = await resizeImage(selfieFile, 500, 500)
-    if(!resizedFrontImage || !resizedBackImage || !resizedSelfieImage || !data) {
+    //const resizedSelfieImage = await resizeImage(selfieFile, 500, 500)
+    if(!resizedFrontImage ||
+       !resizedBackImage 
+       //!resizedSelfieImage 
+       || !data) {
       console.error('Error resizing images')
     }
     const formData = new FormData()
     formData.append('frontIdImage', resizedFrontImage)
     formData.append('backIdImage', resizedBackImage)
-    formData.append('selfieImage', resizedSelfieImage)
+    //formData.append('selfieImage', resizedSelfieImage)
     formData.append('user', JSON.stringify(data))
     
     try {
@@ -607,6 +617,48 @@ const Register = () => {
                       
                     </Box>
          
+                  </Box>
+                      <Box
+                    sx={{
+                      width: '100%',
+                      display: 'flex',
+                      justifyContent:'space-between',
+                      flexDirection: {
+                          xs: 'column',
+                          md: 'row'
+                      },
+  
+                      gap: 2
+                    }}
+                    >
+  
+  
+  
+                    <Box
+                    sx={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        width: '100%'
+                    }}
+                    >
+                        <FormLabel htmlFor="accountType">Tipo de cuenta</FormLabel>
+                      
+                        <Select
+                        {...register("accountType", {
+                            required: 'Este campo es obligatorio',
+                        })}
+                        defaultValue={'0'}
+                        fullWidth
+                        >
+                        {Object.entries(accountTypeMapper).map(([code, name]) => (
+                            <MenuItem key={code} value={code}>
+                            {`${name}`}
+                            </MenuItem>
+                        ))}
+                        </Select>
+                      
+                    </Box>
+         
               {/*PHONE NUMBER*/}
                   <Box
                       sx={{
@@ -918,6 +970,30 @@ const Register = () => {
                       />    
                   </Box>
               </Box>
+              <Box
+                    sx={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        width: '100%'
+                    }}
+                    >
+                        <FormLabel htmlFor="bankAccountType">Tipo de cuenta bancaria</FormLabel>
+                      
+                        <Select
+                        {...register("bankAccountType", {
+                            required: 'Este campo es obligatorio',
+                        })}
+                        defaultValue={'0'}
+                    
+                        >
+                        {Object.entries(bankAccountTypeMapper).map(([code, name]) => (
+                            <MenuItem key={code} value={code}>
+                            {`${name}`}
+                            </MenuItem>
+                        ))}
+                        </Select>
+                      
+                    </Box>
               </Box>
               <Box
               sx={{
@@ -953,6 +1029,30 @@ const Register = () => {
                       />    
                   </Box>
               </Box>
+                    <Box
+                    sx={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        width: '100%'
+                    }}
+                    >
+                        <FormLabel htmlFor="workingCode">Estado laboral</FormLabel>
+                      
+                        <Select
+                        {...register("workingCode", {
+                            required: 'Este campo es obligatorio',
+                        })}
+                        defaultValue={'0'}
+                        fullWidth
+                        >
+                        {Object.entries(workingCodeMapper).map(([code, name]) => (
+                            <MenuItem key={code} value={code}>
+                            {`${name}`}
+                            </MenuItem>
+                        ))}
+                        </Select>
+                      
+                    </Box>
               </Box>
               <Box
               sx={{

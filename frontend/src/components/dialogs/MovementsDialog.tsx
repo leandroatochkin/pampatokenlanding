@@ -37,19 +37,18 @@ const MovementsDialog: React.FC<MovementDialogProps> = ({open, onClose}) => {
     const [isLoading, setIsLoading] = useState<boolean>(false)
     const [movements, setMovements] = useState<Movement[] | null>(null)
 
-        const tokenData = userStore((state)=>state.tokenData)
         const userId = userStore((state)=>state.userId)
 
         useEffect(() => {
             const fetchMovements = async () => {
                 setIsLoading(true)
-                if (!tokenData || !userId) return;
+                if (!userId) return;
                 try {
                     const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/movements?userId=${userId}`, {
                         method: 'GET',
+                        credentials: 'include',
                         headers: {
                             'Content-Type': 'application/json',
-                            'Authorization': `Bearer ${tokenData.token}`
                         }
                     });
                     const data = await response.json();

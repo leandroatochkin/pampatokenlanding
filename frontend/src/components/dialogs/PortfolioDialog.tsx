@@ -1,7 +1,7 @@
 import React,{useState, useMemo} from 'react'
 import { 
     Box, 
-    Typography,
+    //Typography,
     Dialog,
     DialogTitle,
     DialogContent,
@@ -10,50 +10,40 @@ import {
 import {
     DataGrid,
     GridColDef,
-    GridCellParams,
+    //GridCellParams,
   } from "@mui/x-data-grid"
 import { TableSkeleton } from '../skeletons/MUIGridSkeleton'
 import { CustomLoadingOverlay } from '../skeletons/MUIGridOverlay'
 import { customLocaleText } from '../../utils/locale'
-import TrendingUpIcon from '@mui/icons-material/TrendingUp';
-import TrendingFlatIcon from '@mui/icons-material/TrendingFlat';
-import TrendingDownIcon from '@mui/icons-material/TrendingDown';
+// import TrendingUpIcon from '@mui/icons-material/TrendingUp';
+// import TrendingFlatIcon from '@mui/icons-material/TrendingFlat';
+// import TrendingDownIcon from '@mui/icons-material/TrendingDown';
 import dayjs from 'dayjs'
+import { TokenDTO } from '../../utils/interfaces'
 
-
-interface Token {
-  tokenId: string
-  tokenName: string
-  tokenSymbol: string
-  tokenAmount: number
-  tokenPaidPrice: number
-  tokenLastPrice: number
-  tokenExpiringDate: string
-}
 
 interface PortfolioDialogProps {
     open: boolean
     onClose: () => void
-    tokenLastPrice: number
-    tokens: Token[]
+    tokens: TokenDTO[]
 }
 
-const PortfolioDialog: React.FC<PortfolioDialogProps> = ({ open, onClose, tokenLastPrice, tokens}) => {
+const PortfolioDialog: React.FC<PortfolioDialogProps> = ({ open, onClose, tokens}) => {
     
     const [isLoading, _] = useState<boolean>(false)
 
      
 
 
-        const trendingMapper = (currentValue: number, previousValue: number) => {
-            if (currentValue === previousValue) {
-                return <TrendingFlatIcon color='info' />
-            } else if (currentValue > previousValue) {
-                return <TrendingUpIcon color='primary'/>
-            } else if (currentValue < previousValue) {
-                return <TrendingDownIcon color='error'/>
-            }
-        }
+        // const trendingMapper = (currentValue: number, previousValue: number) => {
+        //     if (currentValue === previousValue) {
+        //         return <TrendingFlatIcon color='info' />
+        //     } else if (currentValue > previousValue) {
+        //         return <TrendingUpIcon color='primary'/>
+        //     } else if (currentValue < previousValue) {
+        //         return <TrendingDownIcon color='error'/>
+        //     }
+        // }
 
     
 
@@ -83,40 +73,40 @@ const PortfolioDialog: React.FC<PortfolioDialogProps> = ({ open, onClose, tokenL
             width: 130,
             editable: false,
           },
-          {
-            field: "tokenLastPrice",
-            headerName: "último precio",
-            width: 100,
-            editable: false,
-          },
-          {
-            field: "tokenAppreciation",
-            headerName: "variación",
-            width: 130,
-            editable: false,
-            renderCell: (params: GridCellParams) => {
-                const appreciation = params.row.tokenAppreciation
-                console.log(appreciation)
-                const tokenPaid = params.row.tokenPaidPrice * params.row.tokenAmount
-                console.log(tokenPaid)
-                return (
-                  <Box
-                  sx={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    mt: 1.5
-                  }}
-                  >
-                    {trendingMapper(appreciation, tokenPaid)}
-                    <Typography>
-                        {`$${Number(appreciation).toFixed(2)}`}
-                    </Typography>
-                  </Box>
+          // {
+          //   field: "tokenLastPrice",
+          //   headerName: "último precio",
+          //   width: 100,
+          //   editable: false,
+          // },
+          // {
+          //   field: "tokenAppreciation",
+          //   headerName: "variación",
+          //   width: 130,
+          //   editable: false,
+          //   renderCell: (params: GridCellParams) => {
+          //       const appreciation = params.row.tokenAppreciation
+          //       console.log(appreciation)
+          //       const tokenPaid = params.row.tokenPaidPrice * params.row.tokenAmount
+          //       console.log(tokenPaid)
+          //       return (
+          //         <Box
+          //         sx={{
+          //           display: 'flex',
+          //           alignItems: 'center',
+          //           justifyContent: 'center',
+          //           mt: 1.5
+          //         }}
+          //         >
+          //           {trendingMapper(appreciation, tokenPaid)}
+          //           <Typography>
+          //               {`$${Number(appreciation).toFixed(2)}`}
+          //           </Typography>
+          //         </Box>
                   
-                )
-              },
-          },
+          //       )
+          //     },
+          // },
           {
             field: "expiringDate",
             headerName: "fecha de caducidad",
@@ -132,15 +122,13 @@ const PortfolioDialog: React.FC<PortfolioDialogProps> = ({ open, onClose, tokenL
 
 
       const rows =
-          (tokens ?? []).map((token: Token, index: number) => ({
+          (tokens ?? []).map((token: TokenDTO, index: number) => ({
             id: index,
             tokenId: token.tokenId,
             tokenName: token.tokenName,
             tokenSymbol: token.tokenSymbol,
             tokenAmount: token.tokenAmount,
             tokenPaidPrice: Number(token.tokenPaidPrice/100).toFixed(2),
-            tokenLastPrice:  Number(tokenLastPrice/100).toFixed(2),
-            tokenAppreciation: Number((tokenLastPrice * token.tokenAmount)/100),
             expiringDate: dayjs(token.tokenExpiringDate).format('DD/MM/YYYY')
           }))
         
