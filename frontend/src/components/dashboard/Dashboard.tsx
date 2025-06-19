@@ -1,12 +1,10 @@
 import React,{useState, useEffect, useRef} from 'react'
 import { Box } from '@mui/material'
-import { useMobile } from '../../utils/hooks'
 
 
 export default function Dashboard({ children }: { children: React.ReactNode }){
     const [scrollY, setScrollY] = useState(0)
   const containerRef = useRef<HTMLDivElement>(null)
-  const isMobile = useMobile()
  
 
 
@@ -41,14 +39,15 @@ export default function Dashboard({ children }: { children: React.ReactNode }){
         backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.01), rgba(0, 0, 0, 0.01)), url("/field3.jpg")`,
         backgroundRepeat: 'no-repeat',
         backgroundSize: 'cover',
-        backgroundPosition: !isMobile ? `center ${50 + scrollY * 0.02}%` : 'center',
+        backgroundPosition: `center ${Math.round(50 + scrollY * 0.02)}%`,
         backgroundBlendMode: 'multiply',
         overflowY: 'auto',
         scrollbarWidth: 'none',
         scrollPaddingTop: '16vh',
         backgroundAttachment: 'scroll', // ensure not "fixed"
-        willChange: 'transform', // smooths GPU rendering
-        transform: 'translateZ(0)' // force GPU layer (optional)
+        willChange: 'background-position',
+        //transform: 'translateZ(0)' // force GPU layer (optional)
+        WebkitBackfaceVisibility: 'hidden',
       }}
     >
       {children}

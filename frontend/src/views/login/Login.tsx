@@ -57,7 +57,7 @@ const onSubmit = async (data: LoginData) => {
         if(response.status === 400 || response.status === 401){
             alert('Credenciales inválidas')
         }
-        if (response.ok) {
+        if (response && response.ok) {
         const authRes = await fetch(`${import.meta.env.VITE_BACKEND_URL}/auth`, {
             credentials: 'include',
         });

@@ -47,8 +47,7 @@ import {
     provinces,
     maritalStatusMapper,
     accountTypeMapper,
-    workingCodeMapper,
-    bankAccountTypeMapper
+    workingCodeMapper
 } from "../../utils/dataList";
 import IdUpload from "../../components/idUpload/IdUpload";
 import PhotoCapture from "../../components/idUpload/PhotoCapture";
@@ -88,7 +87,7 @@ interface UserDTO{
     UIFrequired: boolean
     fiscalResidentOutsideArgentina: boolean
     termsAndConditionsRead: boolean
-    bankAccountType: string
+    accountNumber: string
 }
 
 function TabPanel(props: TabPanelProps) {
@@ -970,30 +969,33 @@ const Register = () => {
                       />    
                   </Box>
               </Box>
-              <Box
-                    sx={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        width: '100%'
-                    }}
-                    >
-                        <FormLabel htmlFor="bankAccountType">Tipo de cuenta bancaria</FormLabel>
-                      
-                        <Select
-                        {...register("bankAccountType", {
-                            required: 'Este campo es obligatorio',
-                        })}
-                        defaultValue={'0'}
-                    
-                        >
-                        {Object.entries(bankAccountTypeMapper).map(([code, name]) => (
-                            <MenuItem key={code} value={code}>
-                            {`${name}`}
-                            </MenuItem>
-                        ))}
-                        </Select>
-                      
-                    </Box>
+
+                         <Box
+              sx={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  width: '100%'
+              }}
+              >
+                  <FormLabel htmlFor="accountNumber">Número de cuenta</FormLabel>
+                  <Box className="relative">
+                      <TextField
+                      fullWidth
+                      id="accountNumber"
+                      variant="outlined"
+                      placeholder="Número de cuenta"
+                      {...register(`accountNumber`, 
+                          { required: 'Campo obligatorio', 
+                              pattern: { 
+                                  value: onlyNumbersRegex, 
+                                  message: 'Solo 20 dígitos.' 
+                              } })}
+                      error={!!errors.accountNumber}
+                      helperText={errors.accountNumber?.message}
+                      />    
+                  </Box>
+              </Box>
+
               </Box>
               <Box
               sx={{
