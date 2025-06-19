@@ -736,7 +736,7 @@ const Register = () => {
                   {...register("country", {
                       required: 'Este campo es obligatorio',
                   })}
-                  defaultValue={'AR'}
+                  defaultValue={'54'}
                   >
                   {Object.entries(countryListAlpha2).map(([code, name]) => (
                       <MenuItem key={code} value={code}>
