@@ -14,10 +14,12 @@ import { userStore } from '../../utils/store';
 
 const Home = () => {
 const [_, setScrollY] = useState<number>(0)
+const [closeCookieAdvisor, setCloseCookieAdvisor] = useState<boolean>(false)
 const isMobile = useMobile()
   
 const navigate = useNavigate()
 
+const clientBrowser = navigator.userAgent
 
     
   useEffect(() => {
@@ -30,6 +32,40 @@ const navigate = useNavigate()
       window.removeEventListener('scroll', handleScroll);
     };
   }, []);
+
+  const CookieAdvisor = () => {
+    return(
+      <Box
+      sx={{
+        width: '98vw',
+        display: 'flex',
+        alignItems: 'center',
+        background: 'teal',
+        fontColor: '#f5f5f5',
+        borderRadius: 2,
+        alignSelf: 'center',
+        p: 1,
+        justifyContent: 'space-between',
+        mt: -15
+      }}
+      >
+        <Typography>
+          {"Esta página usa la mínima cantidad de cookies para mantenerte logueado. Por favor desactivá 'Prevenir tracking entre sitios' en Safari > ajustes > privacidad > website tracking. Ante cualquier duda, ¡consultanos!"}
+        </Typography>
+        <Button
+        onClick={
+          ()=>setCloseCookieAdvisor(true)
+        }
+        sx={{
+          color: '#f5f5f5',
+          fontWeight: 'bold'
+        }}
+        >
+          x
+        </Button>
+      </Box>
+    )
+  }
 
   const featureItems = [
     {
@@ -82,6 +118,9 @@ const navigate = useNavigate()
             justifyContent: 'space-evenly',
         }}
         >
+          {
+            clientBrowser.includes('Safari') && !clientBrowser.includes('Chrome') && !clientBrowser.includes('Edge') && !closeCookieAdvisor && <CookieAdvisor />
+          }
             <Box>
                 <Typography
                 variant={isMobile ? 'h3' : 'h1'}
