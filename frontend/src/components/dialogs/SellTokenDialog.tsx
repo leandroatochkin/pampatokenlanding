@@ -36,6 +36,8 @@ const SellTokenDialog: React.FC<SellTokenDialogProps> = ({open, onClose, owned, 
     const isLoggedIn = userStore((state)=>state.isLoggedIn)
     const userId = userStore((state)=>state.userId)
 
+    console.log(owned)
+
     const [amount, setAmount] = useState<number>(owned?.find(token => token.tokenSymbol === selectedToken?.tokenSymbol)?.tokenAmount || 0)
     const [isLoading, setIsLoading] = useState<boolean>(false)
 

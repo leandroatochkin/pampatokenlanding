@@ -140,7 +140,6 @@ const handleDialogClose = (dialog: keyof DialogStates) =>{
                 alert('Error recuperando sus tokens');
                 throw new Error(data.message);
             }
-    
             setPortfolio(data);
         } catch (err) {
             console.error('Fetch failed:', err);
