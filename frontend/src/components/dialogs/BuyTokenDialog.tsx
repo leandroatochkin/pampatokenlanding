@@ -28,7 +28,6 @@ interface BuyTransactionDTO{
     boughtAtValue: number 
     tokenName: string 
     tokenExpiringDate: string
-    operationType: number
 }
 
 const BuyTokenDialog: React.FC<BuyTokenDialogProps> = ({open, onClose, tokens, refetch}) => {
@@ -51,8 +50,7 @@ const BuyTokenDialog: React.FC<BuyTokenDialogProps> = ({open, onClose, tokens, r
             symbol: selectedToken?.SIMBOLO || '',
             boughtAtValue: selectedToken?.VALOR_COMPRA || 0,
             tokenName: selectedToken?.NOMBRE || '',
-            tokenExpiringDate: selectedToken?.VENCIMIENTO  || '',
-            operationType: 0//0==buy 1==sell
+            tokenExpiringDate: selectedToken?.VENCIMIENTO  || ''
         })
 
     },[amount, userId, tokens])
