@@ -81,7 +81,10 @@ const handleDialogClose = (dialog: keyof DialogStates) =>{
 
     const isLoggedIn = userStore((state)=>state.isLoggedIn)
     const userId = userStore((state)=>state.userId)
-    console.log(userId, 'userId in operations')
+    const userFirstName = userStore((state)=>state.userFirstName)
+    const userLastName = userStore((state)=>state.userLastName)
+    const userIsVerified = userStore((state)=>state.userIsVerified)
+    console.log(userId, userFirstName, userLastName, userIsVerified)
 
 
     const fetchData = useCallback(async () => {
