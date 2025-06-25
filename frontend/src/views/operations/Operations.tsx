@@ -84,7 +84,7 @@ const handleDialogClose = (dialog: keyof DialogStates) =>{
     const userFirstName = userStore((state)=>state.userFirstName)
     const userLastName = userStore((state)=>state.userLastName)
     const userIsVerified = userStore((state)=>state.userIsVerified)
-    console.log(userId, userFirstName, userLastName, userIsVerified)
+
 
 
     const fetchData = useCallback(async () => {
@@ -347,7 +347,7 @@ const rows =
             width: '100%',
            }}
            >
-                 <Typography
+            <Typography
             fontFamily={'PTSerif-Bold, sans-serif'}
             color='secondary'
             sx={{
@@ -364,6 +364,20 @@ const rows =
             >
                 operaciones
             </Typography>
+            <Box
+            sx={{
+                 width: {xs: '100%', sm: '50%'},
+                 display: 'flex',
+                 flexDirection: 'column'
+            }}
+            >
+                <Typography>
+                    {userFirstName}
+                </Typography>
+                <Typography>
+                    {userLastName}
+                </Typography>
+            </Box>
             <Box
             sx={{
                 display: 'flex',
@@ -399,6 +413,32 @@ const rows =
             </Tooltip>
             </Box>
            </Box>
+           {
+            userIsVerified !== 'A' && (
+                <Paper 
+                elevation={6}
+                sx={{
+                    background: userIsVerified === 'X' ? 'red' : 'green',
+                    borderRadius: 2,
+                    width: '100%'
+                }}
+                >
+                    <Typography
+                    sx={{
+                        color: '#f5f5f5'
+                    }}
+                    >
+                        {
+                            userIsVerified === 'X'
+                            ?
+                            'Tu cuenta se encuentra bloqueada. Por favor comunicate con PampaTokens para solucionar este inconveniente.'
+                            :
+                            'Tu cuenta está siendo verificada. Cuando esté lista te avisaremos.'
+                        }
+                    </Typography>
+                </Paper>
+            )
+           }
             <Box
             sx={{
                 display: 'flex',
@@ -480,6 +520,7 @@ const rows =
                         handleDialogOpen('buyTokenDialog')
                     }
                 }
+                disabled={userIsVerified !== 'A'}
                 >
                     <MonetizationOnIcon sx={{ mr: 1 }} />
                     comprar
@@ -497,6 +538,7 @@ const rows =
                 whileHover={{
                     boxShadow: "0 10px 25px -5px rgba(217, 119, 6, 0.5), 0 0 10px rgba(255, 255, 255, 0.4) inset"
                   }}
+                  disabled={userIsVerified !== 'A'}
                   onClick={
                     () =>{
                         handleDialogOpen('sellTokenDialog')
@@ -516,6 +558,7 @@ const rows =
                         handleDialogOpen('portfolioDialog')
                     }
                 }
+                disabled={userIsVerified === 'P'}
                 >
                     portfolio
                 </Button>
@@ -529,6 +572,7 @@ const rows =
                         handleDialogOpen('movementsDialog')
                     }
                 }
+                disabled={userIsVerified === 'P'}
                 >
                     mis operaciones
                 </Button>

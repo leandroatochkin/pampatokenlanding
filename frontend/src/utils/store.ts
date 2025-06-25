@@ -33,5 +33,9 @@ export const userStore = create<UserState>()((set) => ({
     set({
       isLoggedIn: false,
       userId: null,
+      userFirstName: null,
+      userLastName: null,
+      userEmail: null,
+      userIsVerified: null
     }),
 }))

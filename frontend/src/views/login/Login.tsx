@@ -64,7 +64,7 @@ const onSubmit = async (data: LoginData) => {
         const authData = await authRes.json();
         if (authRes.ok) {
             console.log(authData)
-            userStore.getState().setAuthStatus(true, authData.userId, authData.userFirstName, authData.userLastName, authData.userEmail, authData.userIsVerified)
+            userStore.getState().setAuthStatus(true, authData.userId, authData.userFirstName, authData.userLastName, authData.userEmail, authData.isVerified)
             navigate('/operations');
         }
         }
