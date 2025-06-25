@@ -63,7 +63,7 @@ const onSubmit = async (data: LoginData) => {
         });
         const authData = await authRes.json();
         if (authRes.ok) {
-            userStore.getState().setAuthStatus(true, authData.userId)
+            userStore.getState().setAuthStatus(true, authData.userId, authData.userFirstName, authData.userLastName, authData.userEmail, authData.userIsVerified)
             navigate('/operations');
         }
         }
