@@ -176,7 +176,7 @@ const clientBrowser = navigator.userAgent
           variant="contained"
           endIcon={isMobile ? <ArrowDropDown /> : <ArrowForwardIos />}
           sx={{
-            background: '#276329',
+            background: '#2E7D32',
             mt: 4,
             p: 2,
             borderRadius: 4,
