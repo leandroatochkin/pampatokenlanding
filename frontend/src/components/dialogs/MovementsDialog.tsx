@@ -133,6 +133,7 @@ const MovementsDialog: React.FC<MovementDialogProps> = ({open, onClose}) => {
     open={open}
     onClose={onClose}
     fullScreen
+    aria-label="Diálogo de movimientos"
     >
         <DialogTitle
         color='primary'

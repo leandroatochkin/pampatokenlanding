@@ -18,11 +18,11 @@ const HomeCard: React.FC<HomeCardProps> = ({title, description, icon, key}) => {
   return (
     <MotionCard
     key={key}
+    aria-label={`Tarjeta destacada: ${title}`}
     sx={{
         borderRadius: '16px',
         ml: isMobile ? 2 : 0,
         mr: isMobile ? 2 : 0,
-           
     }}
     whileHover={{
         y: -5
@@ -32,9 +32,8 @@ const HomeCard: React.FC<HomeCardProps> = ({title, description, icon, key}) => {
         <CardContent
         sx={{
             pointerEvents: 'none',
-             display: 'flex',
+            display: 'flex',
             flexDirection: 'column',
-            
         }}
         >
         <Typography

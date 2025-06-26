@@ -231,6 +231,7 @@ const Register = () => {
         mb: '10vh' 
      }}
      id='register'
+     aria-label='formulario de registro'
      >
     
       <Paper

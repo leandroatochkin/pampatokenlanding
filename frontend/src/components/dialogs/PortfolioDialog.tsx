@@ -30,7 +30,7 @@ interface PortfolioDialogProps {
 
 const PortfolioDialog: React.FC<PortfolioDialogProps> = ({ open, onClose, tokens}) => {
     
-    const [isLoading, _] = useState<boolean>(false)
+    const [isLoading, ] = useState<boolean>(false)
 
      
 
@@ -141,6 +141,7 @@ const PortfolioDialog: React.FC<PortfolioDialogProps> = ({ open, onClose, tokens
     open={open}
     onClose={onClose}
     fullScreen
+    aria-label="Diálogo de portfolio"
     >
         <DialogTitle
         color='primary'

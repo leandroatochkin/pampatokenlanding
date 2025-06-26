@@ -36,7 +36,7 @@ export default function Dashboard({ children }: { children: React.ReactNode }){
       sx={{
         height:{md: '100dvh', xs: '110vh'},
         width: '100vw',
-        backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.01), rgba(0, 0, 0, 0.01)), url("/field3.jpg")`,
+        backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.01), rgba(0, 0, 0, 0.01)), url("/field3.avif")`,
         backgroundRepeat: 'no-repeat',
         backgroundSize: 'cover',
         backgroundPosition: `center ${Math.round(50 + scrollY * 0.02)}%`,
@@ -46,7 +46,6 @@ export default function Dashboard({ children }: { children: React.ReactNode }){
         scrollPaddingTop: '16vh',
         backgroundAttachment: 'scroll', // ensure not "fixed"
         willChange: 'background-position',
-        //transform: 'translateZ(0)' // force GPU layer (optional)
         WebkitBackfaceVisibility: 'hidden',
       }}
     >

@@ -30,7 +30,7 @@ const MotionPaper = motion.create(Paper)
     >
       {/* Illustration */}
       <motion.img
-        src="/intro.jpg" // replace with your own image path
+        src="/intro.avif" // replace with your own image path
         alt="Agricultural Tokens"
         style={{ maxWidth: '500px', width: '100%', borderRadius: '16px' }}
         initial={{ opacity: 0, x: -50 }}

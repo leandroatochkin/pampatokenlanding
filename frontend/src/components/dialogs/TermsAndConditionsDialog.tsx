@@ -11,6 +11,7 @@ const TermsAndConditionsDialog: React.FC<DialogProps> = ({open, close}) => {
     <Dialog
     open={open}
     onClose={close}
+    aria-label="Diálogo de términos y condiciones"
     >
         <DialogTitle
         sx={{

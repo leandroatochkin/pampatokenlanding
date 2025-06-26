@@ -94,6 +94,7 @@ const MotionPaper = motion.create(Paper)
     gap={2} 
     marginTop={2}
     width={'100%'}
+    aria-label="Diálogo para cargar foto de DNI"
     >
       <Typography variant="body1" fontFamily={'PTSerif-Bold, sans-serif'} color='primary' textAlign='left'>
         Documento de Identidad

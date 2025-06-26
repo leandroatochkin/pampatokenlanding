@@ -24,7 +24,7 @@ interface SellTokenDialogProps {
 
 interface SellTransactionDTO{
     userId: string
-    amount: Number 
+    amount: number 
     symbol: string
     soldAtValue: number 
 }
@@ -36,7 +36,6 @@ const SellTokenDialog: React.FC<SellTokenDialogProps> = ({open, onClose, owned, 
     const isLoggedIn = userStore((state)=>state.isLoggedIn)
     const userId = userStore((state)=>state.userId)
 
-    console.log(owned)
 
     const [amount, setAmount] = useState<number>(owned?.find(token => token.tokenSymbol === selectedToken?.tokenSymbol)?.tokenAmount || 0)
     const [isLoading, setIsLoading] = useState<boolean>(false)
@@ -109,6 +108,7 @@ const SellTokenDialog: React.FC<SellTokenDialogProps> = ({open, onClose, owned, 
     open={open}
     onClose={onClose}
     fullWidth
+    aria-label="Diálogo para vender tokens"
     >
         <DialogTitle
         sx={{

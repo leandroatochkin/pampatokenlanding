@@ -115,7 +115,7 @@ const PhotoCapture: React.FC<PhotoCaptureProps> = ({setSelfieImage, selfieImage,
                     pointerEvents: 'none',
                 }}
                 >
-                    <img src='/selfieExample.png' alt='selfie example' style={{ width: '300px', marginTop: '10px', borderRadius: 8 }} />
+                    <img src='/selfieExample.avif' alt='selfie example' style={{ width: '300px', marginTop: '10px', borderRadius: 8 }} />
                     <Box
                     sx={{
                         position: 'absolute',

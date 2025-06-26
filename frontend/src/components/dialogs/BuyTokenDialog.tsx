@@ -23,7 +23,7 @@ interface BuyTokenDialogProps {
 
 interface BuyTransactionDTO{
     userId: string
-    amount: Number 
+    amount: number 
     symbol: string
     boughtAtValue: number 
     tokenName: string 
@@ -58,7 +58,6 @@ const BuyTokenDialog: React.FC<BuyTokenDialogProps> = ({open, onClose, tokens, r
     const handleBuy = async () => {
         if(!amount || !userId || !isLoggedIn) return
         
-        console.log(payload)
         setIsLoading(true)
         if(confirm(`Esta seguro que quiere comprar ${amount} tokens por AR$${total}`)){
             try{
@@ -97,6 +96,7 @@ const BuyTokenDialog: React.FC<BuyTokenDialogProps> = ({open, onClose, tokens, r
     open={open}
     onClose={onClose}
     fullWidth
+    aria-label="Diálogo para comprar tokens"
     >
         <DialogTitle
         sx={{

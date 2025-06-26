@@ -156,6 +156,7 @@ useEffect(() => {
   initial={{ y: 0, opacity: 1 }}
   animate={{ y: showNavbar ? 0 : -100, opacity: showNavbar ? 1 : 0 }}
   transition={{ duration: 0.3 }}
+  aria-label="Barra de navegación principal"
   sx={{
     width: '100vw',
     height: {
