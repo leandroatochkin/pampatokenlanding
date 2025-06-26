@@ -107,7 +107,7 @@ const isMobile = useMobile()
         <Typography
         variant='h4'
         fontFamily={'PTSerif-Bold, sans-serif'}
-        color='#2E7D32'
+        color='#276329'
         textAlign='start'
         >
             Iniciar sesión
@@ -203,7 +203,7 @@ const isMobile = useMobile()
             type='submit'
             variant='contained'
             sx={{
-                background: '#2E7D32',
+                background: '#276329',
                 mt: 4
             }}
             fullWidth
@@ -217,7 +217,7 @@ const isMobile = useMobile()
           underline='none'
           fontWeight='medium'
           sx={{
-            color: '#43A047',
+            color: '#276329',
             textDecoration: 'none',
             '&:hover': {
               color: '#2E7D32',

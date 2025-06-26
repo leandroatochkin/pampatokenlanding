@@ -137,7 +137,8 @@ const clientBrowser = navigator.userAgent
       <Box aria-label="Texto principal de bienvenida">
         <Typography
           variant={isMobile ? 'h3' : 'h1'}
-          color="#43A047"
+          component={'h1'}
+          color="#276329"
           fontWeight="bolder"
           sx={{
             textShadow: '0px 3px 5px rgba(0,0,0,0.6)',
@@ -158,6 +159,7 @@ const clientBrowser = navigator.userAgent
         <Typography
           color="#f5f5f5"
           variant={isMobile ? 'h5' : 'h3'}
+          component={'h2'}
           sx={{
             textShadow: '0px 3px 5px rgba(0,0,0,0.6)',
             textAlign: {
@@ -174,7 +176,7 @@ const clientBrowser = navigator.userAgent
           variant="contained"
           endIcon={isMobile ? <ArrowDropDown /> : <ArrowForwardIos />}
           sx={{
-            background: '#43A047',
+            background: '#276329',
             mt: 4,
             p: 2,
             borderRadius: 4,

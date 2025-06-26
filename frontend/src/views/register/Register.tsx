@@ -273,7 +273,7 @@ const Register = () => {
             }
           />
           
-          <LinearProgress variant="determinate" value={progress} sx={{ mb: 2}} color="primary"/>
+          <LinearProgress variant="determinate" value={progress} sx={{ mb: 2}} color="primary" aria-label="barra de indicación de solapa"/>
           
           <CardContent>
             <Box sx={{ width: '100%' }}>
@@ -295,6 +295,7 @@ const Register = () => {
                     } 
                     {...a11yProps(0)} 
                     disabled={activeStep !== 0}
+                    aria-label='Solapa de información personal'
                   />
   
   
@@ -307,6 +308,7 @@ const Register = () => {
                     } 
                     {...a11yProps(1)} 
                     disabled={activeStep !== 0 && activeStep !== 1}
+                    aria-label='Solapa de información de ubicación'
                   />
   
                   <Tab 
@@ -318,6 +320,7 @@ const Register = () => {
                     } 
                     {...a11yProps(1)} 
                     disabled={activeStep !== 0 && activeStep !== 1 && activeStep !== 2}
+                    aria-label='Solapa de información bancaria'
                   />
                   
                 </Tabs>
@@ -877,6 +880,7 @@ const Register = () => {
                       setActiveStep(2);
                       setProgress(90);
                     }}
+                    aria-label="botón de continuar a solapa siguiente"
                     >
                       {/* {
                           isLoading
@@ -893,6 +897,7 @@ const Register = () => {
                         setProgress(33);
                       }}
                      // disabled={isLoading}
+                     aria-label="botón de volver a solapa anterior"
                     >
                       volver
                     </Button>
@@ -1158,6 +1163,7 @@ const Register = () => {
                     <Button 
                     variant="contained"
                     type="submit"
+                    aria-label="botón de completar registro"
                     >
                       {/* {
                           isLoading

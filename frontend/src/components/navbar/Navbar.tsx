@@ -73,7 +73,7 @@ useEffect(() => {
           underline='none'
           fontWeight='medium'
           sx={{
-            color: '#43A047', // normal color
+            color: '#276329', // normal color
             textDecoration: 'none',
             '&:hover': {
               color: '#2E7D32', // hover color
@@ -90,7 +90,7 @@ useEffect(() => {
           underline='none'
           fontWeight='medium'
           sx={{
-            color: '#43A047', // normal color
+            color: '#276329', // normal color
             textDecoration: 'none',
             '&:hover': {
               color: '#2E7D32',
@@ -107,7 +107,7 @@ useEffect(() => {
           underline='none'
           fontWeight='medium'
           sx={{
-            color: '#43A047', // normal color
+            color: '#276329', // normal color
             textDecoration: 'none',
             '&:hover': {
               color: '#2E7D32',
@@ -120,7 +120,7 @@ useEffect(() => {
           <Button
           variant='contained'
           sx={{
-            background: '#43A047',
+            background: '#276329',
             width: {
               xs: '95%',
               sm: '35%',
@@ -193,7 +193,7 @@ useEffect(() => {
           />
           <Typography
           sx={{
-            color: '#2E7D32',
+            color: '#276329',
             fontFamily: 'PTSerif-Bold, sans-serif',
           }}
           >
@@ -207,6 +207,7 @@ useEffect(() => {
         :
         <>
         <IconButton
+        aria-label='Botón para abrir menú'
         onClick={
           ()=>setOpenDrawer(!openDrawer)
         }
