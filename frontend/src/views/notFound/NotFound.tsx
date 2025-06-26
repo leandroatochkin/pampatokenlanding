@@ -1,5 +1,6 @@
 import {Button, Box, Typography} from '@mui/material'
 import {useNavigate} from 'react-router-dom'
+import { Helmet } from 'react-helmet-async'
 
 
 export default function NotFound() {
@@ -7,7 +8,14 @@ export default function NotFound() {
   const navigate = useNavigate()
 
   return (
-    <Box sx={{
+    <>
+    <Helmet>
+    <title>Página no encontrada | PampaTokens</title>
+    <meta name="robots" content="noindex" />
+    </Helmet>
+    <Box
+      aria-label="Página no encontrada"
+      sx={{
         height: "100vh",
         width: "100vw",
         display: "flex",
@@ -15,19 +23,21 @@ export default function NotFound() {
         alignItems: "center",
         backgroundColor: "#f5f5f5",
         color: "#333",
-
     }}>
-      <Box className="flex flex-1 flex-col items-center justify-center p-6 text-center">
+      <Box
+        aria-label="Contenido de error 404"
+        className="flex flex-1 flex-col items-center justify-center p-6 text-center"
+      >
         <Box 
-        sx={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-        }}
+          sx={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+          }}
         >
           <Box sx={{
-            height: {xs: "15rem", sm: "4rem"},
-            width: {xs: "15rem", sm: "4rem"},
+              height: {xs: "15rem", sm: "4rem"},
+              width: {xs: "15rem", sm: "4rem"},
           }}>
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -35,6 +45,7 @@ export default function NotFound() {
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
+              aria-hidden="true"
             >
               <path
                 strokeLinecap="round"
@@ -46,30 +57,34 @@ export default function NotFound() {
           </Box>
         </Box>
         <Typography 
-        variant="h1"
-        sx={{
-            textAlign: "center",
-        }}
-        >404</Typography>
+          variant="h1"
+          sx={{
+              textAlign: "center",
+          }}
+        >
+          404
+        </Typography>
         <Typography variant="h2">Page Not Found</Typography>
         <Typography variant="body1">
           La página que estás buscando no existe o ha sido eliminada. Puedes volver a la página de inicio o buscar algo nuevo.
         </Typography>
         <Box
-        sx={{
-            display: "flex",
-            justifyContent: "center",
-            mt: 2
-        }}
+          sx={{
+              display: "flex",
+              justifyContent: "center",
+              mt: 2
+          }}
         >
-        <Button
-        variant="outlined"
-        onClick={() => navigate('/')}
-        >
-           volver
-        </Button>
+          <Button
+            variant="outlined"
+            onClick={() => navigate('/')}
+            aria-label="Volver a la página de inicio"
+          >
+             volver
+          </Button>
         </Box>
       </Box>
     </Box>
+    </>
   )
 }

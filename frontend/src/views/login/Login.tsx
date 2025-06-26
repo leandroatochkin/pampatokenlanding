@@ -63,7 +63,6 @@ const onSubmit = async (data: LoginData) => {
         });
         const authData = await authRes.json();
         if (authRes.ok) {
-            console.log(authData)
             userStore.getState().setAuthStatus(true, authData.userId, authData.userFirstName, authData.userLastName, authData.userEmail, authData.isVerified)
             navigate('/operations');
         }
@@ -80,6 +79,7 @@ const onSubmit = async (data: LoginData) => {
 const isMobile = useMobile()
   return (
     <Box
+    aria-label="Sección de inicio de sesión"
     sx={{
         width: '100vw',
         height: '100%',
@@ -91,6 +91,7 @@ const isMobile = useMobile()
     >
         <Paper
             id='login'
+            aria-label="Formulario de inicio de sesión"
             sx={{
                 borderRadius: 4,
                 width: {
@@ -98,7 +99,6 @@ const isMobile = useMobile()
                     xs: '86vw'
                 },
                 p: 2,
-
             }}
             >
         {
@@ -186,7 +186,7 @@ const isMobile = useMobile()
                         <InputAdornment position="end">
                         <IconButton
                             aria-label={
-                            showPassword ? 'hide the password' : 'display the password'
+                            showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'
                             }
                             onClick={() => setShowPassword(!showPassword)}
                         >
@@ -217,10 +217,10 @@ const isMobile = useMobile()
           underline='none'
           fontWeight='medium'
           sx={{
-            color: '#43A047', // normal color
+            color: '#43A047',
             textDecoration: 'none',
             '&:hover': {
-              color: '#2E7D32', // hover color
+              color: '#2E7D32',
               cursor: 'pointer'
             },
           }}
@@ -237,6 +237,7 @@ const isMobile = useMobile()
         }
         </Paper>
     </Box>
+
   )
 }
 

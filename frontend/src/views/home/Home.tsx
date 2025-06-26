@@ -9,11 +9,12 @@ import HomeCard from '../../components/cards/HomeCard';
 import { useMobile } from '../../utils/hooks';
 import { useNavigate } from 'react-router-dom';
 import { userStore } from '../../utils/store';
+import { Helmet } from 'react-helmet-async';
 
 
 
 const Home = () => {
-const [_, setScrollY] = useState<number>(0)
+const [, setScrollY] = useState<number>(0)
 const [closeCookieAdvisor, setCloseCookieAdvisor] = useState<boolean>(false)
 const isMobile = useMobile()
   
@@ -102,108 +103,119 @@ const clientBrowser = navigator.userAgent
        el?.scrollIntoView({ behavior: 'smooth' })
       }
     } catch (err) {
+      console.error(err)
       el?.scrollIntoView({ behavior: 'smooth' })
     }
     
   }
 
   return (
-        <Box
-        id='home'
-        sx={{
-            width: '100vw',
-            height: '100%',
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'space-evenly',
-        }}
-        >
-          {
-            clientBrowser.includes('Safari') && !clientBrowser.includes('Chrome') && !clientBrowser.includes('Edge') && !closeCookieAdvisor && <CookieAdvisor />
-          }
-            <Box>
-                <Typography
-                variant={isMobile ? 'h3' : 'h1'}
-                color='#43A047'
-                fontWeight='bolder'
-                sx={{
-                    textShadow: '0px 3px 5px rgba(0,0,0,0.6)',
-                    textAlign: {
-                      xs: 'left',
-                      md: 'center',
-                    },
-                    mr: {
-                      sm: 2,
-                      xs: 0
-                    },
-                    pl: 1,
-                    fontFamily: 'PTSerif-Bold, sans-serif', 
-                }}
-                >
-                    El Futuro de la Inversión Agrícola
-                </Typography>
-                <Typography
-                color='#f5f5f5'
-                variant={isMobile ? 'h5' : 'h3'}
-                sx={{
-                    textShadow: '0px 3px 5px rgba(0,0,0,0.6)',
-                    textAlign: {
-                      xs: 'left',
-                      md: 'center',
-                    },
-                    fontFamily: 'PTSerif-Regular, sans-serif',
-                    pl: 1,
+    <>
+    <Helmet>
+      <title>Inicio | PampaTokens</title>
+      <meta
+        name="description"
+        content="Plataforma segura para comprar y vender tokens respaldados en agricultura."
+      />
+    </Helmet>
+    <Box
+      id="home"
+      aria-label="Sección de inicio"
+      sx={{
+        width: '100vw',
+        height: '100%',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'space-evenly',
+      }}
+    >
+      {clientBrowser.includes('Safari') &&
+        !clientBrowser.includes('Chrome') &&
+        !clientBrowser.includes('Edge') &&
+        !closeCookieAdvisor && <CookieAdvisor />}
 
-                }}
-                >
-                    Tokenización de producción ágricola de tierras
-                </Typography>
-                <Button
-                variant='contained'
-                endIcon={isMobile ? <ArrowDropDown/> : <ArrowForwardIos/>}
-                sx={{
-                    background: '#43A047',
-                    mt: 4,
-                    p: 2,
-                    borderRadius: 4
-                }}
-                onClick={handleStartOperating}
-                >
-                    comenzar
-                </Button>
-            </Box>
-            <Box
-            sx={{
-                width: '100vw',
-                display: 'flex',
-                flexDirection: {
-                    xs: 'column',
-                    sm: 'row',
-                    md: 'row'
-                },
-                mt: 4,
-                gap: {
-                    xs: 4,
-                    sm: 2,
-                },
-                justifyContent: {
-                    md: 'space-around',
-                },
-              
-            }}
-            >
-                {
-                    featureItems.map((feature, index)=>(
-                        <HomeCard 
-                        key={index}
-                        icon={feature.icon}
-                        title={feature.title}
-                        description={feature.description}
-                        />
-                    ))
-                }
-            </Box>
-        </Box>
+      <Box aria-label="Texto principal de bienvenida">
+        <Typography
+          variant={isMobile ? 'h3' : 'h1'}
+          color="#43A047"
+          fontWeight="bolder"
+          sx={{
+            textShadow: '0px 3px 5px rgba(0,0,0,0.6)',
+            textAlign: {
+              xs: 'left',
+              md: 'center',
+            },
+            mr: {
+              sm: 2,
+              xs: 0,
+            },
+            pl: 1,
+            fontFamily: 'PTSerif-Bold, sans-serif',
+          }}
+        >
+          El Futuro de la Inversión Agrícola
+        </Typography>
+        <Typography
+          color="#f5f5f5"
+          variant={isMobile ? 'h5' : 'h3'}
+          sx={{
+            textShadow: '0px 3px 5px rgba(0,0,0,0.6)',
+            textAlign: {
+              xs: 'left',
+              md: 'center',
+            },
+            fontFamily: 'PTSerif-Regular, sans-serif',
+            pl: 1,
+          }}
+        >
+          Tokenización de producción ágricola de tierras
+        </Typography>
+        <Button
+          variant="contained"
+          endIcon={isMobile ? <ArrowDropDown /> : <ArrowForwardIos />}
+          sx={{
+            background: '#43A047',
+            mt: 4,
+            p: 2,
+            borderRadius: 4,
+          }}
+          onClick={handleStartOperating}
+          aria-label="Comenzar a operar"
+        >
+          comenzar
+        </Button>
+      </Box>
+      <Box
+        aria-label="Características destacadas"
+        sx={{
+          width: '100vw',
+          display: 'flex',
+          flexDirection: {
+            xs: 'column',
+            sm: 'row',
+            md: 'row',
+          },
+          mt: 4,
+          gap: {
+            xs: 4,
+            sm: 2,
+          },
+          justifyContent: {
+            md: 'space-around',
+          },
+        }}
+      >
+        {featureItems.map((feature, index) => (
+          <HomeCard
+            key={index}
+            icon={feature.icon}
+            title={feature.title}
+            description={feature.description}
+          />
+        ))}
+      </Box>
+    </Box>
+    </>
   );
 };
 

@@ -4,6 +4,7 @@ import { Instagram, Facebook } from '@mui/icons-material'
 const Footer = () => {
   return (
     <Box
+    aria-label="Información legal y redes sociales"
     sx={{
         width: '100vw',
         background: '#2E7D32',
@@ -13,48 +14,50 @@ const Footer = () => {
         p: 1
     }}
     >
-   <Typography
-   sx={{
-    textAlign: 'center',
-    fontSize: { xs: '10px', md: '14px'},
-    width: '95%'
-   }}
-   >
-   Los Pampas token representan un derecho de participación en un fideicomiso no financiero. El presente documento no implica una oferta pública en los términos de la ley 26.831 puesto que los Pampa Tokens no son valores negociables: carecen de aptitud para su negociación masificada e impersonal. La inversión propuesta está sujeta a los riesgos propios de toda inversión en general y a los de la actividad agrícola en particular, sin que se garantice a los eventuales inversores una rentabilidad, ni la recuperabilidad del capital invertido.
-   </Typography>
-   <Divider/>
-   <Box
-   sx={{
-    display:'flex',
-    flexDirection: 'column'
-   }}
-   >
-    <Typography>
-    nuestras redes 
-    </Typography>
-
-    <Box
-    sx={{
-      display: 'flex',
-      justifyContent: 'center'
-    }}
+    <Typography
+      aria-label="Texto legal sobre los Pampas token"
+      sx={{
+        textAlign: 'center',
+        fontSize: { xs: '10px', md: '14px'},
+        width: '95%'
+      }}
     >
-        <IconButton>
-           <Instagram 
-           sx={{
-            color: 'white'
-           }}
-           />
-        </IconButton>
-        <IconButton>
-           <Facebook 
-           sx={{
-            color: 'white'
-           }}
-           />
-        </IconButton>
+    Los Pampas token representan un derecho de participación en un fideicomiso no financiero. El presente documento no implica una oferta pública en los términos de la ley 26.831 puesto que los Pampa Tokens no son valores negociables: carecen de aptitud para su negociación masificada e impersonal. La inversión propuesta está sujeta a los riesgos propios de toda inversión en general y a los de la actividad agrícola en particular, sin que se garantice a los eventuales inversores una rentabilidad, ni la recuperabilidad del capital invertido.
+    </Typography>
+    <Divider/>
+    <Box
+      aria-label="Sección de redes sociales"
+      sx={{
+        display:'flex',
+        flexDirection: 'column'
+      }}
+    >
+      <Typography>
+      nuestras redes 
+      </Typography>
+
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'center'
+        }}
+      >
+          <IconButton aria-label="Instagram">
+            <Instagram 
+            sx={{
+              color: 'white'
+            }}
+            />
+          </IconButton>
+          <IconButton aria-label="Facebook">
+            <Facebook 
+            sx={{
+              color: 'white'
+            }}
+            />
+          </IconButton>
+      </Box>
     </Box>
-   </Box>
     </Box>
   )
 }

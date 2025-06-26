@@ -125,7 +125,7 @@ const Register = () => {
   const [frontImage, setFrontImage] = useState<string | null>(null)
   const [backIdFile, setBackIdFile] = useState<File | null>(null)
   const [frontIdFile, setFrontIdFile] = useState<File | null>(null)
-  const [_selfieFile, setSelfieFile] = useState<File | null>(null)
+  const [selfieFile, setSelfieFile] = useState<File | null>(null)
   const [backImage, setBackImage] = useState<string | null>(null)
   const [selfieImage, setSelfieImage] = useState<string | null>(null)
   const [loading, setLoading] = useState<boolean>(false)
@@ -176,22 +176,22 @@ const Register = () => {
   const onSubmit = async (data: UserDTO) => {
     setLoading(true)
    if (frontIdFile && 
-    backIdFile  
-    //selfieFile
+    backIdFile && 
+    selfieFile
   ) {
-    const resizedFrontImage = await resizeImage(frontIdFile, 500, 500)
-    const resizedBackImage = await resizeImage(backIdFile, 500, 500)
-    //const resizedSelfieImage = await resizeImage(selfieFile, 500, 500)
+    const resizedFrontImage = await resizeImage(frontIdFile, 800, 800)
+    const resizedBackImage = await resizeImage(backIdFile, 800, 800)
+    const resizedSelfieImage = await resizeImage(selfieFile, 800, 800)
     if(!resizedFrontImage ||
-       !resizedBackImage 
-       //!resizedSelfieImage 
+       !resizedBackImage ||
+       !resizedSelfieImage 
        || !data) {
       console.error('Error resizing images')
     }
     const formData = new FormData()
     formData.append('frontIdImage', resizedFrontImage)
     formData.append('backIdImage', resizedBackImage)
-    //formData.append('selfieImage', resizedSelfieImage)
+    formData.append('selfieImage', resizedSelfieImage)
     formData.append('user', JSON.stringify(data))
     
     try {
@@ -200,7 +200,6 @@ const Register = () => {
         body: formData,
       })
       if (response.ok) {
-        console.log('Success:', response)
         setSuccessElement(true)
         setTimeout(() =>{
           handleSectionClick('login')

@@ -11,6 +11,7 @@ import { ThemeProvider } from '@emotion/react'
 import './App.css'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import NotFound from './views/notFound/NotFound'
+import { HelmetProvider } from 'react-helmet-async';
 
 
 
@@ -48,11 +49,11 @@ function App() {
 
   return (
   
-      <>
+      <HelmetProvider>
       <ThemeProvider theme={theme}>
       <RouterProvider router={router} />
       </ThemeProvider>
-      </>
+      </HelmetProvider>
   
   )
 }

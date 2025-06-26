@@ -307,6 +307,7 @@ const rows =
         />
     }
     <Box
+    aria-label="Operaciones - Página principal"
     sx={{
         height: '100dvh',
         width: '100vw',
@@ -318,6 +319,7 @@ const rows =
     }}
     >
         <Paper
+        aria-label="Contenedor principal"
         elevation={3}
         sx={{
             height: {sm: '90%', xs: '100dvh'},
@@ -336,6 +338,7 @@ const rows =
         }}
         >   
            <Box
+           aria-label="Encabezado de usuario"
            sx={{
             display: 'flex',
             flexDirection: {
@@ -365,6 +368,7 @@ const rows =
                 operaciones
             </Typography>
             <Box
+            aria-label="Datos del usuario"
             sx={{
                  width: {xs: '100%', sm: '50%'},
                  display: 'flex',
@@ -379,6 +383,7 @@ const rows =
                 </Typography>
             </Box>
             <Box
+            aria-label="Acciones de usuario"
             sx={{
                 display: 'flex',
                 width: {xs: '100%', sm: '50%'},
@@ -388,34 +393,36 @@ const rows =
                 }
             }}
             >
-      
             <Tooltip title="Refrescar datos" arrow>
                 <IconButton
-            sx={{
-                ml: 2,
-                border: '1px solid #ccc',
-            }}
-            onClick={()=>setRefetchTrigger(prev => prev + 1)}
-            >
-                <Refresh />
-            </IconButton>
+                aria-label="Refrescar datos"
+                sx={{
+                    ml: 2,
+                    border: '1px solid #ccc',
+                }}
+                onClick={()=>setRefetchTrigger(prev => prev + 1)}
+                >
+                    <Refresh />
+                </IconButton>
             </Tooltip>
             <Tooltip title="Cerrar sesión" arrow>
                 <IconButton
-            sx={{
-                ml: 2,
-                border: '1px solid #ccc',
-            }}
-            onClick={handleLogout}
-            >
-                <LogoutIcon />
-            </IconButton>
+                aria-label="Cerrar sesión"
+                sx={{
+                    ml: 2,
+                    border: '1px solid #ccc',
+                }}
+                onClick={handleLogout}
+                >
+                    <LogoutIcon />
+                </IconButton>
             </Tooltip>
             </Box>
            </Box>
            {
             userIsVerified !== 'A' && (
                 <Paper 
+                aria-label="Estado de verificación"
                 elevation={6}
                 sx={{
                     background: userIsVerified === 'X' ? 'red' : 'green',
@@ -440,6 +447,7 @@ const rows =
             )
            }
             <Box
+            aria-label="Tabla de operaciones"
             sx={{
                 display: 'flex',
                 width: '100%',
@@ -452,6 +460,7 @@ const rows =
                         ?
                         (
                           <DataGrid
+                          aria-label="Listado de operaciones"
                           localeText={customLocaleText}  
                           rows={rows}
                           columns={columns}
@@ -463,7 +472,6 @@ const rows =
                           disableColumnSelector
                           disableRowSelectionOnClick
                           sx={{
-                            //opacity: isUnpaidNotesLoading || refreshLoading ? 0.7 : 1,
                             opacity: 1,
                             transition: "opacity 0.3s ease",
                             minHeight: "400px",
@@ -480,15 +488,10 @@ const rows =
                           <TableSkeleton />
                         )
                        }
-
-
-
             </Box>
 
-
-      
-
                 <Box
+                aria-label="Acciones principales"
                 sx={{
                     width: '100%',
                     display: 'flex',
@@ -503,6 +506,7 @@ const rows =
                 }}
                 >
                 <MotionButton
+                aria-label="Comprar tokens"
                 variant='contained'
                 sx={{
                     width: {xs: '95%', md: '50%'},
@@ -526,6 +530,7 @@ const rows =
                     comprar
                 </MotionButton>
                 <MotionButton
+                  aria-label="Vender tokens"
                   variant='contained'
                   sx={{
                     width: {xs: '95%', md: '50%'},
@@ -545,10 +550,11 @@ const rows =
                     }
                 }
                 >
-                    <CurrencyExchangeIcon sx={{ mr: 1 }} />
+                <CurrencyExchangeIcon sx={{ mr: 1 }} />
                     vender
                 </MotionButton>
                 <Button
+                  aria-label="Ver portfolio"
                   variant='contained'
                   sx={{
                     width: {xs: '95%', md: '50%'},
@@ -563,6 +569,7 @@ const rows =
                     portfolio
                 </Button>
                 <Button
+                  aria-label="Ver mis operaciones"
                   variant='contained'
                   sx={{
                     width: {xs: '95%', md: '50%'},
@@ -576,17 +583,10 @@ const rows =
                 >
                     mis operaciones
                 </Button>
-                {/* <Button
-                  variant='contained'
-                  sx={{
-                    width: {xs: '100%', md: '50%'},
-                }}
-                >
-                    Ajustes
-                </Button> */}
                 </Box>
         </Paper>
     </Box>
+
     </>
         )
         :

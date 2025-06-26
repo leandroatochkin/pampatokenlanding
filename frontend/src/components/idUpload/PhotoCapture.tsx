@@ -201,8 +201,8 @@ const PhotoCapture: React.FC<PhotoCaptureProps> = ({setSelfieImage, selfieImage,
       }
       </Box>
       
-    
-      {/* <Box>
+{/*     
+      <Box>
       <input type="file" accept="image/*" onChange={handleFileChange} />
       </Box> */}
 
