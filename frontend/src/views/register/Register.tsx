@@ -205,7 +205,12 @@ const Register = () => {
           handleSectionClick('login')
         },3000)
       } else {
-        console.error('Error:', response)
+        const errorData = await response.json() // read the body as JSON
+        console.error('Error message:', errorData.message)
+        if(errorData.message.includes('Duplicate entry')){
+          alert(`Email ya registrado. Por favor ingrese uno nuevo.`)
+          setLoading(false)
+        }
       }
    }
     catch (error) {
