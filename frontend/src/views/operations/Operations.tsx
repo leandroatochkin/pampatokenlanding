@@ -367,12 +367,30 @@ const rows =
             >
                 operaciones
             </Typography>
+           
+            <Box
+            aria-label="Acciones de usuario"
+            sx={{
+                display: 'flex',
+                width: {xs: '100%', sm: '50%'},
+                justifyContent: {
+                    xs: 'space-between',
+                    sm: 'flex-end'
+                },
+                mb: {xs: 1, sm: 0}
+            }}
+            >
             <Box
             aria-label="Datos del usuario"
             sx={{
-                 width: {xs: '100%', sm: '50%'},
+                 width: {xs: '100%', sm: 'auto'},
                  display: 'flex',
-                 flexDirection: 'column'
+                 border: '1px solid #ccc',
+                 gap: '5px',
+                 borderRadius: 2,
+                 justifyContent: 'flex-end',
+                 p: 1
+
             }}
             >
                 <Typography>
@@ -382,17 +400,6 @@ const rows =
                     {userLastName}
                 </Typography>
             </Box>
-            <Box
-            aria-label="Acciones de usuario"
-            sx={{
-                display: 'flex',
-                width: {xs: '100%', sm: '50%'},
-                justifyContent: {
-                    xs: 'space-between',
-                    sm: 'flex-end'
-                }
-            }}
-            >
             <Tooltip title="Refrescar datos" arrow>
                 <IconButton
                 aria-label="Refrescar datos"
@@ -427,7 +434,8 @@ const rows =
                 sx={{
                     background: userIsVerified === 'X' ? 'red' : 'green',
                     borderRadius: 2,
-                    width: '100%'
+                    width: '100%',
+                    mb: {xs: 1, sm: 0}
                 }}
                 >
                     <Typography
@@ -452,7 +460,8 @@ const rows =
                 display: 'flex',
                 width: '100%',
                 justifyContent: 'space-evenly',
-                background: 'BLUE'
+                background: 'BLUE',
+                mb: {xs: 1, sm: 0}
             }}
             >
                 {

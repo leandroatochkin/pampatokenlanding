@@ -19,6 +19,7 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import {useScrollNavigation, useMobile} from '../../utils/hooks';
 import { userStore } from '../../utils/store';
 import { useNavigate } from 'react-router-dom';
+import ForgotPasswordDialog from '../../components/dialogs/ForgotPassword';
 
 
 interface LoginData {
@@ -29,6 +30,7 @@ interface LoginData {
  const Login = () => {
     const [showPassword, setShowPassword] = useState<boolean>(false)
     const [loading, setLoading] = useState<boolean>(false)
+    const [openForgotPasswordDialog, setOpenForgotPasswordDialog] = useState<boolean>(false)
     const {
         handleSectionClick
       } = useScrollNavigation();
@@ -78,6 +80,10 @@ const onSubmit = async (data: LoginData) => {
 
 const isMobile = useMobile()
   return (
+    <>
+    {
+        openForgotPasswordDialog && <ForgotPasswordDialog open={openForgotPasswordDialog} onClose={()=>setOpenForgotPasswordDialog(false)}/>
+    }
     <Box
     aria-label="Sección de inicio de sesión"
     sx={{
@@ -210,12 +216,12 @@ const isMobile = useMobile()
             >
                 Iniciar sesión
             </Button>
-            <Link
+        <Link
           onClick={
             ()=>handleSectionClick('register')
           }
           underline='none'
-          fontWeight='medium'
+          fontFamily={'PTSerif-Bold, sans-serif'}
           sx={{
             color: '#276329',
             textDecoration: 'none',
@@ -227,6 +233,15 @@ const isMobile = useMobile()
           >
             ¿No tenés una cuenta? Registrate
           </Link>
+          <Typography
+          fontFamily={'PTSerif-Bold, sans-serif'}
+          sx={{
+            color: '#276329'
+          }}
+          variant={'body1'}
+          >
+            ¿Olvidaste tu contraseña? Hace click <Typography component={'span'} onClick={()=>setOpenForgotPasswordDialog(true)} sx={{fontWeight: 'bolder','&:hover': {color: '#2E7D32',cursor: 'pointer'},}}>acá</Typography>
+          </Typography>
         </form>
         </>
             )
@@ -237,7 +252,7 @@ const isMobile = useMobile()
         }
         </Paper>
     </Box>
-
+    </>
   )
 }
 
