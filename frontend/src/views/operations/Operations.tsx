@@ -5,7 +5,9 @@ import {
     Box,
     Button,
     IconButton,
-    Tooltip,       
+    Tooltip,
+    Menu,
+    MenuItem       
  } from '@mui/material'
  import { motion } from 'framer-motion'
  import MonetizationOnIcon from '@mui/icons-material/MonetizationOn';
@@ -17,7 +19,7 @@ import {
  import { userStore } from '../../utils/store'
  import { TokenDTO, TokenInfo } from '../../utils/interfaces'
 import NotFound from '../notFound/NotFound';
-import LogoutIcon from '@mui/icons-material/Logout';
+//import LogoutIcon from '@mui/icons-material/Logout';
 import { useNavigate } from 'react-router-dom';
 import {
     DataGrid,
@@ -29,6 +31,7 @@ import { customLocaleText } from '../../utils/locale'
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import TrendingFlatIcon from '@mui/icons-material/TrendingFlat';
 import TrendingDownIcon from '@mui/icons-material/TrendingDown';
+import { Settings } from '@mui/icons-material';
 import { Refresh } from '@mui/icons-material';
 import dayjs from 'dayjs';
 
@@ -36,6 +39,7 @@ interface LoadingStates {
     buyValue: boolean
     sellValue: boolean
     fetchingToken: boolean
+    isDeletingAccount: boolean
 }
 
 interface DialogStates {
@@ -57,7 +61,8 @@ const [refetchTrigger, setRefetchTrigger] = React.useState<number>(0);
 const [isLoading, setIsLoading] = React.useState<LoadingStates>({
     buyValue: false,
     sellValue: false,
-    fetchingToken: false
+    fetchingToken: false,
+    isDeletingAccount: false
 })
 const [dialogStates, setDialogStates] = React.useState<DialogStates>({
     buyTokenDialog: false,
@@ -66,6 +71,8 @@ const [dialogStates, setDialogStates] = React.useState<DialogStates>({
     movementsDialog: false,
     settingsDialog: false
 })
+const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+const open = Boolean(anchorEl);
 
 const navigate = useNavigate()
 
@@ -268,6 +275,75 @@ const rows =
     };
   });
 
+  const handleDeleteAccount = async () => {
+    if(confirm(`¿Está seguro que quiere borrar su cuenta? Esta acción no tiene retorno.`)){
+        if(confirm(`Por favor confirme nuevamente que quiere borrar su cuenta.`)){
+             setIsLoading(prev => ({
+            ...prev,
+            isDeletingAccount: true
+             }));
+            try{
+                const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/delete-account/${userId}`,{
+                    credentials: 'include',
+                    method: 'DELETE'
+                })
+                if(!response.ok){
+                    alert(`Error al borrar su cuenta.`)
+                    setIsLoading(prev => ({
+                    ...prev,
+                    isDeletingAccount: false
+                    }));
+                    return
+                }
+                alert(`Cuenta eliminada exitosamente.`)
+                 setIsLoading(prev => ({
+                    ...prev,
+                    isDeletingAccount: false
+                    }));
+                navigate('/')
+                userStore.getState().logout()
+            } catch(e){
+                console.error(e)
+                 setIsLoading(prev => ({
+                    ...prev,
+                    isDeletingAccount: false
+                    }));
+                alert(`Error al borrar su cuenta.`)
+            }
+        } return
+    } return
+  }
+
+  const handleSettingsClick = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+
+  const SettingsMenu = () => {
+    return(
+        <Menu
+        id="demo-positioned-menu"
+        aria-labelledby="demo-positioned-button"
+        anchorEl={anchorEl}
+        open={open}
+        onClose={handleClose}
+        anchorOrigin={{
+          vertical: 'top',
+          horizontal: 'left',
+        }}
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'left',
+        }}
+      >
+        <MenuItem onClick={handleLogout}>Cerrar sesión</MenuItem>
+        <MenuItem onClick={handleDeleteAccount}>Eliminar cuenta</MenuItem>
+      </Menu>
+    )
+  }
 
   return (
     <>
@@ -380,7 +456,8 @@ const rows =
                 mb: {xs: 1, sm: 0}
             }}
             >
-            <Box
+            <Paper
+            elevation={4}
             aria-label="Datos del usuario"
             sx={{
                  width: {xs: '100%', sm: 'auto'},
@@ -389,8 +466,8 @@ const rows =
                  gap: '5px',
                  borderRadius: 2,
                  justifyContent: 'flex-end',
-                 p: 1
-
+                 p: 1,
+                 alignItems: 'center'
             }}
             >
                 <Typography>
@@ -399,7 +476,20 @@ const rows =
                 <Typography>
                     {userLastName}
                 </Typography>
-            </Box>
+                <Tooltip title="Opciones" arrow>
+                <IconButton
+                aria-label="Opciones"
+                sx={{
+                    ml: 2,
+                    border: '1px solid #ccc',
+                }}
+                onClick={handleSettingsClick}
+                >
+                    <Settings />
+                </IconButton>
+                
+            </Tooltip>
+            <SettingsMenu />
             <Tooltip title="Refrescar datos" arrow>
                 <IconButton
                 aria-label="Refrescar datos"
@@ -412,7 +502,7 @@ const rows =
                     <Refresh />
                 </IconButton>
             </Tooltip>
-            <Tooltip title="Cerrar sesión" arrow>
+            {/* <Tooltip title="Cerrar sesión" arrow>
                 <IconButton
                 aria-label="Cerrar sesión"
                 sx={{
@@ -423,7 +513,9 @@ const rows =
                 >
                     <LogoutIcon />
                 </IconButton>
-            </Tooltip>
+            </Tooltip> */}
+            </Paper>
+            
             </Box>
            </Box>
            {
