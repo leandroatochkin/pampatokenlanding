@@ -25,6 +25,8 @@ export default function Dashboard({ children }: { children: React.ReactNode }) {
     }
   }, [])
 
+
+
   useEffect(() => {
   const img = new Image();
   img.src = '/field3.avif';

@@ -10,14 +10,13 @@ interface HomeCardProps {
     key: number
 }
 
-const HomeCard: React.FC<HomeCardProps> = ({title, description, icon, key}) => {
+const HomeCard: React.FC<HomeCardProps> = ({title, description, icon}) => {
 
     const MotionCard = motion.create(Card);
     const isMobile = useMobile()
 
   return (
     <MotionCard
-    key={key}
     aria-label={`Tarjeta destacada: ${title}`}
     sx={{
         borderRadius: '16px',

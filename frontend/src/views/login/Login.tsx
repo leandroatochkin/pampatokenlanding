@@ -143,10 +143,10 @@ const isMobile = useMobile()
                 <Box className="relative">
                     <TextField
                     fullWidth
-                    id="email"
+                    id="login-email"
                     type="email"
                     variant="outlined"
-                    placeholder="name@example.com"
+                    placeholder="mail@ejemplo.com"
                     {...register(`email`, { required: 'Required field', pattern: { value: emailRegex, message: 'Invalid email address' } })}
                     error={!!errors.email}
                     helperText={errors.email?.message}
@@ -184,7 +184,7 @@ const isMobile = useMobile()
                 <Box className="relative">
                     <OutlinedInput
                     fullWidth
-                    id="password"
+                    id="login-password"
                     color="secondary"
                     type={showPassword ? "text" : "password"}
                     {...register(`password`, { required: 'Campo requerido', pattern: { value: passwordRegex, message: 'La contraseña debe tener al menos 8 caracteres, una mayúscula, una minúscula, un número y un símbolo' } })}
@@ -239,8 +239,23 @@ const isMobile = useMobile()
             color: '#276329'
           }}
           variant={'body1'}
+          aria-label='link para recuperar clave'
           >
-            ¿Olvidaste tu contraseña? Hace click <Typography component={'span'} onClick={()=>setOpenForgotPasswordDialog(true)} sx={{fontWeight: 'bolder','&:hover': {color: '#2E7D32',cursor: 'pointer'},}}>acá</Typography>
+            ¿Olvidaste tu contraseña? Hace click <Typography
+  component="span"
+  onClick={() => setOpenForgotPasswordDialog(true)}
+  sx={{
+    fontWeight: 'bolder',
+    cursor: 'pointer',
+    '&:hover': {
+      color: '#2E7D32',
+      textDecoration: 'underline',
+    },
+  }}
+>
+  acá
+</Typography>
+
           </Typography>
         </form>
         </>

@@ -3,7 +3,7 @@ import {
   Box,
   Link,
   Typography,
-  Button, 
+  //Button, 
   Drawer,
   IconButton
 } from '@mui/material'
@@ -11,7 +11,7 @@ import Logo from '../logo/Logo'
 import { motion } from 'framer-motion'
 import {useScrollNavigation, useMobile} from '../../utils/hooks'
 import MenuOpenIcon from '@mui/icons-material/MenuOpen';
-import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
+//import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
 
 const Navbar = () => {
   const [openDrawer, setOpenDrawer] = useState<boolean>(false)
@@ -52,7 +52,7 @@ useEffect(() => {
     return (
       <Box
       sx={{
-        width: !isMobile ? '40%' : '90',
+        width: !isMobile ? '30%' : '90',
         height: {
           md: 'auto',
           xs: '20%'
@@ -82,24 +82,7 @@ useEffect(() => {
           }}
           >
             Inicio
-          </MotionLink>
-          <MotionLink
-          onClick={
-            ()=>handleSectionClick('login')
-          }
-          underline='none'
-          fontWeight='medium'
-          sx={{
-            color: '#276329', // normal color
-            textDecoration: 'none',
-            '&:hover': {
-              color: '#2E7D32',
-              cursor: 'pointer' // hover color
-            },
-          }}
-          >
-            Login
-          </MotionLink>
+          </MotionLink> 
           <MotionLink
           onClick={
             ()=>handleSectionClick('register')
@@ -117,7 +100,28 @@ useEffect(() => {
           >
             Registro
           </MotionLink>
-          <Button
+          <MotionLink
+          onClick={
+            ()=>handleSectionClick('login')
+          }
+          underline='none'
+          fontWeight='medium'
+          sx={{
+            background: '#276329',
+            color: '#f5f5f5', // normal color
+            textDecoration: 'none',
+            p: 2,
+            borderRadius: 2,
+            boxShadow: `0 5px 10px 0 rgba(0,0,0,0.5)`,
+            '&:hover': {
+              color: '#2E7D32',
+              cursor: 'pointer' // hover color
+            },
+          }}
+          >
+            Login
+          </MotionLink>
+          {/* <Button
           variant='contained'
           sx={{
             background: '#276329',
@@ -132,7 +136,7 @@ useEffect(() => {
           >
              <AccountBalanceWalletIcon />
              conectar wallet
-          </Button>
+          </Button> */}
       </Box>
     )
   }

@@ -5,6 +5,8 @@ import Login from './views/login/Login'
 import Register from './views/register/Register'
 import Footer from './views/footer/Footer'
 import Intro from './views/intro/Intro'
+import VerifyEmail from './views/verifyEmail/VerifyEmail'
+import ForgotPassword from './views/forgotPassword/ForgotPassword'
 import { OperationsWrapper } from './views/operations/OperationsWrapper'
 import { theme } from './utils/theme'
 import { ThemeProvider } from '@emotion/react'
@@ -28,6 +30,16 @@ const router = createBrowserRouter([
       <Footer />
       </Dashboard>
     ),
+    errorElement: <NotFound />,
+  },
+  {
+    path: '/verify-email',
+    element: <VerifyEmail />,
+    errorElement: <NotFound />,
+  },
+  {
+    path: '/reset-password',
+    element: <ForgotPassword />,
     errorElement: <NotFound />,
   },
   {

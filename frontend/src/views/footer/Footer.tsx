@@ -1,5 +1,6 @@
-import { Box, Typography, Divider, IconButton } from '@mui/material'
-import { Instagram, Facebook } from '@mui/icons-material'
+import { Box, Typography, Divider, IconButton, Tooltip } from '@mui/material'
+import { PermPhoneMsg, Email } from '@mui/icons-material'
+
 
 const Footer = () => {
   return (
@@ -33,7 +34,7 @@ const Footer = () => {
       }}
     >
       <Typography>
-      nuestras redes 
+      contacto 
       </Typography>
 
       <Box
@@ -42,19 +43,27 @@ const Footer = () => {
           justifyContent: 'center'
         }}
       >
-          <IconButton aria-label="Instagram">
-            <Instagram 
+          <Tooltip
+          title='+5491130975995'
+          >
+              <IconButton aria-label="Phone">
+            <PermPhoneMsg 
             sx={{
               color: 'white'
             }}
             />
           </IconButton>
-          <IconButton aria-label="Facebook">
-            <Facebook 
+          </Tooltip>
+          <IconButton aria-label="Email">
+            <a
+            href='mailto:contacto@pampatokens.com.ar'
+            >
+            <Email 
             sx={{
               color: 'white'
             }}
             />
+            </a>
           </IconButton>
       </Box>
     </Box>
