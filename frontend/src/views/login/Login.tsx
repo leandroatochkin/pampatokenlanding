@@ -70,6 +70,7 @@ const onSubmit = async (data: LoginData) => {
                 navigate('/operations');
             } else {
                 alert(`Correo no verificado. Por favor revise su bandeja de entrada o spam para encontrar su correo de activación.`)
+                return
             }
             
         }
