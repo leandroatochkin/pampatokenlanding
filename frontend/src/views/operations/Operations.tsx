@@ -165,10 +165,20 @@ const handleDialogClose = (dialog: keyof DialogStates) =>{
         fetchTokens();
     }, [fetchTokens, refetchTrigger]);
      
-    const handleLogout = () => {
+    const handleLogout = async () => {
         if(confirm(`¿Estás seguro de salir?`)){
             navigate('/')
-            userStore.getState().logout()   
+            try {
+    await fetch(`${import.meta.env.VITE_BACKEND_URL}/logout`, {
+      method: 'POST',
+      credentials: 'include',
+    });
+  } catch (e) {
+    console.error('Logout request failed', e);
+  }
+
+  userStore.getState().logout(); // clear state
+  navigate('/'); // or wherever you want to redirect   
         } return
     }
 
