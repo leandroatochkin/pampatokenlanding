@@ -67,16 +67,17 @@ const ForgotPassword = () => {
 
 const watchPassword = watch("password")
 
-const onSubmit = async () => {
+const onSubmit = async (data: ResetPassword) => {
   setLoading(true);
   try {
     const response = await fetch(
-      `${import.meta.env.VITE_BACKEND_URL}/reset-password?token=${token}`,
+      `${import.meta.env.VITE_BACKEND_URL}/reset-password`,
       {
-        method: 'GET',
+        method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
+        body: JSON.stringify(data)
       }
     );
 
