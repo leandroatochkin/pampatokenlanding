@@ -33,7 +33,7 @@ const ForgotPasswordDialog: React.FC<ForgotPasswordDialogProps> = ({open, onClos
 
         setLoading(true)
             try{
-                const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/reset-password`, {
+                const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/forgot-password`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
