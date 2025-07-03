@@ -66,7 +66,7 @@ const onSubmit = async (data: LoginData) => {
         const authData = await authRes.json();
         if (authRes.ok) {
             userStore.getState().setAuthStatus(true, authData.userId, authData.userFirstName, authData.userLastName, authData.userEmail, authData.isVerified, authData.emailVerified)
-            if(authData.emailVerified === '1'){
+            if(authData.emailVerified === 1){
                 navigate('/operations');
             } else {
                 alert(`Correo no verificado. Por favor revise su bandeja de entrada o spam para encontrar su correo de activación.`)

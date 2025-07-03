@@ -87,16 +87,16 @@ const clientBrowser = navigator.userAgent
   ];
 
   const handleStartOperating = async () => {
-      const el = document.getElementById('login')
+    const el = document.getElementById('login')
      try {
       const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/auth`, {
         method: 'GET',
         credentials: 'include'
       })
-      const data = await res.json()
+      const authData = await res.json()
 
-      if (res.ok && data.isAuthenticated) {
-        userStore.getState().setAuthStatus(true, data.userId)
+      if (res.ok && authData.isAuthenticated) {
+        userStore.getState().setAuthStatus(true, authData.userId, authData.userFirstName, authData.userLastName, authData.userEmail, authData.isVerified, authData.emailVerified)
         navigate('/operations')
       } else {
 

@@ -32,14 +32,21 @@ export const userStore = create<UserState>()((set) => ({
       emailVerified
     }),
 
-  logout: () =>
-    set({
-      isLoggedIn: false,
-      userId: null,
-      userFirstName: null,
-      userLastName: null,
-      userEmail: null,
-      userIsVerified: null,
-      emailVerified: null
-    }),
+  logout: () => {
+  // Remove the cookie by setting it with an expired date
+  document.cookie = 'token=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT; SameSite=None; Secure';
+
+  // Clear Zustand state
+  set({
+    isLoggedIn: false,
+    userId: null,
+    userFirstName: null,
+    userLastName: null,
+    userEmail: null,
+    userIsVerified: null,
+    emailVerified: null
+  });
+},
+
+     
 }))
