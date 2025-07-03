@@ -201,6 +201,7 @@ const Register = () => {
       })
       if (response.ok) {
         setSuccessElement(true)
+        alert(`Se ha enviado un correo de activación a su casilla. En caso de no encontrarla en su bandeja de entrada, por favor revisar spam.`)
         setTimeout(() =>{
           handleSectionClick('login')
         },3000)
@@ -1238,7 +1239,7 @@ const Register = () => {
               fontFamily: 'PTSerif-Bold'
             }}
             >
-                registro exitoso! Por favor, logueate!
+                ¡Registro exitoso! 
             </Typography>
           </Box>
         )
