@@ -1,19 +1,18 @@
 export interface TokenDTO {
     tokenId: string
     tokenName: string
-    tokenSymbol: string
+    tokenSymbol: number
     tokenAmount: number
     tokenPaidPrice: number
     tokenLastPrice: number
-    tokenExpiringDate: string
 }
 
 export interface TokenInfo {
-    SIMBOLO: string
-    NOMBRE: string
+    CODIGO_GRUPO: number
+    CODIGO_SIMBOLO: number
+    DES_SIMBOLO: string
     VALOR_COMPRA: number
     VALOR_VENTA: number
-    STOCK: number
-    VENCIMIENTO: string
+    FECHA: number
     rn: number
 }

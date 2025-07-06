@@ -24,10 +24,9 @@ interface BuyTokenDialogProps {
 interface BuyTransactionDTO{
     userId: string
     amount: number 
-    symbol: string
+    symbol: number
     boughtAtValue: number 
     tokenName: string 
-    tokenExpiringDate: string
 }
 
 const BuyTokenDialog: React.FC<BuyTokenDialogProps> = ({open, onClose, tokens, refetch}) => {
@@ -47,10 +46,9 @@ const BuyTokenDialog: React.FC<BuyTokenDialogProps> = ({open, onClose, tokens, r
         setPayload({
             userId: userId || '',
             amount: amount,
-            symbol: selectedToken?.SIMBOLO || '',
+            symbol: selectedToken?.CODIGO_SIMBOLO || 0,
             boughtAtValue: selectedToken?.VALOR_COMPRA || 0,
-            tokenName: selectedToken?.NOMBRE || '',
-            tokenExpiringDate: selectedToken?.VENCIMIENTO  || ''
+            tokenName: selectedToken?.DES_SIMBOLO || '',
         })
 
     },[amount, userId, tokens])
@@ -106,10 +104,10 @@ const BuyTokenDialog: React.FC<BuyTokenDialogProps> = ({open, onClose, tokens, r
         >Comprar Tokens</DialogTitle>
         <DialogContent>
             <Select
-            defaultValue={tokens[0].SIMBOLO}
+            defaultValue={tokens[0].CODIGO_SIMBOLO}
             label="Token"
             onChange={(e) => {
-                const selected = tokens.find(token => token.SIMBOLO === e.target.value);
+                const selected = tokens.find(token => token.CODIGO_SIMBOLO === e.target.value);
                 if (selected) {
                     setSelectedToken(selected);
                     setAmount(0); 
@@ -118,12 +116,12 @@ const BuyTokenDialog: React.FC<BuyTokenDialogProps> = ({open, onClose, tokens, r
             >
                 {tokens.map((token) => (
                     <MenuItem 
-                    key={token.SIMBOLO} 
-                    value={token.SIMBOLO}
+                    key={token.CODIGO_SIMBOLO} 
+                    value={token.CODIGO_SIMBOLO}
 
                     
                     >
-                        {token.NOMBRE} ({token.SIMBOLO})
+                        {`${token.CODIGO_SIMBOLO} (${token.DES_SIMBOLO})`}
                     </MenuItem>
                 ))}
             </Select>

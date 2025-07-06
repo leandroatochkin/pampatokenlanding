@@ -19,7 +19,6 @@ import {
  import { userStore } from '../../utils/store'
  import { TokenDTO, TokenInfo } from '../../utils/interfaces'
 import NotFound from '../notFound/NotFound';
-//import LogoutIcon from '@mui/icons-material/Logout';
 import { useNavigate } from 'react-router-dom';
 import {
     DataGrid,
@@ -33,7 +32,7 @@ import TrendingFlatIcon from '@mui/icons-material/TrendingFlat';
 import TrendingDownIcon from '@mui/icons-material/TrendingDown';
 import { Settings } from '@mui/icons-material';
 import { Refresh } from '@mui/icons-material';
-import dayjs from 'dayjs';
+
 
 interface LoadingStates {
     buyValue: boolean
@@ -200,7 +199,7 @@ const MotionButton = motion(Button);
     const columns =  [
           {
             field: "symbol",
-            headerName: "símbolo",
+            headerName: "código",
             width: 130,
             editable: false,
           },
@@ -212,35 +211,29 @@ const MotionButton = motion(Button);
           },
           {
             field: "tokenBuy",
-            headerName: "último precio",
+            headerName: "precio compra",
             width: 150,
             editable: false,
           },
           {
             field: "tokenSell",
-            headerName: "precio anterior",
+            headerName: "precio venta",
             width: 130,
             editable: false,
           },
           {
-            field: "tokenStock",
-            headerName: "stock",
-            width: 100,
-            editable: false,
-          },
-          {
-            field: "expiringDate",
-            headerName: "fecha de vencimiento",
+            field: "date",
+            headerName: "fecha",
             width: 150,
             editable: false,
           },
           {
-            field: "tokenAppreciation",
+            field: "tokenVariation",
             headerName: "variación",
             width: 130,
             editable: false,
             renderCell: (params: GridCellParams) => {
-                const appreciation = Number(Math.abs(params.row.tokenBuy.replace('$', ''))) - Number(Math.abs(params.row.tokenSell.replace('$', '')));
+                const appreciation = Number(Math.abs(params.row.tokenBuy.replace('$', ''))) - Number(Math.abs(params.row.tokenVariation.replace('$', '')));
                 return (
                   <Box
                   sx={{
@@ -250,7 +243,7 @@ const MotionButton = motion(Button);
                     mt: 1.5
                   }}
                   >
-                    {trendingMapper(Number(Math.abs(params.row.tokenBuy.replace('$', ''))), Number(Math.abs(params.row.tokenSell.replace('$', ''))))}
+                    {trendingMapper(Number(Math.abs(params.row.tokenBuy.replace('$', ''))), Number(Math.abs(params.row.tokenVariation.replace('$', ''))))}
                     <Typography>
                         {`$${Number(appreciation).toFixed(2)}`}
                     </Typography>
@@ -268,19 +261,23 @@ const MotionButton = motion(Button);
 const rows =
   (tokens?.filter(variation => variation.rn === 1) ?? []).map((token: TokenInfo, index: number) => {
     const previousVariation = tokens?.find(
-      v => v.SIMBOLO === token.SIMBOLO && v.rn === 2
+      v => v.CODIGO_SIMBOLO === token.CODIGO_SIMBOLO && v.rn === 2
     );
+
+    const tokenYear = String(token.FECHA).slice(0,4)
+    const tokenMonth = String(token.FECHA).slice(4,6)
+    const tokenDay = String(token.FECHA).slice(6, String(token.FECHA).length)
 
     return {
       id: index,
-      symbol: token.SIMBOLO,
-      tokenName: token.NOMBRE,
+      symbol: token.CODIGO_SIMBOLO,
+      tokenName: token.DES_SIMBOLO,
       tokenBuy: `$${Number(token.VALOR_COMPRA / 100).toFixed(2)}`,
-      tokenSell: previousVariation
+      tokenSell: `$${Number(token.VALOR_VENTA / 100).toFixed(2)}`,
+      tokenVariation: previousVariation
         ? `$${Number(previousVariation.VALOR_COMPRA / 100).toFixed(2)}`
         : 'N/A',
-      tokenStock: token.STOCK,
-      expiringDate: dayjs(token.VENCIMIENTO).format('DD/MM/YYYY'),
+      date: `${tokenDay}/${tokenMonth}/${tokenYear}`,
       rn: token.rn,
     };
   });
@@ -359,7 +356,7 @@ const rows =
     <>
     {
         (isLoggedIn && userId) ? (
-            <>
+        <>
         {
         dialogStates.buyTokenDialog && portfolio && 
         <BuyTokenDialog 
@@ -383,7 +380,9 @@ const rows =
         <PortfolioDialog 
         open={dialogStates.portfolioDialog} 
         onClose={() => handleDialogClose('portfolioDialog')} 
-        tokens={portfolio || []}/>
+        portfolio={portfolio || []}
+        tokens={tokens || []}
+        />
     }
     {
         dialogStates.movementsDialog &&

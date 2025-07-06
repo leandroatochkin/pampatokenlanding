@@ -1,7 +1,6 @@
 import React,{useState, useMemo} from 'react'
 import { 
     Box, 
-    //Typography,
     Dialog,
     DialogTitle,
     DialogContent,
@@ -10,42 +9,23 @@ import {
 import {
     DataGrid,
     GridColDef,
-    //GridCellParams,
   } from "@mui/x-data-grid"
 import { TableSkeleton } from '../skeletons/MUIGridSkeleton'
 import { CustomLoadingOverlay } from '../skeletons/MUIGridOverlay'
 import { customLocaleText } from '../../utils/locale'
-// import TrendingUpIcon from '@mui/icons-material/TrendingUp';
-// import TrendingFlatIcon from '@mui/icons-material/TrendingFlat';
-// import TrendingDownIcon from '@mui/icons-material/TrendingDown';
-import dayjs from 'dayjs'
-import { TokenDTO } from '../../utils/interfaces'
+import { TokenDTO, TokenInfo } from '../../utils/interfaces'
 
 
 interface PortfolioDialogProps {
     open: boolean
     onClose: () => void
-    tokens: TokenDTO[]
+    portfolio: TokenDTO[]
+    tokens: TokenInfo[]
 }
 
-const PortfolioDialog: React.FC<PortfolioDialogProps> = ({ open, onClose, tokens}) => {
-    
+const PortfolioDialog: React.FC<PortfolioDialogProps> = ({ open, onClose, portfolio, tokens}) => {
+
     const [isLoading, ] = useState<boolean>(false)
-
-     
-
-
-        // const trendingMapper = (currentValue: number, previousValue: number) => {
-        //     if (currentValue === previousValue) {
-        //         return <TrendingFlatIcon color='info' />
-        //     } else if (currentValue > previousValue) {
-        //         return <TrendingUpIcon color='primary'/>
-        //     } else if (currentValue < previousValue) {
-        //         return <TrendingDownIcon color='error'/>
-        //     }
-        // }
-
-    
 
     const columns = useMemo<GridColDef<(typeof rows)[number]>[]>(
         () => [
@@ -73,47 +53,12 @@ const PortfolioDialog: React.FC<PortfolioDialogProps> = ({ open, onClose, tokens
             width: 130,
             editable: false,
           },
-          // {
-          //   field: "tokenLastPrice",
-          //   headerName: "último precio",
-          //   width: 100,
-          //   editable: false,
-          // },
-          // {
-          //   field: "tokenAppreciation",
-          //   headerName: "variación",
-          //   width: 130,
-          //   editable: false,
-          //   renderCell: (params: GridCellParams) => {
-          //       const appreciation = params.row.tokenAppreciation
-          //       console.log(appreciation)
-          //       const tokenPaid = params.row.tokenPaidPrice * params.row.tokenAmount
-          //       console.log(tokenPaid)
-          //       return (
-          //         <Box
-          //         sx={{
-          //           display: 'flex',
-          //           alignItems: 'center',
-          //           justifyContent: 'center',
-          //           mt: 1.5
-          //         }}
-          //         >
-          //           {trendingMapper(appreciation, tokenPaid)}
-          //           <Typography>
-          //               {`$${Number(appreciation).toFixed(2)}`}
-          //           </Typography>
-          //         </Box>
-                  
-          //       )
-          //     },
-          // },
           {
-            field: "expiringDate",
-            headerName: "fecha de caducidad",
-            width: 150,
+            field: "tokenActualPrice",
+            headerName: "precio de compra",
+            width: 130,
             editable: false,
           },
-          
         ],
         [],
       )
@@ -122,14 +67,14 @@ const PortfolioDialog: React.FC<PortfolioDialogProps> = ({ open, onClose, tokens
 
 
       const rows =
-          (tokens ?? []).map((token: TokenDTO, index: number) => ({
+          (portfolio ?? []).map((token: TokenDTO, index: number) => ({
             id: index,
             tokenId: token.tokenId,
             tokenName: token.tokenName,
             tokenSymbol: token.tokenSymbol,
             tokenAmount: token.tokenAmount,
-            tokenPaidPrice: Number(token.tokenPaidPrice/100).toFixed(2),
-            expiringDate: dayjs(token.tokenExpiringDate).format('DD/MM/YYYY')
+            tokenPaidPrice: `$${Number(token.tokenPaidPrice/100).toFixed(2)}`,
+            tokenActualPrice: `$${(Number(tokens.find((token)=>token.CODIGO_SIMBOLO === Number(portfolio[index].tokenSymbol))?.VALOR_COMPRA) / 100).toFixed(2)}`
           }))
         
       

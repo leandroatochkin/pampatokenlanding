@@ -25,14 +25,14 @@ interface SellTokenDialogProps {
 interface SellTransactionDTO{
     userId: string
     amount: number 
-    symbol: string
+    symbol: number
     soldAtValue: number 
 }
 
 
 const SellTokenDialog: React.FC<SellTokenDialogProps> = ({open, onClose, owned, tokens, refetch}) => {
     const [payload, setPayload] = useState<SellTransactionDTO | null>(null)
-    const [selectedToken, setSelectedToken] = useState<TokenDTO | null>(null)
+    const [selectedToken, setSelectedToken] = useState<TokenDTO | null>(owned[0])
     const isLoggedIn = userStore((state)=>state.isLoggedIn)
     const userId = userStore((state)=>state.userId)
 
@@ -43,8 +43,8 @@ const SellTokenDialog: React.FC<SellTokenDialogProps> = ({open, onClose, owned, 
     const sellValues = React.useMemo(() => {
             return (
                 tokens.find(
-                (v) => selectedToken && v.SIMBOLO === selectedToken.tokenSymbol && v.rn === 2
-                )?.VALOR_COMPRA || 0
+                (token) => selectedToken && token.CODIGO_SIMBOLO === Number(selectedToken.tokenSymbol) && token.rn === 1
+                )?.VALOR_VENTA || 0
             );
             }, [selectedToken, tokens]);
  
@@ -57,8 +57,8 @@ const SellTokenDialog: React.FC<SellTokenDialogProps> = ({open, onClose, owned, 
             setPayload({
                 userId: userId || '',
                 amount: amount,
-                symbol: selectedToken?.tokenSymbol || '',
-                soldAtValue: sellValues || 0,
+                symbol: selectedToken?.tokenSymbol || 0,
+                soldAtValue: sellValues,
             })
     
         },[amount, userId, tokens])
@@ -72,7 +72,7 @@ const SellTokenDialog: React.FC<SellTokenDialogProps> = ({open, onClose, owned, 
     const handleSell = async () => {
         if(!amount || !userId || !isLoggedIn) return
         setIsLoading(true)
-        if(confirm(`Esta seguro que quiere vender ${amount} tokens por AR$}`)){
+        if(confirm(`Esta seguro que quiere vender ${amount} tokens por AR${total}.`)){
             try{
                 const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/sell`, {
                     method: 'POST',
@@ -99,6 +99,9 @@ const SellTokenDialog: React.FC<SellTokenDialogProps> = ({open, onClose, owned, 
                 alert('Error al comprar tokens')
                 console.error(error)
                 }
+        } else {
+            setIsLoading(false)
+            return
         }
 
     }
@@ -123,19 +126,19 @@ const SellTokenDialog: React.FC<SellTokenDialogProps> = ({open, onClose, owned, 
             onChange={(e) => {
                 const selected = owned.find(token => token.tokenSymbol === e.target.value);
                 if (selected) {
-                    setSelectedToken(selected);
+                    setSelectedToken(selected || owned[0]);
                     setAmount(0); 
                 }
             }}
             >
-                {owned.map((token) => (
+                {owned.filter((token)=>token.tokenAmount > 0).map((token) => (
                     <MenuItem 
                     key={token.tokenSymbol} 
                     value={token.tokenSymbol}
 
                     
                     >
-                        {token.tokenName} ({token.tokenSymbol})
+                        {token.tokenSymbol} ({token.tokenName})
                     </MenuItem>
                 ))}
             </Select>
@@ -194,6 +197,7 @@ const SellTokenDialog: React.FC<SellTokenDialogProps> = ({open, onClose, owned, 
                     },
                     width: '100%',
                     mt: 2,
+                    gap: 2
                 }}
                 >
                     <Button 
