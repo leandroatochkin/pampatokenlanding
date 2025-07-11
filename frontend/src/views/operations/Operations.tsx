@@ -262,7 +262,7 @@ const rows =
   (tokens?.filter(variation => variation.rn === 1) ?? []).map((token: TokenInfo, index: number) => {
     const previousVariation = tokens?.find(
       v => v.CODIGO_SIMBOLO === token.CODIGO_SIMBOLO && v.rn === 2
-    );
+    ) || 0;
 
     const tokenYear = String(token.FECHA).slice(0,4)
     const tokenMonth = String(token.FECHA).slice(4,6)

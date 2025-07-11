@@ -219,6 +219,10 @@ const Register = () => {
     }
 }}
 
+  const onInvalid = () => {
+  alert(`Uno o más campos erróneos o incompletos. Por favor revisar.`);
+};
+
   const handleCheckboxChange = () => {
     setValue('termsAndConditionsRead', !watchTermsAndConditions ? true : false)
   }
@@ -333,7 +337,7 @@ const Register = () => {
               </Box>
   
               {/* Personal Tab */}
-              <form onSubmit={handleSubmit(onSubmit)}>
+              <form onSubmit={handleSubmit(onSubmit, onInvalid)}>
               <TabPanel value={activeStep} index={0}>
            
                   <Box>

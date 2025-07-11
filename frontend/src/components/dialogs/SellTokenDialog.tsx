@@ -26,7 +26,8 @@ interface SellTransactionDTO{
     userId: string
     amount: number 
     symbol: number
-    soldAtValue: number 
+    soldAtValue: number
+    tokenName: string 
 }
 
 
@@ -59,6 +60,7 @@ const SellTokenDialog: React.FC<SellTokenDialogProps> = ({open, onClose, owned, 
                 amount: amount,
                 symbol: selectedToken?.tokenSymbol || 0,
                 soldAtValue: sellValues,
+                tokenName: selectedToken?.tokenName || ''
             })
     
         },[amount, userId, tokens])

@@ -2,7 +2,8 @@ import { useEffect, useState } from 'react';
 import { 
   Typography, 
   Button, 
-  Box,  
+  Box,
+  CircularProgress  
 } from '@mui/material';
 import { ArrowForwardIos, ArrowDropDown } from '@mui/icons-material';
 import HomeCard from '../../components/cards/HomeCard';
@@ -13,9 +14,11 @@ import { Helmet } from 'react-helmet-async';
 
 
 
+
 const Home = () => {
 const [, setScrollY] = useState<number>(0)
 const [closeCookieAdvisor, setCloseCookieAdvisor] = useState<boolean>(false)
+const [loading, setLoading] = useState<boolean>(false)
 const isMobile = useMobile()
   
 const navigate = useNavigate()
@@ -88,6 +91,7 @@ const clientBrowser = navigator.userAgent
 
   const handleStartOperating = async () => {
     const el = document.getElementById('login')
+    setLoading(true)
      try {
       const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/auth`, {
         method: 'GET',
@@ -97,13 +101,15 @@ const clientBrowser = navigator.userAgent
 
       if (res.ok && authData.isAuthenticated) {
         userStore.getState().setAuthStatus(true, authData.userId, authData.userFirstName, authData.userLastName, authData.userEmail, authData.isVerified, authData.emailVerified)
+        setLoading(false)
         navigate('/operations')
       } else {
-
+       setLoading(false)
        el?.scrollIntoView({ behavior: 'smooth' })
       }
     } catch (err) {
       console.error(err)
+      setLoading(false)
       el?.scrollIntoView({ behavior: 'smooth' })
     }
     
@@ -183,8 +189,11 @@ const clientBrowser = navigator.userAgent
           }}
           onClick={handleStartOperating}
           aria-label="Comenzar a operar"
+          disabled={loading}
         >
-          comenzar
+          {
+            !loading ? 'comenzar' : <CircularProgress size={20}/>
+          }
         </Button>
       </Box>
       <Box
