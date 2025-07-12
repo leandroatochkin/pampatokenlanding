@@ -40,7 +40,8 @@ import {
     passwordRegex,
     phoneRegex, 
     onlyNumbersRegex,
-    addressRegex
+    addressRegex,
+    cuitRegex
 } from '../../utils/regexPatterns';
 import { 
     countryListAlpha2,
@@ -50,7 +51,7 @@ import {
     workingCodeMapper
 } from "../../utils/dataList";
 import IdUpload from "../../components/idUpload/IdUpload";
-import PhotoCapture from "../../components/idUpload/PhotoCapture";
+//import PhotoCapture from "../../components/idUpload/PhotoCapture";
 import TermsAndConditionsDialog from "../../components/dialogs/TermsAndConditionsDialog";
 import { resizeImage } from "../../utils/functions";
 import { useScrollNavigation } from "../../utils/hooks";
@@ -125,9 +126,9 @@ const Register = () => {
   const [frontImage, setFrontImage] = useState<string | null>(null)
   const [backIdFile, setBackIdFile] = useState<File | null>(null)
   const [frontIdFile, setFrontIdFile] = useState<File | null>(null)
-  const [selfieFile, setSelfieFile] = useState<File | null>(null)
+  //const [selfieFile, setSelfieFile] = useState<File | null>(null)
   const [backImage, setBackImage] = useState<string | null>(null)
-  const [selfieImage, setSelfieImage] = useState<string | null>(null)
+  //const [selfieImage, setSelfieImage] = useState<string | null>(null)
   const [loading, setLoading] = useState<boolean>(false)
   const [successElement, setSuccessElement] = useState<boolean>(false)
 
@@ -176,22 +177,22 @@ const Register = () => {
   const onSubmit = async (data: UserDTO) => {
     setLoading(true)
    if (frontIdFile && 
-    backIdFile && 
-    selfieFile
+    backIdFile
+    //selfieFile
   ) {
     const resizedFrontImage = await resizeImage(frontIdFile, 800, 800)
     const resizedBackImage = await resizeImage(backIdFile, 800, 800)
-    const resizedSelfieImage = await resizeImage(selfieFile, 800, 800)
+    //const resizedSelfieImage = await resizeImage(selfieFile, 800, 800)
     if(!resizedFrontImage ||
-       !resizedBackImage ||
-       !resizedSelfieImage 
+       !resizedBackImage 
+       //!resizedSelfieImage 
        || !data) {
       console.error('Error resizing images')
     }
     const formData = new FormData()
     formData.append('frontIdImage', resizedFrontImage)
     formData.append('backIdImage', resizedBackImage)
-    formData.append('selfieImage', resizedSelfieImage)
+    //formData.append('selfieImage', resizedSelfieImage)
     formData.append('user', JSON.stringify(data))
     
     try {
@@ -208,8 +209,12 @@ const Register = () => {
       } else {
         const errorData = await response.json() // read the body as JSON
         console.error('Error message:', errorData.message)
+        
         if(errorData.message.includes('Duplicate entry')){
           alert(`Email ya registrado. Por favor ingrese uno nuevo.`)
+          setLoading(false)
+        } else {
+          alert(`Error al registrar usuario. Por favor, intente mas tarde.`)
           setLoading(false)
         }
       }
@@ -950,8 +955,8 @@ const Register = () => {
                       {...register(`CUIT`, 
                           { required: 'Campo obligatorio', 
                               pattern: { 
-                                  value: onlyNumbersRegex, 
-                                  message: 'Solo números, sin guiones. Máximo 11 caracteres.' 
+                                  value: cuitRegex, 
+                                  message: 'Solo números, sin guiones. 11 caracteres exacto.' 
                               } })}
                       error={!!errors.CUIT}
                       helperText={errors.CUIT?.message}
@@ -1128,12 +1133,12 @@ const Register = () => {
               setFrontIdFile={setFrontIdFile}
               label={String(watch(`CUIT`))}
               />
-              <PhotoCapture
+              {/* <PhotoCapture
               selfieImage={selfieImage}
               setSelfieImage={setSelfieImage}
               setSelfieFile={setSelfieFile}
               label={String(watch(`CUIT`))}
-              />         
+              />          */}
               </Box>
   
               <Box

@@ -71,6 +71,18 @@ const clientBrowser = navigator.userAgent
     )
   }
 
+  useEffect(() => {
+  const ua = navigator.userAgent.toLowerCase();
+  const platform = navigator.platform.toLowerCase();
+  const isAndroidUA = ua.includes("android");
+  const isWindowsPlatform = platform.includes("win");
+
+  if (isAndroidUA && isWindowsPlatform) {
+    alert("Tu navegador está configurado con un agente de usuario poco común. Esto podría causar problemas de visualización.");
+  }
+}, []);
+
+
   const featureItems = [
     {
       title: "Tokenización de Tierras",
@@ -89,31 +101,58 @@ const clientBrowser = navigator.userAgent
     },
   ];
 
-  const handleStartOperating = async () => {
-    const el = document.getElementById('login')
-    setLoading(true)
-     try {
-      const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/auth`, {
-        method: 'GET',
-        credentials: 'include'
-      })
-      const authData = await res.json()
+ const handleStartOperating = async () => {
+  const el = document.getElementById('login');
+  setLoading(true);
 
-      if (res.ok && authData.isAuthenticated) {
-        userStore.getState().setAuthStatus(true, authData.userId, authData.userFirstName, authData.userLastName, authData.userEmail, authData.isVerified, authData.emailVerified)
-        setLoading(false)
-        navigate('/operations')
-      } else {
-       setLoading(false)
-       el?.scrollIntoView({ behavior: 'smooth' })
-      }
-    } catch (err) {
-      console.error(err)
-      setLoading(false)
-      el?.scrollIntoView({ behavior: 'smooth' })
+  try {
+    const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/auth`, {
+      method: 'GET',
+      credentials: 'include',
+    });
+
+    const authData = await res.json();
+
+    if (res.ok && authData.isAuthenticated) {
+      // Set auth state
+      userStore.getState().setAuthStatus(
+        true,
+        authData.userId,
+        authData.userFirstName,
+        authData.userLastName,
+        authData.userEmail,
+        authData.isVerified,
+        authData.emailVerified
+      );
+
+      setTimeout(() => {
+        try {
+          // Clean up any lingering tooltips, modals, etc.
+          document.querySelectorAll('[role="tooltip"], .MuiPopover-root, .MuiDialog-root').forEach(el => el.remove());
+
+          // Safe navigation
+          navigate('/operations');
+        } catch (e) {
+          console.error('Navigation failed, fallback to hard redirect', e);
+          window.location.href = '/operations';
+        }
+      }, 50); // Slight delay helps flush the DOM
+    } else {
+      setLoading(false);
+      requestAnimationFrame(() => {
+        el?.scrollIntoView({ behavior: 'smooth' });
+      });
     }
-    
+  } catch (err) {
+    console.error('Auth check failed:', err);
+    setLoading(false);
+    requestAnimationFrame(() => {
+      el?.scrollIntoView({ behavior: 'smooth' });
+    });
   }
+};
+
+
 
   return (
     <>
@@ -179,22 +218,31 @@ const clientBrowser = navigator.userAgent
           Tokenización de producción ágricola de tierras
         </Typography>
         <Button
-          variant="contained"
-          endIcon={isMobile ? <ArrowDropDown /> : <ArrowForwardIos />}
+        variant="contained"
+        endIcon={isMobile ? <ArrowDropDown /> : <ArrowForwardIos />}
+        sx={{
+          background: '#2E7D32',
+          mt: 4,
+          p: 2,
+          borderRadius: 4,
+        }}
+        onClick={handleStartOperating}
+        aria-label="Comenzar a operar"
+        disabled={loading}
+      >
+        <Box
           sx={{
-            background: '#2E7D32',
-            mt: 4,
-            p: 2,
-            borderRadius: 4,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            width: '100px', // prevent layout shift
+            height: '24px',
           }}
-          onClick={handleStartOperating}
-          aria-label="Comenzar a operar"
-          disabled={loading}
         >
-          {
-            !loading ? 'comenzar' : <CircularProgress size={20}/>
-          }
-        </Button>
+          {loading ? <CircularProgress size={20} /> : 'comenzar'}
+        </Box>
+      </Button>
+
       </Box>
       <Box
         aria-label="Características destacadas"

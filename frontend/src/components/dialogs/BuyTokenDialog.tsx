@@ -51,7 +51,7 @@ const BuyTokenDialog: React.FC<BuyTokenDialogProps> = ({open, onClose, tokens, r
             tokenName: selectedToken?.DES_SIMBOLO || '',
         })
 
-    },[amount, userId, tokens])
+    },[amount, userId, tokens]) 
 
     const handleBuy = async () => {
         if(!amount || !userId || !isLoggedIn) return
@@ -86,6 +86,7 @@ const BuyTokenDialog: React.FC<BuyTokenDialogProps> = ({open, onClose, tokens, r
                 console.error(error)
                 }
         }
+        setIsLoading(false)
 
     }
 
@@ -147,26 +148,52 @@ const BuyTokenDialog: React.FC<BuyTokenDialogProps> = ({open, onClose, tokens, r
                     }
                 </Typography>
                 <TextField
-                label='Cantidad de tokens'
-                type='number'
-                value={amount}
-                onChange={(e) => setAmount(Number(e.target.value))}
-                fullWidth
-                sx={{mb: 2}}
-                inputProps={{ min: 0 }}
-                />
+                    label="Cantidad de tokens"
+                    type="number"
+                    value={amount}
+                    onChange={(e) => {
+                        const inputValue = e.target.value;
+                        const num = Number(inputValue);
+
+                        if (!isNaN(num)) {
+                        setAmount(Number(num.toFixed(10))); // Clamp to 10 decimals
+                        }
+                    }}
+                    onInput={(e) => {
+                        const target = e.target as HTMLInputElement;
+                        const parts = target.value.split('.');
+                        if (parts[1] && parts[1].length > 10) {
+                        parts[1] = parts[1].slice(0, 10);
+                        target.value = parts.join('.');
+                        }
+                    }}
+                    fullWidth
+                    sx={{ mb: 2 }}
+                    inputProps={{
+                        min: 0.1,
+                        step: 0.1,
+                    }}
+                    />
+
                 <TextField
-                label='Monto en AR$'
-                type='number'
-                value={Number(amount * ((selectedToken?.VALOR_COMPRA ?? 0) / 100)).toFixed(2) ?? 0} // shows AR$
-                onChange={(e) => {
-                    const inputValue = Number(e.target.value);
-                    setAmount(inputValue / ((selectedToken?.VALOR_COMPRA ?? 0 )/ 100)); // AR$ → tokens
-                }}
-                fullWidth
-                sx={{ mb: 2 }}
-                inputProps={{ min: 0 }}
-                />
+                    label="Monto en AR$"
+                    type="number"
+                    value={Number(amount * ((selectedToken?.VALOR_COMPRA ?? 0) / 100)).toFixed(2) ?? 0}
+                    onChange={(e) => {
+                        const inputValue = Number(e.target.value);
+
+                        // Minimum AR$ amount enforced manually
+                        if (inputValue >= 10) {
+                        setAmount(inputValue / ((selectedToken?.VALOR_COMPRA ?? 0) / 100));
+                        }
+                    }}
+                    fullWidth
+                    sx={{ mb: 2 }}
+                    inputProps={{
+                        min: 10,     // AR$10 minimum
+                        step: 1,     // Can only increment/decrement by AR$1
+                    }}
+                    />
                 <Typography variant='h6'>
                     Total: AR${total}
                 </Typography>

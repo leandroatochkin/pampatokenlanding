@@ -14,5 +14,5 @@
 
  export const observationsRegex = /^[\p{L}\d\s.,°º#\-]{2,}$/u
 
-
+ export const cuitRegex = /^\d{11}$/
 

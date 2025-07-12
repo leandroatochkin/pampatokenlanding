@@ -15,7 +15,11 @@ interface PhotoCaptureProps {
     label: string;
 }
 
-const PhotoCapture: React.FC<PhotoCaptureProps> = ({setSelfieImage, selfieImage, setSelfieFile, label}) => {
+const PhotoCapture: React.FC<PhotoCaptureProps> = ({
+  setSelfieImage, 
+  selfieImage, 
+  setSelfieFile, 
+  label}) => {
 
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
