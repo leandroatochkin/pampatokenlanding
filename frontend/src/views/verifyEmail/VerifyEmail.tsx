@@ -43,6 +43,7 @@ const SuccessIconContainer = styled(Box)(({ theme }) => ({
 
 const VerifyEmail: React.FC = () => {
 const [loading, setLoading] = useState<boolean>(true)
+const [errorFlag, setErrorFlag] = useState<boolean>(false)
 const location = useLocation();
 const queryParams = new URLSearchParams(location.search);
 const token = queryParams.get('token');
@@ -62,12 +63,14 @@ useEffect(() => {
 
       if (!response.ok) {
         console.error('Error verifying email.');
-        alert('Hubo un error al verificar su email.');
+        alert('Hubo un error al verificar su email. Por favor contáctese con soporte@pampatokens.com.ar');
+        setErrorFlag(true)
       } 
 
     } catch (e) {
-      alert('Hubo un error al verificar su email.');
+      alert('Hubo un error al verificar su email. Por favor contáctese con soporte@pampatokens.com.ar');
       console.error(e);
+      setErrorFlag(true)
     } finally {
       setLoading(false);
     }
@@ -135,14 +138,24 @@ const handleContinue = () => {
             </Box>
             {
                 loading ? null : (
-            <Typography
-              variant="body1"
-              color="success.dark"
-              sx={{ mb: 3, lineHeight: 1.6 }}
-            >
-              Tu dirección de correo electrónico ha sido verificada exitosamente. 
-              Ya podés acceder a todas las funcionalidades de PampaTokens.
-            </Typography>
+                    !errorFlag ? (
+                      <Typography
+                      variant="body1"
+                      color="success.dark"
+                      sx={{ mb: 3, lineHeight: 1.6 }}
+                    >
+                      Tu dirección de correo electrónico ha sido verificada exitosamente. 
+                      Ya podés acceder a todas las funcionalidades de PampaTokens.
+                    </Typography>
+                    ) : (
+                      <Typography
+                      variant="body1"
+                      color="error"
+                      sx={{ mb: 3, lineHeight: 1.6 }}
+                    >
+                      Hubo un error al verificar tu dirección de correo electrónico. 
+                    </Typography>
+                    )
                 )
             }
 
@@ -154,7 +167,7 @@ const handleContinue = () => {
 
               <Button
                 onClick={handleContinue}
-                disabled={loading}
+                disabled={loading || errorFlag}
                 variant="contained"
                 color="success"
                 size="large"

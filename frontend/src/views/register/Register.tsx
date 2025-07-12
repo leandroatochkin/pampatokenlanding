@@ -23,7 +23,6 @@ import {
   Paper,
   InputAdornment,
   IconButton,
-  OutlinedInput,
   Stack,
   Switch,
   Checkbox,
@@ -449,25 +448,38 @@ const Register = () => {
                       <FormLabel htmlFor="password">Contraseña</FormLabel>
                   
                   <Box className="relative">
-                      <OutlinedInput
-                          fullWidth
-                      id="password"
-                      color="secondary"
-                      type={showPassword ? "text" : "password"}
-                      {...register(`password`, { required: 'Campo requerido', pattern: { value: passwordRegex, message: 'La contraseña debe tener al menos 8 caracteres, una mayúscula, una minúscula, un número y un símbolo' } })}
-                      endAdornment={
-                          <InputAdornment position="end">
-                          <IconButton
-                              aria-label={
-                              showPassword ? 'hide the password' : 'display the password'
-                              }
-                              onClick={() => setShowPassword(!showPassword)}
-                          >
-                              {showPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
-                          </IconButton>
-                          </InputAdornment>
-                      }
-                      />
+                      <TextField
+  id="password"
+  label="Contraseña"
+  fullWidth
+  type={showPassword ? "text" : "password"}
+  color="secondary"
+  {...register("password", {
+    required: 'Campo requerido',
+    pattern: {
+      value: passwordRegex,
+      message:
+        'La contraseña debe tener al menos 8 caracteres, una mayúscula, una minúscula, un número y un símbolo',
+    },
+  })}
+  error={!!errors.password}
+  helperText={errors.password?.message}
+  InputProps={{
+    endAdornment: (
+      <InputAdornment position="end">
+        <IconButton
+          onClick={() => setShowPassword(!showPassword)}
+          aria-label={
+            showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'
+          }
+        >
+          {showPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
+        </IconButton>
+      </InputAdornment>
+    ),
+  }}
+/>
+
   
                       
                   </Box>
