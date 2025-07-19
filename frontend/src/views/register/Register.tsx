@@ -53,7 +53,8 @@ import IdUpload from "../../components/idUpload/IdUpload";
 //import PhotoCapture from "../../components/idUpload/PhotoCapture";
 import TermsAndConditionsDialog from "../../components/dialogs/TermsAndConditionsDialog";
 import { resizeImage } from "../../utils/functions";
-import { useScrollNavigation } from "../../utils/hooks";
+//import { useScrollNavigation } from "../../utils/hooks";
+import { useRegister } from "../../api/userApi";
 
 
 
@@ -128,12 +129,12 @@ const Register = () => {
   //const [selfieFile, setSelfieFile] = useState<File | null>(null)
   const [backImage, setBackImage] = useState<string | null>(null)
   //const [selfieImage, setSelfieImage] = useState<string | null>(null)
-  const [loading, setLoading] = useState<boolean>(false)
-  const [successElement, setSuccessElement] = useState<boolean>(false)
+  //const [loading, setLoading] = useState<boolean>(false)
+  //const [successElement, setSuccessElement] = useState<boolean>(false)
 
-  const {
-    handleSectionClick
-  } = useScrollNavigation();
+  // const {
+  //   handleSectionClick
+  // } = useScrollNavigation();
 
 
 
@@ -173,8 +174,10 @@ const Register = () => {
     if (newStep === 2) setProgress(90);
   }
 
+  const {mutate, isSuccess, isPending} = useRegister()
+
   const onSubmit = async (data: UserDTO) => {
-    setLoading(true)
+    //setLoading(true)
    if (frontIdFile && 
     backIdFile
     //selfieFile
@@ -194,33 +197,34 @@ const Register = () => {
     //formData.append('selfieImage', resizedSelfieImage)
     formData.append('user', JSON.stringify(data))
     
-    try {
-      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/register`, {
-        method: 'POST',
-        body: formData,
-      })
-      if (response.ok) {
-        setSuccessElement(true)
-        alert(`Se ha enviado un correo de activación a su casilla. En caso de no encontrarla en su bandeja de entrada, por favor revisar spam.`)
-        setTimeout(() =>{
-          handleSectionClick('login')
-        },3000)
-      } else {
-        const errorData = await response.json() // read the body as JSON
-        console.error('Error message:', errorData.message)
+  //   try {
+  //     const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/register`, {
+  //       method: 'POST',
+  //       body: formData,
+  //     })
+  //     if (response.ok) {
+  //       setSuccessElement(true)
+  //       alert(`Se ha enviado un correo de activación a su casilla. En caso de no encontrarla en su bandeja de entrada, por favor revisar spam.`)
+  //       setTimeout(() =>{
+  //         handleSectionClick('login')
+  //       },3000)
+  //     } else {
+  //       const errorData = await response.json() // read the body as JSON
+  //       console.error('Error message:', errorData.message)
         
-        if(errorData.message.includes('Duplicate entry')){
-          alert(`Email ya registrado. Por favor ingrese uno nuevo.`)
-          setLoading(false)
-        } else {
-          alert(`Error al registrar usuario. Por favor, intente mas tarde.`)
-          setLoading(false)
-        }
-      }
-   }
-    catch (error) {
-      console.error('Error:', error)
-    }
+  //       if(errorData.message.includes('Duplicate entry')){
+  //         alert(`Email ya registrado. Por favor ingrese uno nuevo.`)
+  //         setLoading(false)
+  //       } else {
+  //         alert(`Error al registrar usuario. Por favor, intente mas tarde.`)
+  //         setLoading(false)
+  //       }
+  //     }
+  //  }
+  //   catch (error) {
+  //     console.error('Error:', error)
+  //   }
+    mutate(formData)
 }}
 
   const onInvalid = () => {
@@ -261,11 +265,11 @@ const Register = () => {
       }}
       >
        {
-        !successElement ?
+        !isSuccess ?
         (
           <>
           {
-            !loading ? (
+            !isPending ? (
               <>
           <CardHeader 
             title={

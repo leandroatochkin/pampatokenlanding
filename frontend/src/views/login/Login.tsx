@@ -18,17 +18,13 @@ import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import {useScrollNavigation, useMobile} from '../../utils/hooks';
 import ForgotPasswordDialog from '../../components/dialogs/ForgotPassword';
-import { useLogIn } from '../../api/userApi';
+import { useLogIn, UserData } from '../../api/userApi';
 
 
-interface LoginData {
-    email: string
-    password: string
-}
+
 
  const Login = () => {
     const [showPassword, setShowPassword] = useState<boolean>(false)
-    //const [loading, setLoading] = useState<boolean>(false)
     const [openForgotPasswordDialog, setOpenForgotPasswordDialog] = useState<boolean>(false)
     const {
         handleSectionClick
@@ -37,12 +33,12 @@ const {
     handleSubmit, 
     register, 
     formState: { errors }, 
-} = useForm<LoginData>()
+} = useForm<UserData>()
 
 
 const {mutate, isPending} = useLogIn()
 
-const onSubmit = async (data: LoginData) => {
+const onSubmit = async (data: UserData) => {
     mutate(data)
   };
 
