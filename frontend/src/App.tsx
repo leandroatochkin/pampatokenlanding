@@ -14,8 +14,10 @@ import './App.css'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import NotFound from './views/notFound/NotFound'
 import { HelmetProvider } from 'react-helmet-async';
+import { QueryClientProvider, QueryClient } from '@tanstack/react-query'
 
 
+const queryClient = new QueryClient()
 
 const router = createBrowserRouter([
   {
@@ -60,13 +62,13 @@ function App() {
  
 
   return (
-  
+      <QueryClientProvider client={queryClient}>
       <HelmetProvider>
       <ThemeProvider theme={theme}>
       <RouterProvider router={router} />
       </ThemeProvider>
       </HelmetProvider>
-  
+      </QueryClientProvider>
   )
 }
 

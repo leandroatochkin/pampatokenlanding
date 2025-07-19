@@ -17,9 +17,8 @@ import  { useState} from 'react'
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import {useScrollNavigation, useMobile} from '../../utils/hooks';
-import { userStore } from '../../utils/store';
-import { useNavigate } from 'react-router-dom';
 import ForgotPasswordDialog from '../../components/dialogs/ForgotPassword';
+import { useLogIn } from '../../api/userApi';
 
 
 interface LoginData {
@@ -29,7 +28,7 @@ interface LoginData {
 
  const Login = () => {
     const [showPassword, setShowPassword] = useState<boolean>(false)
-    const [loading, setLoading] = useState<boolean>(false)
+    //const [loading, setLoading] = useState<boolean>(false)
     const [openForgotPasswordDialog, setOpenForgotPasswordDialog] = useState<boolean>(false)
     const {
         handleSectionClick
@@ -40,48 +39,11 @@ const {
     formState: { errors }, 
 } = useForm<LoginData>()
 
-const navigate = useNavigate()
+
+const {mutate, isPending} = useLogIn()
 
 const onSubmit = async (data: LoginData) => {
-    if(!data) return
-    setLoading(true)
-    try{
-        const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/login`, {
-            method: 'POST',
-            credentials: 'include',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(data),
-        })
-     
-     
-        if(response.status === 400 || response.status === 401){
-            alert('Credenciales inválidas')
-        }
-        if (response && response.ok) {
-        const authRes = await fetch(`${import.meta.env.VITE_BACKEND_URL}/auth`, {
-            credentials: 'include',
-        });
-        const authData = await authRes.json();
-        if (authRes.ok) {
-            userStore.getState().setAuthStatus(true, authData.userId, authData.userFirstName, authData.userLastName, authData.userEmail, authData.isVerified, authData.emailVerified)
-            if(authData.emailVerified === 1){
-                navigate('/operations');
-            } else {
-                alert(`Correo no verificado. Por favor revise su bandeja de entrada o spam para encontrar su correo de activación.`)
-                return
-            }
-            
-        }
-        }
-    } catch (error) {
-        console.error('Error:', error)
-        alert('Hubo un error al iniciar sesión. Por favor, intente nuevamente más tarde.')
-    } finally{
-        setLoading(false)
-    }
-
+    mutate(data)
   };
 
 const isMobile = useMobile()
@@ -114,7 +76,7 @@ const isMobile = useMobile()
             }}
             >
         {
-            !loading ? (
+            !isPending ? (
                 <>
         <Typography
         variant='h4'
@@ -219,6 +181,7 @@ const isMobile = useMobile()
                 mt: 4
             }}
             fullWidth
+            disabled={isPending}
             >
                 Iniciar sesión
             </Button>

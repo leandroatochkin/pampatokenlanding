@@ -26,16 +26,66 @@ const TermsAndConditionsDialog: React.FC<DialogProps> = ({open, close}) => {
         }}
         >
             <Typography>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse iaculis feugiat ultricies. Nullam vitae gravida nisi. Mauris at consequat augue. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Sed condimentum eget odio vel auctor. Proin sit amet tellus at nisl dignissim gravida. Vivamus elementum dolor non hendrerit pulvinar. Donec vitae metus eget ligula consequat lacinia non non dui. Curabitur pulvinar eu purus non finibus. Donec ac nisl non eros mattis suscipit id sed diam. Aenean metus lectus, gravida in ex nec, elementum egestas erat. Vivamus vel ante eget enim suscipit semper ac vel risus. Aliquam a ipsum sit amet mi tempor gravida sed vel leo.
+  <strong>TÉRMINOS Y CONDICIONES</strong><br />
+  Fideicomiso Agropecuario Tokenizado<br />
+  Última actualización: 28/05/2025<br /><br />
 
-Maecenas purus nisl, tristique vel feugiat eget, malesuada vitae ipsum. Aliquam erat volutpat. Vivamus in justo ac dui laoreet varius sit amet id dolor. Nunc aliquam purus sit amet vestibulum condimentum. Praesent a vehicula nisl, nec tincidunt urna. Quisque ac vulputate magna. Praesent laoreet, tellus et lacinia eleifend, ipsum ex rhoncus nulla, sed consequat nibh metus eget est.
+  <strong>1. ACEPTACIÓN DE LOS TÉRMINOS</strong><br />
+  Al acceder, registrarse o invertir a través de nuestra plataforma, usted acepta quedar legalmente vinculado por estos Términos y Condiciones. Si no está de acuerdo, no debe utilizar nuestros servicios.<br /><br />
 
-Donec hendrerit pretium ultrices. Duis vel accumsan odio. Aliquam velit turpis, interdum eu condimentum a, malesuada a lacus. Duis eleifend felis et libero fringilla hendrerit. Vestibulum nunc mauris, pharetra vel purus at, venenatis posuere sem. Praesent nec ligula ornare, cursus nisi quis, bibendum lacus. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Nam vitae ante nisl. Suspendisse tempor pharetra tempor. Phasellus ac arcu id ante euismod commodo. Pellentesque eget eleifend ipsum. Aenean aliquam mauris nec risus efficitur pharetra. Praesent vulputate lorem id mi dictum viverra. Nullam porttitor odio id lectus rhoncus faucibus. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+  <strong>2. DEFINICIONES</strong><br />
+  <strong>Fideicomiso Agropecuario:</strong> Instrumento jurídico mediante el cual un fiduciario administra fondos e inversiones con destino a la producción agropecuaria.<br />
+  <strong>Token:</strong> Representación digital de un derecho económico vinculado a la producción y/o rentabilidad del fideicomiso.<br />
+  <strong>Inversionista:</strong> Persona humana o jurídica que adquiere tokens emitidos por el fideicomiso.<br />
+  <strong>Plataforma:</strong> Sitio web o aplicación donde se realiza la oferta, adquisición y gestión de los tokens.<br />
+  <strong>Fiduciario / Administrador:</strong> WORLDWIDE BLOCKCHAIN CONSULTING S. A., CUIT Nº 30-71794490-5, con domicilio en Vuelta de Obligado 2368, Piso 3, Dpto 7, C.P. 1428, Ciudad Autónoma de Buenos Aires.<br /><br />
 
-Nullam quis congue mi. Maecenas non molestie ex, sit amet ultrices diam. Curabitur sed ipsum libero. Sed finibus sem ac tortor ullamcorper viverra. Morbi quis efficitur nisl, vel consectetur risus. Sed eget tincidunt felis. Phasellus blandit euismod elit, quis imperdiet neque. Morbi laoreet tempor dui vitae tempus. Nulla ultricies, justo non sagittis sodales, risus libero aliquet sapien, id malesuada ex libero ut mi. Sed orci lorem, varius mattis sagittis eu, hendrerit sed urna. Sed tempus massa accumsan ornare porta. Nulla vitae venenatis metus, eget tempus dui.
+  <strong>3. OBJETO DEL FIDEICOMISO</strong><br />
+  El fideicomiso tiene como objeto financiar actividades agropecuarias (cultivo, cosecha, comercialización, etc.) mediante la captación de fondos a través de la emisión de tokens representativos de una porción de la producción esperada o de los ingresos generados.<br /><br />
 
-Nullam non dui scelerisque, dapibus elit sed, egestas tortor. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Nullam et finibus nibh, in ullamcorper tellus. Nam sit amet odio vel massa tristique mattis ac pellentesque lacus. Quisque pulvinar ut mauris et viverra. Nulla in commodo ipsum. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Quisque aliquet semper sem, ut egestas orci scelerisque sed.
-            </Typography>
+  <strong>4. NATURALEZA DEL TOKEN</strong><br />
+  Cada token representa una fracción de participación en los resultados económicos del fideicomiso, de acuerdo con los términos específicos de la emisión.<br />
+  <strong>Importante:</strong> Los tokens no representan acciones, deuda, ni propiedad sobre bienes del fideicomiso. La tenencia de tokens otorga únicamente derechos económicos según lo estipulado en el contrato fiduciario.<br /><br />
+
+  <strong>5. RIESGOS DE INVERSIÓN</strong><br />
+  El Inversionista reconoce y acepta que:<br />
+  - Las inversiones agropecuarias están sujetas a riesgos climáticos, de mercado, sanitarios y regulatorios.<br />
+  - Los retornos pueden variar y no están garantizados.<br />
+  - La tokenización no elimina los riesgos inherentes al negocio agropecuario.<br />
+  - Existen riesgos tecnológicos asociados al uso de plataformas digitales y a la custodia de tokens.<br /><br />
+
+  <strong>6. PROCESO DE INVERSIÓN</strong><br />
+  Para adquirir tokens, el Inversionista debe:<br />
+  1. Crear una cuenta en la plataforma.<br />
+  2. Aceptar estos Términos y Condiciones.<br />
+  3. Completar los procesos de verificación (KYC/AML).<br />
+  4. Transferir fondos según las condiciones de la oferta.<br />
+  5. Recibir los tokens acreditados en su billetera digital.<br /><br />
+
+  <strong>7. DISTRIBUCIÓN DE BENEFICIOS</strong><br />
+  Los beneficios generados serán distribuidos proporcionalmente entre los tenedores de tokens conforme a los términos del fideicomiso. Las fechas, forma y condiciones de pago serán especificadas en cada oferta.<br /><br />
+
+  <strong>8. RESPONSABILIDADES DEL INVERSOR</strong><br />
+  - Conservar adecuadamente sus credenciales de acceso y claves privadas.<br />
+  - Asegurarse de comprender la naturaleza del producto financiero.<br />
+  - Consultar asesoramiento profesional antes de invertir.<br /><br />
+
+  <strong>9. LIMITACIÓN DE RESPONSABILIDAD</strong><br />
+  Ni WORLDWIDE BLOCKCHAIN CONSULTING S. A. ni la plataforma serán responsables por:<br />
+  - Pérdidas derivadas de eventos climáticos, plagas, o fluctuaciones de precios.<br />
+  - Interrupciones tecnológicas o hackeos que afecten la disponibilidad de la plataforma.<br />
+  - Errores derivados de la custodia personal de los tokens por parte del Inversionista.<br /><br />
+
+  <strong>10. CUMPLIMIENTO NORMATIVO</strong><br />
+  El fideicomiso y la plataforma operan de acuerdo con la normativa vigente en la República Argentina, incluyendo, pero no limitándose a, leyes financieras, de protección al consumidor, y de activos digitales.<br /><br />
+
+  <strong>11. MODIFICACIONES</strong><br />
+  WORLDWIDE BLOCKCHAIN CONSULTING S. A. se reserva el derecho a modificar estos Términos y Condiciones en cualquier momento. Las modificaciones serán notificadas a través de la plataforma.<br /><br />
+
+  <strong>12. JURISDICCIÓN Y LEY APLICABLE</strong><br />
+  Estos Términos y Condiciones se regirán por las leyes de la República Argentina. Cualquier conflicto será dirimido por los tribunales ordinarios de la Ciudad Autónoma de Buenos Aires, con renuncia expresa a cualquier otro fuero.
+</Typography>
+
         </DialogContent>
 
     </Dialog>
