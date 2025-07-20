@@ -32,6 +32,7 @@ import TrendingFlatIcon from '@mui/icons-material/TrendingFlat';
 import TrendingDownIcon from '@mui/icons-material/TrendingDown';
 import { Settings } from '@mui/icons-material';
 import { Refresh } from '@mui/icons-material';
+import { useGetTokens } from '../../api/tokenApi';
 
 
 interface LoadingStates {
@@ -54,7 +55,7 @@ interface DialogStates {
 
 
 const Operations = () => {
-const [tokens, setTokens] = React.useState<TokenInfo[] | null>(null)
+const [tokens, setTokens] = React.useState<TokenInfo[]>([])
 const [portfolio, setPortfolio] = React.useState<TokenDTO[] | null>(null)
 const [refetchTrigger, setRefetchTrigger] = React.useState<number>(0);
 const [isLoading, setIsLoading] = React.useState<LoadingStates>({
@@ -92,40 +93,64 @@ const handleDialogClose = (dialog: keyof DialogStates) =>{
     const userIsVerified = userStore((state)=>state.userIsVerified)
 
 
+   
 
-    const fetchData = useCallback(async () => {
-         if(isLoggedIn && userId){
-            try{
-                setIsLoading(prev => ({
-                    ...prev,
-                    fetchingToken: true
-                    }))
-                const fetchLatestVal = async () =>{
-                    const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/get-value`,{
-                        method: 'GET',
-                        credentials: 'include',
-                        headers: {
-                            'Content-Type': 'application/json',
-                    }})
-                    const data = await response.json()
-                    setTokens(data.valuation)
-                }
-                fetchLatestVal()
-            } catch(e){
-                console.error(e)
-                alert('Error recuperando los tokens')
-            } finally{
-                setIsLoading(prev => ({
-                    ...prev,
-                    fetchingToken: false
-                    })) 
+    // const fetchData = useCallback(async () => {
+    //      if(isLoggedIn && userId){
+    //         try{
+    //             setIsLoading(prev => ({
+    //                 ...prev,
+    //                 fetchingToken: true
+    //                 }))
+    //             const fetchLatestVal = async () =>{
+    //                 const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/get-value`,{
+    //                     method: 'GET',
+    //                     credentials: 'include',
+    //                     headers: {
+    //                         'Content-Type': 'application/json',
+    //                 }})
+    //                 const data = await response.json()
+    //                 setTokens(data.valuation)
+    //             }
+    //             fetchLatestVal()
+    //         } catch(e){
+    //             console.error(e)
+    //             alert('Error recuperando los tokens')
+    //         } finally{
+    //             setIsLoading(prev => ({
+    //                 ...prev,
+    //                 fetchingToken: false
+    //                 })) 
+    //         }
+    //     }
+    // }, [userId]);
+
+    // useEffect(()=>{
+    //    fetchData();
+    // },[refetchTrigger, fetchData]);
+    const { isPending, error, data, isFetching, refetch } = useGetTokens()
+
+    useEffect(() => {
+        if (isLoggedIn && userId) {
+            setIsLoading(prev => ({
+            ...prev,
+            fetchingToken: isPending,
+            }));
             }
-        }
-    }, [userId]);
+        }, [isPending, isLoggedIn, userId]);
 
-    useEffect(()=>{
-       fetchData();
-    },[refetchTrigger, fetchData]);
+
+    useEffect(() => {
+            if(error){
+                alert(`Error al cargar cotizaciones.`)
+                setTokens([])
+                setIsLoading(prev => ({ ...prev, fetchingToken: false }))
+                return
+            }
+            setTokens(data?.valuation ?? []);
+             
+        }, [data]);
+
 
     const fetchTokens = useCallback(async () => {
         if (!userId) return;
@@ -260,6 +285,8 @@ const MotionButton = motion(Button);
 
 const rows =
   (tokens?.filter(variation => variation.rn === 1) ?? []).map((token: TokenInfo, index: number) => {
+   
+
     const previousVariation = tokens?.find(
       v => v.CODIGO_SIMBOLO === token.CODIGO_SIMBOLO && v.rn === 2
     ) || 0;
@@ -506,7 +533,7 @@ const rows =
                     ml: 2,
                     border: '1px solid #ccc',
                 }}
-                onClick={()=>setRefetchTrigger(prev => prev + 1)}
+                onClick={()=>refetch()}
                 >
                     <Refresh />
                 </IconButton>
