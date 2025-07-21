@@ -97,44 +97,7 @@ const handleDialogClose = (dialog: keyof DialogStates) =>{
     const { isPending: isPortfolioPending, error: portfolioError, data: portfolioData, refetch: refetchPortfolio } = useGetPortfolio(userId ?? '')
     const {mutate: deleteAccount, isPending: isDeletingAccount, error: deleteAccountError} = useDeleteAccount()
 
-    //   const handleDeleteAccount = async () => {
-//     if(confirm(`¿Está seguro que quiere borrar su cuenta? Esta acción no tiene retorno.`)){
-//         if(confirm(`Por favor confirme nuevamente que quiere borrar su cuenta.`)){
-//              setIsLoading(prev => ({
-//             ...prev,
-//             isDeletingAccount: true
-//              }));
-//             try{
-//                 const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/delete-account/${userId}`,{
-//                     credentials: 'include',
-//                     method: 'DELETE'
-//                 })
-//                 if(!response.ok){
-//                     alert(`Error al borrar su cuenta.`)
-//                     setIsLoading(prev => ({
-//                     ...prev,
-//                     isDeletingAccount: false
-//                     }));
-//                     return
-//                 }
-//                 alert(`Cuenta eliminada exitosamente.`)
-//                  setIsLoading(prev => ({
-//                     ...prev,
-//                     isDeletingAccount: false
-//                     }));
-//                 navigate('/')
-//                 userStore.getState().logout()
-//             } catch(e){
-//                 console.error(e)
-//                  setIsLoading(prev => ({
-//                     ...prev,
-//                     isDeletingAccount: false
-//                     }));
-//                 alert(`Error al borrar su cuenta.`)
-//             }
-//         } return
-//     } return
-//   }
+
 
     const handleDeleteAccount = () => {
         if(confirm(`¿Está seguro que quiere borrar su cuenta? Esta acción no tiene retorno.`)){
