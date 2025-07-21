@@ -112,3 +112,27 @@ export const useDeleteAccount = () => {
 
   return mutation
 }
+
+export const useResetPassword = () => {
+    const mutation = useMutation({
+        mutationFn: async (email: string) => {
+             const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/forgot-password`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({email}),
+                })
+                const responseData = await response.json() 
+                if(response.ok){            
+                    alert('Email de cambio de clave enviado.')
+                }
+
+                if(responseData.error && responseData.error.includes(`Invalid email`)){
+                    alert(`Email inválido o inexistente.`)
+                }
+        }
+    })
+
+    return mutation
+}

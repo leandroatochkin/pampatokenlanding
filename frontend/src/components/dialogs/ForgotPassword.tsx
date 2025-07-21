@@ -8,6 +8,7 @@ import {
     TextField,
     Button,
 } from '@mui/material'
+import { useResetPassword } from '../../api/userApi'
 
 
 interface ForgotPasswordDialogProps {
@@ -20,47 +21,26 @@ interface ForgotPasswordDialogProps {
 
 const ForgotPasswordDialog: React.FC<ForgotPasswordDialogProps> = ({open, onClose}) => {
     const [placeholderEmail, setPlaceholderEmail] = useState<string>('')
-    const [loading, setLoading] = useState<boolean>(false)
+
+    const {mutate, isPending} = useResetPassword()
 
 
 
-
-    
-    const handleResetPassword = async () => {
+    const handleResetPassword = () => {
         if(!placeholderEmail && placeholderEmail.trim() === '') return
-        
+
         const email = placeholderEmail.trim()
 
-        setLoading(true)
-            try{
-                const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/forgot-password`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
+           
+               if(email){
+                 mutate(email, {
+                    onSuccess: () => {
+                        onClose()
                     },
-                    body: JSON.stringify({email}),
-                })
-                const responseData = await response.json() 
-                if(response.ok){            
-                    alert('Email de cambio de clave enviado.')
-                    onClose()
-                    setLoading(false)
-                }
-
-                if(responseData.error && responseData.error.includes(`Invalid email`)){
-                    alert(`Email inválido o inexistente.`)
-                    setLoading(false)
-                }
-                
-    
-    
-            } catch (error) {
-                alert('Error al cambiar clave.')
-                setLoading(false)
-                console.error(error)
+                    })
+               
+               
             }
-        
-
     }
 
   return (
@@ -92,7 +72,7 @@ const ForgotPasswordDialog: React.FC<ForgotPasswordDialogProps> = ({open, onClos
                 placeholder='Ingrese su email...'
                 type="text"
                 value={placeholderEmail}
-                disabled={loading}
+                disabled={isPending}
                 onChange={(e) => setPlaceholderEmail(e.target.value)}
                 fullWidth
                 sx={{ mb: 2 }}
@@ -100,10 +80,10 @@ const ForgotPasswordDialog: React.FC<ForgotPasswordDialogProps> = ({open, onClos
                 
                 <Button
                 onClick={handleResetPassword}
-                disabled={loading}
+                disabled={isPending}
                 >
                     {
-                        loading ? (<CircularProgress size={20}/>) : (`enviar`)
+                        isPending ? (<CircularProgress size={20}/>) : (`enviar`)
                     }
                 </Button>
 
