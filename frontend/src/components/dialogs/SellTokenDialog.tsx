@@ -13,6 +13,7 @@ import {
 } from '@mui/material'
 import { userStore } from '../../utils/store'
 import { TokenDTO, TokenInfo } from '../../utils/interfaces'
+import { useSellToken, SellTransactionDTO } from '../../api/portfolioApi'
 
 interface SellTokenDialogProps {
     open: boolean
@@ -22,15 +23,6 @@ interface SellTokenDialogProps {
     refetch: () => void
 }
 
-interface SellTransactionDTO{
-    userId: string
-    amount: number 
-    symbol: number
-    soldAtValue: number
-    tokenName: string 
-}
-
-
 const SellTokenDialog: React.FC<SellTokenDialogProps> = ({open, onClose, owned, tokens, refetch}) => {
     const [payload, setPayload] = useState<SellTransactionDTO | null>(null)
     const [selectedToken, setSelectedToken] = useState<TokenDTO | null>(owned[0])
@@ -39,7 +31,7 @@ const SellTokenDialog: React.FC<SellTokenDialogProps> = ({open, onClose, owned, 
 
 
     const [amount, setAmount] = useState<number>(owned?.find(token => token.tokenSymbol === selectedToken?.tokenSymbol)?.tokenAmount || 0)
-    const [isLoading, setIsLoading] = useState<boolean>(false)
+
 
     const sellValues = React.useMemo(() => {
             return (
@@ -64,49 +56,33 @@ const SellTokenDialog: React.FC<SellTokenDialogProps> = ({open, onClose, owned, 
             })
     
         },[amount, userId, tokens])
-    
+        
+         const {mutate, isPending} = useSellToken()
+
         useEffect(() => {
         if (selectedToken) {
             setAmount(selectedToken.tokenAmount);
         }
         }, [selectedToken]);
 
-    const handleSell = async () => {
-        if(!amount || !userId || !isLoggedIn) return
-        setIsLoading(true)
-        if(confirm(`Esta seguro que quiere vender ${amount} tokens por AR${total}.`)){
-            try{
-                const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/sell`, {
-                    method: 'POST',
-                    credentials: 'include',
-                    headers: {
-                        'Content-Type': 'application/json',
+     const handleSell = () => {
+            if(!amount || !userId || !isLoggedIn) return
+            if(confirm(`¿Está seguro que quiere vender ${amount} tokens por AR$${total}?`)){
+               if(payload){
+                 mutate(payload, {
+                    onSuccess: () => {
+                        refetch()
+                        onClose()
                     },
-                    body: JSON.stringify(payload),
-                })
-                if(!response.ok){            
-                    alert('Error al vender tokens')
-                    setIsLoading(false)
-                    onClose()
-                    throw new Error('Failed to buy tokens')
-                } else {
-                    alert(`Orden de venta generada exitosamente`)
-                    setIsLoading(false)
-                    refetch()
-                    onClose()
-                }
-    
-    
-            } catch (error) {
-                alert('Error al comprar tokens')
-                console.error(error)
-                }
-        } else {
-            setIsLoading(false)
-            return
-        }
-
-    }
+                    onError: (err) => {
+                        alert("Error al vender tokens.")
+                        console.error(err)
+                    }
+                    })
+               }
+               
+            }
+    }  
 
   return (
     <Dialog
@@ -137,8 +113,6 @@ const SellTokenDialog: React.FC<SellTokenDialogProps> = ({open, onClose, owned, 
                     <MenuItem 
                     key={token.tokenSymbol} 
                     value={token.tokenSymbol}
-
-                    
                     >
                         {token.tokenSymbol} ({token.tokenName})
                     </MenuItem>
@@ -186,8 +160,16 @@ const SellTokenDialog: React.FC<SellTokenDialogProps> = ({open, onClose, owned, 
                     Recibís: AR${total}
                 </Typography>
             </Box>
-            {isLoading ? (
+            {isPending ? (
+                <Box
+                sx={{
+                    width: '100%',
+                    display: 'flex',
+                    justifyContent: 'center'
+                    }}
+                    >
                 <CircularProgress size={24} sx={{mt: 2}}/>
+                </Box>
             ) : (
                 <Box
                 sx={{
@@ -203,15 +185,16 @@ const SellTokenDialog: React.FC<SellTokenDialogProps> = ({open, onClose, owned, 
                 }}
                 >
                     <Button 
+                    onClick={handleSell}
+                    variant='contained'
+                    disabled={!amount || isPending }
+                    >Vender</Button>
+                    <Button 
                     onClick={onClose}
                     variant='outlined'
                     >Cancelar
                     </Button>
-                    <Button 
-                    onClick={handleSell}
-                    variant='contained'
-                    disabled={!amount || isLoading }
-                    >Vender</Button>
+                    
                 </Box>
             )}
         </DialogContent>

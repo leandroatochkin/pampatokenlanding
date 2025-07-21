@@ -13,20 +13,13 @@ import {
 } from '@mui/material'
 import { userStore } from '../../utils/store'
 import { TokenInfo } from '../../utils/interfaces'
+import { useBuyToken, BuyTransactionDTO } from '../../api/portfolioApi'
 
 interface BuyTokenDialogProps {
     open: boolean
     onClose: () => void
     tokens: TokenInfo[]
     refetch: () => void
-}
-
-interface BuyTransactionDTO{
-    userId: string
-    amount: number 
-    symbol: number
-    boughtAtValue: number 
-    tokenName: string 
 }
 
 const BuyTokenDialog: React.FC<BuyTokenDialogProps> = ({open, onClose, tokens, refetch}) => {
@@ -36,11 +29,12 @@ const BuyTokenDialog: React.FC<BuyTokenDialogProps> = ({open, onClose, tokens, r
 
 
     const [amount, setAmount] = useState<number>(0)
-    const [isLoading, setIsLoading] = useState<boolean>(false)
     const [payload, setPayload] = useState<BuyTransactionDTO | null>(null)
     const [selectedToken, setSelectedToken] = useState<TokenInfo | null>(tokens[0] || null)
 
     const total = Number((amount * (selectedToken?.VALOR_COMPRA ?? 0)) / 100).toFixed(2).replace('.', ',')
+
+
 
     useEffect(()=>{
         setPayload({
@@ -53,42 +47,26 @@ const BuyTokenDialog: React.FC<BuyTokenDialogProps> = ({open, onClose, tokens, r
 
     },[amount, userId, tokens]) 
 
-    const handleBuy = async () => {
-        if(!amount || !userId || !isLoggedIn) return
-        
-        setIsLoading(true)
-        if(confirm(`Esta seguro que quiere comprar ${amount} tokens por AR$${total}`)){
-            try{
-                const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/buy`, {
-                    method: 'POST',
-                    credentials: 'include',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(payload),
-                })
-                if(!response.ok){            
-                    alert('Error al comprar tokens')
-                    setIsLoading(false)                  
-                    onClose()
-                    throw new Error('Failed to buy tokens')
-                } else {
-                    alert(`Orden de compra generada exitosamente`)
-                    setIsLoading(false)
-                    refetch()
-                    onClose()
-                }
-    
-    
-            } catch (error) {
-                alert('Error al comprar tokens')
-                setIsLoading(false)
-                console.error(error)
-                }
-        }
-        setIsLoading(false)
+    const {mutate, isPending} = useBuyToken()
 
-    }
+    const handleBuy = () => {
+            if(!amount || !userId || !isLoggedIn) return
+            if(confirm(`¿Está seguro que quiere comprar ${amount} tokens por AR$${total}?`)){
+               if(payload){
+                 mutate(payload, {
+                    onSuccess: () => {
+                        refetch()
+                        onClose()
+                    },
+                    onError: (err) => {
+                        alert("Error al comprar tokens.")
+                        console.error(err)
+                    }
+                    })
+               }
+               
+            }
+    }   
 
   return (
     <Dialog
@@ -198,8 +176,16 @@ const BuyTokenDialog: React.FC<BuyTokenDialogProps> = ({open, onClose, tokens, r
                     Total: AR${total}
                 </Typography>
             </Box>
-            {isLoading ? (
-                <CircularProgress size={24} sx={{mt: 2}}/>
+            {isPending ? (
+                <Box
+                sx={{
+                    width: '100%',
+                    display: 'flex',
+                    justifyContent: 'center'
+                }}
+                >
+                    <CircularProgress size={24} sx={{mt: 2}}/>
+                </Box>
             ) : (
                 <Box
                 sx={{
@@ -215,15 +201,16 @@ const BuyTokenDialog: React.FC<BuyTokenDialogProps> = ({open, onClose, tokens, r
                 }}
                 >
                     <Button 
+                    onClick={handleBuy}
+                    variant='contained'
+                    disabled={!amount || isPending}
+                    >Comprar</Button>
+                    <Button 
                     onClick={onClose}
                     variant='outlined'
                     >Cancelar
                     </Button>
-                    <Button 
-                    onClick={handleBuy}
-                    variant='contained'
-                    disabled={!amount || isLoading}
-                    >Comprar</Button>
+                   
                 </Box>
             )}
         </DialogContent>

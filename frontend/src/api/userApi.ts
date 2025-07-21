@@ -91,3 +91,24 @@ export const useRegister = () => {
 
   return mutation
 }
+
+export const useDeleteAccount = () => {
+    const navigate = useNavigate()
+      const mutation = useMutation({
+        mutationFn: async (userId: string) => {
+        const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/delete-account/${userId}`,{
+                        credentials: 'include',
+                        method: 'DELETE'
+                    })
+                    if(!response.ok){
+                        alert(`Error al borrar su cuenta.`)
+                        return
+                    }
+                    alert(`Cuenta eliminada exitosamente.`)
+                    navigate('/')
+                    userStore.getState().logout()
+    },
+  });
+
+  return mutation
+}

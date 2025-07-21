@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback } from 'react'
+import React, { useEffect } from 'react'
 import { 
     Paper,
     Typography,
@@ -33,6 +33,8 @@ import TrendingDownIcon from '@mui/icons-material/TrendingDown';
 import { Settings } from '@mui/icons-material';
 import { Refresh } from '@mui/icons-material';
 import { useGetTokens } from '../../api/tokenApi';
+import { useGetPortfolio } from '../../api/portfolioApi';
+import { useDeleteAccount } from '../../api/userApi';
 
 
 interface LoadingStates {
@@ -57,7 +59,6 @@ interface DialogStates {
 const Operations = () => {
 const [tokens, setTokens] = React.useState<TokenInfo[]>([])
 const [portfolio, setPortfolio] = React.useState<TokenDTO[] | null>(null)
-const [refetchTrigger, setRefetchTrigger] = React.useState<number>(0);
 const [isLoading, setIsLoading] = React.useState<LoadingStates>({
     buyValue: false,
     sellValue: false,
@@ -92,103 +93,115 @@ const handleDialogClose = (dialog: keyof DialogStates) =>{
     const userLastName = userStore((state)=>state.userLastName)
     const userIsVerified = userStore((state)=>state.userIsVerified)
 
+    const { isPending, error, data, refetch } = useGetTokens()
+    const { isPending: isPortfolioPending, error: portfolioError, data: portfolioData, refetch: refetchPortfolio } = useGetPortfolio(userId ?? '')
+    const {mutate: deleteAccount, isPending: isDeletingAccount, error: deleteAccountError} = useDeleteAccount()
 
-   
+    //   const handleDeleteAccount = async () => {
+//     if(confirm(`¿Está seguro que quiere borrar su cuenta? Esta acción no tiene retorno.`)){
+//         if(confirm(`Por favor confirme nuevamente que quiere borrar su cuenta.`)){
+//              setIsLoading(prev => ({
+//             ...prev,
+//             isDeletingAccount: true
+//              }));
+//             try{
+//                 const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/delete-account/${userId}`,{
+//                     credentials: 'include',
+//                     method: 'DELETE'
+//                 })
+//                 if(!response.ok){
+//                     alert(`Error al borrar su cuenta.`)
+//                     setIsLoading(prev => ({
+//                     ...prev,
+//                     isDeletingAccount: false
+//                     }));
+//                     return
+//                 }
+//                 alert(`Cuenta eliminada exitosamente.`)
+//                  setIsLoading(prev => ({
+//                     ...prev,
+//                     isDeletingAccount: false
+//                     }));
+//                 navigate('/')
+//                 userStore.getState().logout()
+//             } catch(e){
+//                 console.error(e)
+//                  setIsLoading(prev => ({
+//                     ...prev,
+//                     isDeletingAccount: false
+//                     }));
+//                 alert(`Error al borrar su cuenta.`)
+//             }
+//         } return
+//     } return
+//   }
 
-    // const fetchData = useCallback(async () => {
-    //      if(isLoggedIn && userId){
-    //         try{
-    //             setIsLoading(prev => ({
-    //                 ...prev,
-    //                 fetchingToken: true
-    //                 }))
-    //             const fetchLatestVal = async () =>{
-    //                 const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/get-value`,{
-    //                     method: 'GET',
-    //                     credentials: 'include',
-    //                     headers: {
-    //                         'Content-Type': 'application/json',
-    //                 }})
-    //                 const data = await response.json()
-    //                 setTokens(data.valuation)
-    //             }
-    //             fetchLatestVal()
-    //         } catch(e){
-    //             console.error(e)
-    //             alert('Error recuperando los tokens')
-    //         } finally{
-    //             setIsLoading(prev => ({
-    //                 ...prev,
-    //                 fetchingToken: false
-    //                 })) 
-    //         }
-    //     }
-    // }, [userId]);
-
-    // useEffect(()=>{
-    //    fetchData();
-    // },[refetchTrigger, fetchData]);
-    const { isPending, error, data, isFetching, refetch } = useGetTokens()
+    const handleDeleteAccount = () => {
+        if(confirm(`¿Está seguro que quiere borrar su cuenta? Esta acción no tiene retorno.`)){
+         if(confirm(`Por favor confirme nuevamente que quiere borrar su cuenta.`) && userId){
+            deleteAccount(userId)
+         }
+    }
+}
 
     useEffect(() => {
-        if (isLoggedIn && userId) {
-            setIsLoading(prev => ({
-            ...prev,
-            fetchingToken: isPending,
-            }));
-            }
-        }, [isPending, isLoggedIn, userId]);
-
-
-    useEffect(() => {
-            if(error){
-                alert(`Error al cargar cotizaciones.`)
-                setTokens([])
-                setIsLoading(prev => ({ ...prev, fetchingToken: false }))
-                return
-            }
-            setTokens(data?.valuation ?? []);
-             
-        }, [data]);
-
-
-    const fetchTokens = useCallback(async () => {
-        if (!userId) return;
-    
+    if (isLoggedIn && userId) {
         setIsLoading(prev => ({
-            ...prev,
-            fetchTokens: true
+        ...prev,
+        fetchingToken: isPending || isPortfolioPending,
         }));
-    
-        try {
-            const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/get-portfolio?userId=${userId}`, {
-                method: 'GET',
-                credentials: 'include',
-                headers: {
-                    'Content-Type': 'application/json',
-                }
-            });
-    
-            const data = await response.json();
-            if (!response.ok) {
-                alert('Error recuperando sus tokens');
-                throw new Error(data.message);
-            }
-            setPortfolio(data);
-        } catch (err) {
-            console.error('Fetch failed:', err);
-        } finally {
-            setIsLoading(prev => ({
-                ...prev,
-                fetchTokens: false
-            }));
-        }
-    }, [userId]);
-    
+    }
+    }, [isPending, isPortfolioPending, isLoggedIn, userId])
+
     useEffect(() => {
-        fetchTokens();
-    }, [fetchTokens, refetchTrigger]);
-     
+    if (isLoggedIn && userId) {
+        setIsLoading(prev => ({
+        ...prev,
+        isDeletingAccount: isDeletingAccount
+        }));
+    }
+    }, [isDeletingAccount, isLoggedIn, userId])
+
+    useEffect(() => {
+        if (error) {
+            alert('Error al cargar cotizaciones.')
+            setTokens([])
+        }
+
+        if (portfolioError) {
+            alert('Error al cargar portafolio.')
+            setPortfolio([])
+        }
+
+        if (deleteAccountError) {
+            alert('Error al eliminar cuenta.')
+        }
+
+        if (error || portfolioError) {
+            setIsLoading(prev => ({ ...prev, fetchingToken: false }))
+        }
+
+        if(deleteAccountError) {
+            setIsLoading(prev => ({ ...prev, isDeletingAccount: false }))
+        }
+
+        }, [error, portfolioError, deleteAccountError])
+
+
+
+    useEffect(() => {
+    if (data?.valuation) {
+        setTokens(data.valuation)
+    }
+    }, [data])
+
+    useEffect(() => {
+    if (portfolioData) {
+        setPortfolio(portfolioData)
+    }
+    }, [portfolioData])
+
+
     const handleLogout = async () => {
         if(confirm(`¿Estás seguro de salir?`)){
             navigate('/')
@@ -309,44 +322,7 @@ const rows =
     };
   });
 
-  const handleDeleteAccount = async () => {
-    if(confirm(`¿Está seguro que quiere borrar su cuenta? Esta acción no tiene retorno.`)){
-        if(confirm(`Por favor confirme nuevamente que quiere borrar su cuenta.`)){
-             setIsLoading(prev => ({
-            ...prev,
-            isDeletingAccount: true
-             }));
-            try{
-                const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/delete-account/${userId}`,{
-                    credentials: 'include',
-                    method: 'DELETE'
-                })
-                if(!response.ok){
-                    alert(`Error al borrar su cuenta.`)
-                    setIsLoading(prev => ({
-                    ...prev,
-                    isDeletingAccount: false
-                    }));
-                    return
-                }
-                alert(`Cuenta eliminada exitosamente.`)
-                 setIsLoading(prev => ({
-                    ...prev,
-                    isDeletingAccount: false
-                    }));
-                navigate('/')
-                userStore.getState().logout()
-            } catch(e){
-                console.error(e)
-                 setIsLoading(prev => ({
-                    ...prev,
-                    isDeletingAccount: false
-                    }));
-                alert(`Error al borrar su cuenta.`)
-            }
-        } return
-    } return
-  }
+
 
   const handleSettingsClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -390,7 +366,7 @@ const rows =
         open={dialogStates.buyTokenDialog} 
         onClose={() => handleDialogClose('buyTokenDialog')} 
         tokens={tokens?.filter(variation => variation.rn === 1) ?? []}
-        refetch={()=>setRefetchTrigger(prev => prev + 1)}
+        refetch={()=>refetchPortfolio()}
         />
         }
         {
@@ -399,7 +375,7 @@ const rows =
         onClose={() => handleDialogClose('sellTokenDialog')} 
         tokens={tokens ?? []}
         owned={portfolio}
-        refetch={()=>setRefetchTrigger(prev => prev + 1)}
+        refetch={()=>refetchPortfolio()}
         />
         }
         {
