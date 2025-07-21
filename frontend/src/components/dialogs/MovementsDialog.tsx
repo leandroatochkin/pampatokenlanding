@@ -14,18 +14,9 @@ import { userStore } from '../../utils/store'
 import { TableSkeleton } from '../skeletons/MUIGridSkeleton'
 import { CustomLoadingOverlay } from '../skeletons/MUIGridOverlay'
 import { customLocaleText } from '../../utils/locale'
+import { useGetMovements, Movement } from '../../api/portfolioApi'
 import dayjs from 'dayjs'
 
-
-interface Movement {
-    userId: string
-    operationId: string
-    amount: number
-    operationDate: string
-    operationType: number
-    symbol: string
-    value: number
-}
 
 interface MovementDialogProps {
     open: boolean
@@ -34,36 +25,25 @@ interface MovementDialogProps {
 
 const MovementsDialog: React.FC<MovementDialogProps> = ({open, onClose}) => {
     
-    const [isLoading, setIsLoading] = useState<boolean>(false)
     const [movements, setMovements] = useState<Movement[] | null>(null)
 
         const userId = userStore((state)=>state.userId)
 
-        useEffect(() => {
-            const fetchMovements = async () => {
-                setIsLoading(true)
-                if (!userId) return;
-                try {
-                    const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/movements?userId=${userId}`, {
-                        method: 'GET',
-                        credentials: 'include',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        }
-                    });
-                    const data = await response.json();
-                    setMovements(data);
-                    setIsLoading(false)
-                } catch (e) {
-                    console.error(e);
-                    alert('Hubo un error recuperando sus movimientos');
-                    setIsLoading(false)
-                }
-            };
-            fetchMovements();
-        }, []);
+        const {data, isFetching, error} = useGetMovements(userId ?? '')
 
+        useEffect(()=>{
+          if(data){
+            setMovements(data)
+          }
+        },[data])
 
+            useEffect(() => {
+                if (error) {
+                    alert('Error al cargar movimientos.')
+                    setMovements([])
+                  }
+                }, [error])
+        
 
 
     
@@ -145,7 +125,7 @@ const MovementsDialog: React.FC<MovementDialogProps> = ({open, onClose}) => {
         </DialogTitle>
         <DialogContent>
        {
-        !isLoading
+        !isFetching
         ?
         (
           <DataGrid

@@ -17,6 +17,17 @@ export interface SellTransactionDTO{
     tokenName: string 
 }
 
+export interface Movement {
+    userId: string
+    operationId: string
+    amount: number
+    operationDate: string
+    operationType: number
+    symbol: string
+    value: number
+}
+
+
 
 export const useGetPortfolio = (userId: string) => {
   const { isPending, error, data, isFetching, refetch } = useQuery<TokenDTO[]>({
@@ -36,7 +47,27 @@ export const useGetPortfolio = (userId: string) => {
   });
 
   return { isPending, error, data, isFetching, refetch };
-};
+}
+
+export const useGetMovements = (userId: string) => {
+    const { isPending, error, data, isFetching, refetch } = useQuery<Movement[] | []>({
+    queryKey: ['movementsData', userId],
+    queryFn: async ({ queryKey }) => {
+      const [, uid] = queryKey;
+      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/movements?userId=${uid}`, {
+        method: 'GET',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      return await response.json();
+    },
+    enabled: !!userId, 
+  });
+
+  return { isPending, error, data, isFetching, refetch };
+}
 
 export const useBuyToken = () => {
     const mutation = useMutation({
