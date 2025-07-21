@@ -93,22 +93,35 @@ export const useRegister = () => {
 }
 
 export const useDeleteAccount = () => {
-    const navigate = useNavigate()
-      const mutation = useMutation({
-        mutationFn: async (userId: string) => {
-        const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/delete-account/${userId}`,{
-                        credentials: 'include',
-                        method: 'DELETE'
-                    })
-                    if(!response.ok){
-                        alert(`Error al borrar su cuenta.`)
-                        return
-                    }
-                    alert(`Cuenta eliminada exitosamente.`)
-                    navigate('/')
-                    userStore.getState().logout()
-    },
-  });
+  const navigate = useNavigate();
+
+  const mutation = useMutation({
+    mutationFn: async (userId: string) => {
+      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/delete-account/${userId}`, {
+        credentials: 'include',
+        method: 'DELETE',
+      });
+
+      if (!response.ok) {
+        alert(`Error al borrar su cuenta.`)
+        throw new Error('Failed to delete account')
+      }
+
+      alert(`Cuenta eliminada exitosamente.`)
+
+      const logoutRes = await fetch(`${import.meta.env.VITE_BACKEND_URL}/logout`, {
+        method: 'POST',
+        credentials: 'include',
+      });
+
+      if (!logoutRes.ok) {
+        console.warn('Logout falló. La cookie puede no haberse limpiado correctamente.')
+      }
+
+      userStore.getState().logout()
+      navigate('/')
+    }
+  })
 
   return mutation
 }
