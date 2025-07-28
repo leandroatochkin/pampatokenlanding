@@ -41,7 +41,7 @@ const clientBrowser = navigator.userAgent
     return(
       <Box
       sx={{
-        width: '98vw',
+        width: '70vw',
         display: 'flex',
         alignItems: 'center',
         background: 'teal',
@@ -50,7 +50,7 @@ const clientBrowser = navigator.userAgent
         alignSelf: 'center',
         p: 1,
         justifyContent: 'space-between',
-        mt: -15
+        mt: 5
       }}
       >
         <Typography>
@@ -189,7 +189,7 @@ const clientBrowser = navigator.userAgent
             textShadow: '0px 3px 5px rgba(0,0,0,0.6)',
             textAlign: {
               xs: 'left',
-              md: 'center',
+              sm: 'center',
             },
             mr: {
               sm: 2,
@@ -209,7 +209,7 @@ const clientBrowser = navigator.userAgent
             textShadow: '0px 3px 5px rgba(0,0,0,0.6)',
             textAlign: {
               xs: 'left',
-              md: 'center',
+              sm: 'center',
             },
             fontFamily: 'PTSerif-Regular, sans-serif',
             pl: 1,
@@ -261,7 +261,7 @@ const clientBrowser = navigator.userAgent
           },
           justifyContent: {
             md: 'space-around',
-          },
+          }
         }}
       >
         {featureItems.map((feature, index) => (

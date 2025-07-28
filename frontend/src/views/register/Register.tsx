@@ -437,7 +437,7 @@ const Register = () => {
                                 sx={{
                                     display: 'flex',
                                     flexDirection: 'column',
-                                    width: '50%'
+                                    width: '100%'
                                 }}
                                 >
                                     <FormLabel htmlFor="city">CUIT</FormLabel>
@@ -464,12 +464,13 @@ const Register = () => {
                                   sx={{
                                       display: 'flex',
                                       flexDirection: 'column',
-                                      width: '50%'
+                                      width: '100%'
                                   }}
                                   >
                                       <FormLabel htmlFor="identificationNumber">DNI/PAS/LC/LE</FormLabel>
                                       <Box className="relative">
                                           <TextField
+
                                           type="number"
                                           fullWidth
                                           id="identificationNumber"

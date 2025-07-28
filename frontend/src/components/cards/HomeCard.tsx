@@ -20,8 +20,8 @@ const HomeCard: React.FC<HomeCardProps> = ({title, description, icon}) => {
     aria-label={`Tarjeta destacada: ${title}`}
     sx={{
         borderRadius: '16px',
-        ml: isMobile ? 2 : 0,
-        mr: isMobile ? 2 : 0,
+        ml: isMobile ? 2 : 1,
+        mr: isMobile ? 2 : 1,
     }}
     whileHover={{
         y: -5
@@ -33,6 +33,10 @@ const HomeCard: React.FC<HomeCardProps> = ({title, description, icon}) => {
             pointerEvents: 'none',
             display: 'flex',
             flexDirection: 'column',
+            alignItems: {
+                xs: 'center',
+                md: 'left'
+            }
         }}
         >
         <Typography
@@ -44,8 +48,13 @@ const HomeCard: React.FC<HomeCardProps> = ({title, description, icon}) => {
         <Typography
         variant='h5'
         fontFamily={'PTSerif-Bold, sans-serif'}
-        textAlign='start'
         color=' #2E7D32'
+        sx={{
+            textAlign: {
+                xs: 'center',
+                md: 'start'
+            }
+        }}
         >
         {title}
         </Typography>

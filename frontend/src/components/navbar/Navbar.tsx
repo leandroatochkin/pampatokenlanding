@@ -52,7 +52,7 @@ useEffect(() => {
     return (
       <Box
       sx={{
-        width: !isMobile ? '30%' : '90',
+        width: !isMobile ? '30%' : '40vw',
         height: {
           md: 'auto',
           xs: '20%'
@@ -63,7 +63,7 @@ useEffect(() => {
           sm: 'row'
         },
         justifyContent: 'space-evenly',
-        alignItems: 'center'
+        alignItems: 'center',
       }}
       >
        <MotionLink
