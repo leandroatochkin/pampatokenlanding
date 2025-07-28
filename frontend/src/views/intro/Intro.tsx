@@ -58,7 +58,7 @@ const MotionPaper = motion.create(Paper)
             fontFamily: 'PTSerif-Bold, sans-serif',
         }}
         >
-          ¿Qué es Pampa Tokens?
+          ¿Qué es <span translate="no">Pampa Tokens</span>?
         </Typography>
         <MotionPaper
         elevation={3}

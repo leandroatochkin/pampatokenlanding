@@ -70,27 +70,34 @@ export const useGetMovements = (userId: string) => {
 }
 
 export const useBuyToken = () => {
-    const mutation = useMutation({
-        mutationFn: async (payload: BuyTransactionDTO) => {
-        const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/buy`, {
-                    method: 'POST',
-                    credentials: 'include',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(payload),
-                })
-                if(!response.ok){            
-                    alert('Error al comprar tokens')
-                    throw new Error('Failed to buy tokens')
-                } else {
-                    alert(`Orden de compra generada exitosamente`)
-                }
+  const mutation = useMutation({
+    mutationFn: async (payload: BuyTransactionDTO) => {
+  const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/buy`, {
+    method: 'POST',
+    credentials: 'include',
+    headers: {
+      'Content-Type': 'application/json',
     },
+    body: JSON.stringify(payload),
   });
 
-  return mutation
+  if (!response.ok) {
+    const errorBody = await response.json().catch(() => ({})); // fallback if JSON fails
+    const error = new Error(errorBody.message || 'Failed to buy tokens');
+    // @ts-ignore - attach extra info manually
+    error.status = response.status;
+    // @ts-ignore
+    error.details = errorBody;
+    throw error;
+  }
+
+  return await response.json(); // ✅ returned as mutation.data
 }
+  });
+
+  return { mutation }; // ✅ Don't need `data` here — use `mutation.data` wherever you call the hook
+};
+
 
 export const useSellToken = () => {
     const mutation = useMutation({
@@ -104,13 +111,18 @@ export const useSellToken = () => {
                     body: JSON.stringify(payload),
                 })
                 if(!response.ok){            
-                    alert('Error al vender tokens')
-                    throw new Error('Failed to buy tokens')
-                } else {
-                    alert(`Orden de venta generada exitosamente`)
-                }
+                     const errorBody = await response.json().catch(() => ({})); // fallback if JSON fails
+                    const error = new Error(errorBody.message || 'Failed to sell tokens');
+                    // @ts-ignore - attach extra info manually
+                    error.status = response.status;
+                    // @ts-ignore
+                    error.details = errorBody;
+                    throw error;
+                } 
+                
+                return await response.json();
     },
   });
 
-  return mutation
+  return { mutation }
 }

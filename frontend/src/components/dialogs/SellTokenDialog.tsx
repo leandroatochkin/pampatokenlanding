@@ -57,7 +57,7 @@ const SellTokenDialog: React.FC<SellTokenDialogProps> = ({open, onClose, owned, 
     
         },[amount, userId, tokens])
         
-         const {mutate, isPending} = useSellToken()
+         const {mutation} = useSellToken()
 
         useEffect(() => {
         if (selectedToken) {
@@ -69,16 +69,21 @@ const SellTokenDialog: React.FC<SellTokenDialogProps> = ({open, onClose, owned, 
             if(!amount || !userId || !isLoggedIn) return
             if(confirm(`¿Está seguro que quiere vender ${amount} tokens por AR$${total}?`)){
                if(payload){
-                 mutate(payload, {
-                    onSuccess: () => {
-                        refetch()
-                        onClose()
-                    },
-                    onError: (err) => {
-                        alert("Error al vender tokens.")
-                        console.error(err)
-                    }
-                    })
+                 mutation.mutate(payload, {
+                        onSuccess: () => {
+                            refetch();
+                            onClose();
+                        },
+                        onError: (err: any) => {
+                            console.error('Error details:', err)
+                            alert(err.message)
+
+                            
+                            if (err.status === 403) {
+                            console.log('Forbidden:', err.details)
+                            }
+                        }
+                        });
                }
                
             }
@@ -99,7 +104,7 @@ const SellTokenDialog: React.FC<SellTokenDialogProps> = ({open, onClose, owned, 
         >Vender Tokens</DialogTitle>
         <DialogContent>
             <Select
-            defaultValue={owned[0].tokenSymbol}
+            defaultValue={owned[0]?.tokenSymbol || ''}
             label="Token"
             onChange={(e) => {
                 const selected = owned.find(token => token.tokenSymbol === e.target.value);
@@ -160,7 +165,7 @@ const SellTokenDialog: React.FC<SellTokenDialogProps> = ({open, onClose, owned, 
                     Recibís: AR${total}
                 </Typography>
             </Box>
-            {isPending ? (
+            {mutation.isPending ? (
                 <Box
                 sx={{
                     width: '100%',
@@ -187,7 +192,7 @@ const SellTokenDialog: React.FC<SellTokenDialogProps> = ({open, onClose, owned, 
                     <Button 
                     onClick={handleSell}
                     variant='contained'
-                    disabled={!amount || isPending }
+                    disabled={!amount || mutation.isPending }
                     >Vender</Button>
                     <Button 
                     onClick={onClose}

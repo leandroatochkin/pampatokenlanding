@@ -47,22 +47,28 @@ const BuyTokenDialog: React.FC<BuyTokenDialogProps> = ({open, onClose, tokens, r
 
     },[amount, userId, tokens]) 
 
-    const {mutate, isPending} = useBuyToken()
+    const {mutation} = useBuyToken()
 
     const handleBuy = () => {
             if(!amount || !userId || !isLoggedIn) return
             if(confirm(`¿Está seguro que quiere comprar ${amount} tokens por AR$${total}?`)){
                if(payload){
-                 mutate(payload, {
-                    onSuccess: () => {
-                        refetch()
-                        onClose()
-                    },
-                    onError: (err) => {
-                        alert("Error al comprar tokens.")
-                        console.error(err)
-                    }
-                    })
+                 mutation.mutate(payload, {
+                        onSuccess: () => {
+                            refetch();
+                            onClose();
+                        },
+                        onError: (err: any) => {
+                            console.error('Error details:', err)
+                            alert(err.message)
+
+                            
+                            if (err.status === 403) {
+                            console.log('Forbidden:', err.details)
+                            }
+                        }
+                        });
+                    
                }
                
             }
@@ -176,7 +182,7 @@ const BuyTokenDialog: React.FC<BuyTokenDialogProps> = ({open, onClose, tokens, r
                     Total: AR${total}
                 </Typography>
             </Box>
-            {isPending ? (
+            {mutation.isPending ? (
                 <Box
                 sx={{
                     width: '100%',
@@ -203,7 +209,7 @@ const BuyTokenDialog: React.FC<BuyTokenDialogProps> = ({open, onClose, tokens, r
                     <Button 
                     onClick={handleBuy}
                     variant='contained'
-                    disabled={!amount || isPending}
+                    disabled={!amount || mutation.isPending}
                     >Comprar</Button>
                     <Button 
                     onClick={onClose}

@@ -200,6 +200,7 @@ useEffect(() => {
             color: '#276329',
             fontFamily: 'PTSerif-Bold, sans-serif',
           }}
+          translate="no"
           >
             PAMPA TOKENS
           </Typography>

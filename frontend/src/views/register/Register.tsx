@@ -40,7 +40,8 @@ import {
     phoneRegex, 
     onlyNumbersRegex,
     addressRegex,
-    cuitRegex
+    cuitRegex,
+    idRegex
 } from '../../utils/regexPatterns';
 import { 
     countryListAlpha2,
@@ -89,6 +90,7 @@ interface UserDTO{
     fiscalResidentOutsideArgentina: boolean
     termsAndConditionsRead: boolean
     accountNumber: string
+    identificationNumber: number
 }
 
 function TabPanel(props: TabPanelProps) {
@@ -116,6 +118,11 @@ function a11yProps(index: number) {
   };
 }
 
+interface OnFocusInput {
+  password: boolean
+  phoneNumber: boolean
+}
+
 const Register = () => {
   const [activeStep, setActiveStep] = useState(0);
   const [progress, setProgress] = useState(30);
@@ -128,6 +135,10 @@ const Register = () => {
   const [frontIdFile, setFrontIdFile] = useState<File | null>(null)
   //const [selfieFile, setSelfieFile] = useState<File | null>(null)
   const [backImage, setBackImage] = useState<string | null>(null)
+  const [isActive, setIsActive] = useState<OnFocusInput>({
+    password: false,
+    phoneNumber: false
+  })
   //const [selfieImage, setSelfieImage] = useState<string | null>(null)
   //const [loading, setLoading] = useState<boolean>(false)
   //const [successElement, setSuccessElement] = useState<boolean>(false)
@@ -174,7 +185,7 @@ const Register = () => {
     if (newStep === 2) setProgress(90);
   }
 
-  const {mutate, isSuccess, isPending} = useRegister()
+  const {mutation} = useRegister()
 
   const onSubmit = async (data: UserDTO) => {
     //setLoading(true)
@@ -196,36 +207,17 @@ const Register = () => {
     formData.append('backIdImage', resizedBackImage)
     //formData.append('selfieImage', resizedSelfieImage)
     formData.append('user', JSON.stringify(data))
-    
-  //   try {
-  //     const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/register`, {
-  //       method: 'POST',
-  //       body: formData,
-  //     })
-  //     if (response.ok) {
-  //       setSuccessElement(true)
-  //       alert(`Se ha enviado un correo de activación a su casilla. En caso de no encontrarla en su bandeja de entrada, por favor revisar spam.`)
-  //       setTimeout(() =>{
-  //         handleSectionClick('login')
-  //       },3000)
-  //     } else {
-  //       const errorData = await response.json() // read the body as JSON
-  //       console.error('Error message:', errorData.message)
-        
-  //       if(errorData.message.includes('Duplicate entry')){
-  //         alert(`Email ya registrado. Por favor ingrese uno nuevo.`)
-  //         setLoading(false)
-  //       } else {
-  //         alert(`Error al registrar usuario. Por favor, intente mas tarde.`)
-  //         setLoading(false)
-  //       }
-  //     }
-  //  }
-  //   catch (error) {
-  //     console.error('Error:', error)
-  //   }
-    mutate(formData)
-}}
+    mutation.mutate(formData, {
+                        onError: (err: any) => {
+                            console.error('Error details:', err)
+                            alert(err.message)
+                            
+                            if (err.status === 403) {
+                            console.log('Forbidden:', err.details)
+                            }
+                        }
+                        })
+        }}
 
   const onInvalid = () => {
   alert(`Uno o más campos erróneos o incompletos. Por favor revisar.`);
@@ -265,11 +257,11 @@ const Register = () => {
       }}
       >
        {
-        !isSuccess ?
+        (!mutation.isSuccess && !mutation.isError) ?
         (
           <>
           {
-            !isPending ? (
+            !mutation.isPending ? (
               <>
           <CardHeader 
             title={
@@ -413,7 +405,7 @@ const Register = () => {
                               onChange={(e) => setRepeatEmail(e.target.value)}
                               error={repeatEmail !== watchEmail}
                               helperText={
-                                  repeatEmail && repeatEmail !== watchEmail ? "Emails do not match" : ""
+                                  repeatEmail && repeatEmail !== watchEmail ? "Los emails no coinciden" : ""
                               }
                               slotProps={{
                                   input: {
@@ -427,6 +419,74 @@ const Register = () => {
                               />  
                               </Box>
                       </Box>
+
+                      <Box
+                       sx={{
+                          width: '100%',
+                          display: 'flex',
+                          justifyContent:'space-between',
+                          gap: 2,
+                          flexDirection: {
+                            xs: 'column',
+                            md: 'row'
+                        },
+                          }}
+                          >
+
+                             <Box
+                                sx={{
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    width: '50%'
+                                }}
+                                >
+                                    <FormLabel htmlFor="city">CUIT</FormLabel>
+                                    <Box className="relative">
+                                        <TextField
+                                        type="number"
+                                        fullWidth
+                                        id="CUIT"
+                                        variant="outlined"
+                                        placeholder="CUIT"
+                                        {...register(`CUIT`, 
+                                            { required: 'Campo obligatorio', 
+                                                pattern: { 
+                                                    value: cuitRegex, 
+                                                    message: 'Solo números, sin guiones. 11 caracteres exacto.' 
+                                                } })}
+                                        error={!!errors.CUIT}
+                                        helperText={errors.CUIT?.message}
+                                        />    
+                                    </Box>
+                                </Box>
+                                {/*DNI*/}
+                                 <Box
+                                  sx={{
+                                      display: 'flex',
+                                      flexDirection: 'column',
+                                      width: '50%'
+                                  }}
+                                  >
+                                      <FormLabel htmlFor="identificationNumber">DNI/PAS/LC/LE</FormLabel>
+                                      <Box className="relative">
+                                          <TextField
+                                          type="number"
+                                          fullWidth
+                                          id="identificationNumber"
+                                          variant="outlined"
+                                          placeholder="DNI/PAS/LC/LE"
+                                          {...register(`identificationNumber`, 
+                                              { required: 'Campo obligatorio', 
+                                                  pattern: { 
+                                                      value: idRegex, 
+                                                      message: 'Solo números, sin guiones. Hasta 11 caracteres.' 
+                                                  } })}
+                                          error={!!errors.identificationNumber}
+                                          helperText={errors.identificationNumber?.message}
+                                          />    
+                                      </Box>
+                                  </Box>
+                          </Box>
   
                   <Box
                     sx={{
@@ -453,36 +513,55 @@ const Register = () => {
                   
                   <Box className="relative">
                       <TextField
-  id="password"
-  label="Contraseña"
-  fullWidth
-  type={showPassword ? "text" : "password"}
-  color="secondary"
-  {...register("password", {
-    required: 'Campo requerido',
-    pattern: {
-      value: passwordRegex,
-      message:
-        'La contraseña debe tener al menos 8 caracteres, una mayúscula, una minúscula, un número y un símbolo',
-    },
-  })}
-  error={!!errors.password}
-  helperText={errors.password?.message}
-  InputProps={{
-    endAdornment: (
-      <InputAdornment position="end">
-        <IconButton
-          onClick={() => setShowPassword(!showPassword)}
-          aria-label={
-            showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'
-          }
-        >
-          {showPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
-        </IconButton>
-      </InputAdornment>
-    ),
-  }}
-/>
+                      onFocus={
+                        ()=>setIsActive((prev) =>
+                                 ({ ...prev, password: true }))
+                                    }
+                      id="password"
+                      label="Contraseña"
+                      fullWidth
+                      type={showPassword ? "text" : "password"}
+                      color="secondary"
+                      {...register("password", {
+                        required: 'Campo requerido',
+                        pattern: {
+                          value: passwordRegex,
+                          message:
+                            'La contraseña debe tener al menos 8 caracteres, una mayúscula, una minúscula, un número y un símbolo',
+                        },
+                      })}
+                      error={!!errors.password}
+                      helperText={errors.password?.message}
+                      InputProps={{
+                        endAdornment: (
+                          <InputAdornment position="end">
+                            <IconButton
+                              onClick={() => setShowPassword(!showPassword)}
+                              aria-label={
+                                showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'
+                              }
+                            >
+                              {showPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
+                            </IconButton>
+                          </InputAdornment>
+                        ),
+                      }}
+                    />
+                    {
+                      (isActive.password && !errors.password)
+                      
+                      ?
+
+                      (
+                        <Typography variant="body2">
+                      {'La contraseña debe tener al menos 8 caracteres, una mayúscula, una minúscula, un número y un símbolo'}
+                        </Typography>
+                      )
+
+                      :
+
+                      null
+                    }
 
   
                       
@@ -700,10 +779,14 @@ const Register = () => {
                           width: '100%'
                       }}
                       >
-                      <FormLabel htmlFor="phoneNumber">Telefóno</FormLabel>
+                      <FormLabel htmlFor="phoneNumber">Teléfono</FormLabel>
                   
                       <TextField
                       fullWidth
+                      onFocus={
+                        ()=>setIsActive((prev) =>
+                                 ({ ...prev, phoneNumber: true }))
+                                    }
                           id="phoneNumber"
                           variant="outlined"
                           placeholder="541122333666"
@@ -717,7 +800,21 @@ const Register = () => {
                           error={!!errors.phoneNumber}
                           helperText={errors.phoneNumber?.message}
                           />
-  
+                      {
+                      (isActive.phoneNumber && !errors.phoneNumber)
+                      
+                      ?
+
+                      (
+                        <Typography variant="body2">
+                      {'Debe ingresar un número válido en formato 541122333666, sin 15 ni espacios ni caracteres especiales. Debe anteceder el código de país.'}
+                        </Typography>
+                      )
+
+                      :
+
+                      null
+                    }
                   </Box>
                   </Box>
                   </Box>
@@ -952,33 +1049,8 @@ const Register = () => {
               gap: 2
              }}
              >
-              {/*CITY*/}
-              <Box
-              sx={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  width: '50%'
-              }}
-              >
-                  <FormLabel htmlFor="city">CUIT</FormLabel>
-                  <Box className="relative">
-                      <TextField
-                      type="number"
-                      fullWidth
-                      id="CUIT"
-                      variant="outlined"
-                      placeholder="CUIT"
-                      {...register(`CUIT`, 
-                          { required: 'Campo obligatorio', 
-                              pattern: { 
-                                  value: cuitRegex, 
-                                  message: 'Solo números, sin guiones. 11 caracteres exacto.' 
-                              } })}
-                      error={!!errors.CUIT}
-                      helperText={errors.CUIT?.message}
-                      />    
-                  </Box>
-              </Box>
+
+             
                {/*POSTAL CODE*/}
                <Box
               sx={{
@@ -1256,15 +1328,20 @@ const Register = () => {
             }
           }}
           >
-            <img src='/checked.gif' alt="logo" />
+            <img src={mutation.isError ? `/error.gif` : `/checked.gif`} alt="logo" style={{
+              height: '100px',
+              marginRight: '20px'
+            }}/>
             <Typography
             variant="h2"
-            color="primary"
+            color={mutation.isError ? 'error' : 'primary'}
             sx={{
               fontFamily: 'PTSerif-Bold'
             }}
             >
-                ¡Registro exitoso! 
+                {
+                  mutation.isError ? (`Error al registrar.`) : (`¡Registro exitoso! `)
+                }
             </Typography>
           </Box>
         )

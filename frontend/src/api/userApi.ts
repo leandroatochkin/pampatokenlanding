@@ -6,8 +6,13 @@ import { useNavigate } from 'react-router-dom'
 import { useScrollNavigation } from '../utils/hooks'
 
 
+// export interface UserData  {
+//     email: string
+//     password: string
+// }
+
 export interface UserData  {
-    email: string
+    identificationNumber: number
     password: string
 }
 
@@ -76,20 +81,21 @@ export const useRegister = () => {
         setTimeout(() =>{
           handleSectionClick('login')
         },3000)
-      } else {
-        const errorData = await response.json() // read the body as JSON
-        console.error('Error message:', errorData.message)
-        
-        if(errorData.message.includes('Duplicate entry')){
-          alert(`Email ya registrado. Por favor ingrese uno nuevo.`)
-        } else {
-          alert(`Error al registrar usuario. Por favor, intente mas tarde.`)
-        }
-      }
+      } 
+       if (!response.ok) {
+        const errorBody = await response.json().catch(() => ({})); // fallback if JSON fails
+        const error = new Error(errorBody.message || 'Failed to register');
+        // @ts-ignore - attach extra info manually
+        error.status = response.status;
+        // @ts-ignore
+        error.details = errorBody;
+        throw error;
+  }
+
     },
   });
 
-  return mutation
+  return {mutation}
 }
 
 export const useDeleteAccount = () => {

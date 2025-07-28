@@ -4,7 +4,7 @@
 
  export const nameRegex = /^[A-Za-zÁÉÍÓÚÑáéíóúñ\s'-]{2,80}$/
 
- export const phoneRegex = /^54\d{8,10}$/;
+ export const phoneRegex = /^(\d{1,3})(\d{8,10})$/;
 
  export const onlyNumbersRegex = /^\d{2,50}$/
  
@@ -15,4 +15,6 @@
  export const observationsRegex = /^[\p{L}\d\s.,°º#\-]{2,}$/u
 
  export const cuitRegex = /^\d{11}$/
+
+ export const idRegex = /^\d{1,11}$/
 

@@ -10,9 +10,9 @@ import {
     Link,
     CircularProgress, 
 } from '@mui/material'
-import MailIcon from '@mui/icons-material/Mail';
+//import MailIcon from '@mui/icons-material/Mail';
 import { useForm } from 'react-hook-form'
-import { emailRegex, passwordRegex } from '../../utils/regexPatterns';
+import { idRegex, passwordRegex } from '../../utils/regexPatterns';
 import  { useState} from 'react'
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import VisibilityIcon from '@mui/icons-material/Visibility';
@@ -102,31 +102,31 @@ const isMobile = useMobile()
                 textAlign='start'
                 color='#333'
                 >
-                    Email
+                    DNI/PAS/LC/LE
                 </Typography>
                 <Box className="relative">
                     <TextField
                     fullWidth
-                    id="login-email"
-                    type="email"
+                    id="login-identificationNumber"
+                    type="number"
                     variant="outlined"
-                    placeholder="mail@ejemplo.com"
-                    {...register(`email`, { required: 'Required field', pattern: { value: emailRegex, message: 'Invalid email address' } })}
-                    error={!!errors.email}
-                    helperText={errors.email?.message}
-                    slotProps={{
-                        input: {
-                        startAdornment: (
-                            <InputAdornment position='start'>
-                            <MailIcon 
-                                sx={{
-                                    color: '#333'
-                                }}
-                                />
-                            </InputAdornment>
-                        ),
-                        },
-                    }}
+                    placeholder="DNI/PAS/LC/LE"
+                    {...register(`identificationNumber`, { required: 'Campo requerido.', pattern: { value: idRegex, message: 'Campo incorrecto.' } })}
+                    error={!!errors.identificationNumber}
+                    helperText={errors.identificationNumber?.message}
+                    // slotProps={{
+                    //     input: {
+                    //     startAdornment: (
+                    //         <InputAdornment position='start'>
+                    //         <MailIcon 
+                    //             sx={{
+                    //                 color: '#333'
+                    //             }}
+                    //             />
+                    //         </InputAdornment>
+                    //     ),
+                    //     },
+                    // }}
                     />    
                 </Box>
             </Box>

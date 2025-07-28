@@ -312,8 +312,8 @@ const rows =
           horizontal: 'left',
         }}
       >
-        <MenuItem onClick={handleLogout}>Cerrar sesión</MenuItem>
-        <MenuItem onClick={handleDeleteAccount}>Eliminar cuenta</MenuItem>
+        <MenuItem onClick={handleLogout} translate='no'>Cerrar sesión</MenuItem>
+        <MenuItem onClick={handleDeleteAccount} translate='no'>Eliminar cuenta</MenuItem>
       </Menu>
     )
   }
