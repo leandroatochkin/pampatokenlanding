@@ -48,6 +48,13 @@ const SellTokenDialog: React.FC<SellTokenDialogProps> = ({open, onClose, owned, 
             return Number((amount * sellValues) / 100).toFixed(2).replace('.', ',');
             }, [amount, sellValues]);
 
+              const rawTotal = String(total).replace(',', '.'); 
+                const parsedTotal = parseFloat(rawTotal);
+
+                const commission = parseFloat(String(calculateComission ?? '0'));
+
+                const totalWithCommission = (parsedTotal * (1 - commission / 100)).toFixed(2).replace('.', ',');
+
      useEffect(()=>{
             setPayload({
                 userId: userId || '',
@@ -164,9 +171,13 @@ const SellTokenDialog: React.FC<SellTokenDialogProps> = ({open, onClose, owned, 
                 inputProps={{ min: 0 }}
                 />
 
+
                 <Typography variant='h6'>
-                    Recibís: AR${total} - {calculateComission}% de comisión
-                </Typography>
+                                <span style={{fontWeight: 'bold'}}>Sub-total:</span> AR${total} - {calculateComission}% de comisión
+                                </Typography>
+                                <Typography variant='h6'>
+                                 <span style={{fontWeight: 'bold'}}>Recibís:</span> AR${totalWithCommission}
+                                </Typography>
             </Box>
             {mutation.isPending ? (
                 <Box

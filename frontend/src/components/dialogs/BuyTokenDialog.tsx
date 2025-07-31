@@ -34,6 +34,13 @@ const BuyTokenDialog: React.FC<BuyTokenDialogProps> = ({open, onClose, tokens, r
 
     const total = Number((amount * (selectedToken?.VALOR_COMPRA ?? 0)) / 100).toFixed(2).replace('.', ',')
 
+    const rawTotal = String(total).replace(',', '.'); 
+    const parsedTotal = parseFloat(rawTotal);
+
+    const commission = parseFloat(String(selectedToken?.COMISION ?? '0'));
+
+    const totalWithCommission = (parsedTotal * (1 + commission / 100)).toFixed(2).replace('.', ',');
+
 
 
     useEffect(()=>{
@@ -180,7 +187,10 @@ const BuyTokenDialog: React.FC<BuyTokenDialogProps> = ({open, onClose, tokens, r
                     }}
                     />
                 <Typography variant='h6'>
-                    Total: AR${total} + {selectedToken?.COMISION}% de comisión
+                <span style={{fontWeight: 'bold'}}>Sub-total:</span> AR${total} + {selectedToken?.COMISION}% de comisión
+                </Typography>
+                <Typography variant='h6'>
+                 <span style={{fontWeight: 'bold'}}>Total:</span> AR${totalWithCommission}
                 </Typography>
             </Box>
             {mutation.isPending ? (
