@@ -11,6 +11,7 @@ import { useMobile } from '../../utils/hooks';
 import { useNavigate } from 'react-router-dom';
 import { userStore } from '../../utils/store';
 import { Helmet } from 'react-helmet-async';
+import { theme } from '../../utils/theme';
 
 
 
@@ -183,7 +184,7 @@ const clientBrowser = navigator.userAgent
         <Typography
           variant={isMobile ? 'h3' : 'h1'}
           component={'h1'}
-          color="#276329"
+          color='secondary'
           fontWeight="bolder"
           sx={{
             textShadow: '0px 3px 5px rgba(0,0,0,0.6)',

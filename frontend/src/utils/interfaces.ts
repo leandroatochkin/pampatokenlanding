@@ -13,6 +13,7 @@ export interface TokenInfo {
     DES_SIMBOLO: string
     VALOR_COMPRA: number
     VALOR_VENTA: number
+    COMISION: number
     FECHA: number
     rn: number
 }

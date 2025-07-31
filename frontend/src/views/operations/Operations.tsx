@@ -223,6 +223,12 @@ const MotionButton = motion(Button);
             editable: false,
           },
           {
+            field: "comission",
+            headerName: "comisión",
+            width: 130,
+            editable: false,
+          },
+          {
             field: "date",
             headerName: "fecha",
             width: 150,
@@ -280,9 +286,11 @@ const rows =
       tokenVariation: previousVariation
         ? `$${Number(previousVariation.VALOR_COMPRA / 100).toFixed(2)}`
         : 'N/A',
+      comission: `${Number(token.COMISION)}%`,
       date: `${tokenDay}/${tokenMonth}/${tokenYear}`,
       rn: token.rn,
     };
+
   });
 
 

@@ -55,6 +55,7 @@ const BuyTokenDialog: React.FC<BuyTokenDialogProps> = ({open, onClose, tokens, r
                if(payload){
                  mutation.mutate(payload, {
                         onSuccess: () => {
+                            alert(`¡Compra exitosa!`)
                             refetch();
                             onClose();
                         },
@@ -179,7 +180,7 @@ const BuyTokenDialog: React.FC<BuyTokenDialogProps> = ({open, onClose, tokens, r
                     }}
                     />
                 <Typography variant='h6'>
-                    Total: AR${total}
+                    Total: AR${total} + {selectedToken?.COMISION}% de comisión
                 </Typography>
             </Box>
             {mutation.isPending ? (

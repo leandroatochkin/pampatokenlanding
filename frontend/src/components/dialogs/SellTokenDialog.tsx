@@ -40,6 +40,8 @@ const SellTokenDialog: React.FC<SellTokenDialogProps> = ({open, onClose, owned, 
                 )?.VALOR_VENTA || 0
             );
             }, [selectedToken, tokens]);
+            
+    const calculateComission = tokens.filter(token=>Number(selectedToken?.tokenSymbol) === Number(token.CODIGO_SIMBOLO))[0].COMISION
  
 
             const total = React.useMemo(() => {
@@ -71,6 +73,7 @@ const SellTokenDialog: React.FC<SellTokenDialogProps> = ({open, onClose, owned, 
                if(payload){
                  mutation.mutate(payload, {
                         onSuccess: () => {
+                            alert(`¡Venta exitosa!`)
                             refetch();
                             onClose();
                         },
@@ -162,7 +165,7 @@ const SellTokenDialog: React.FC<SellTokenDialogProps> = ({open, onClose, owned, 
                 />
 
                 <Typography variant='h6'>
-                    Recibís: AR${total}
+                    Recibís: AR${total} - {calculateComission}% de comisión
                 </Typography>
             </Box>
             {mutation.isPending ? (
